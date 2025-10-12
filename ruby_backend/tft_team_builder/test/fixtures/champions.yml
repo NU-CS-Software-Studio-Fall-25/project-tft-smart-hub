@@ -1,0 +1,11 @@
+one:
+  name: Aatrox
+  tier: 1
+  traits: Vanguard / Slayer
+  image_url: tft-champion/TFT15_Aatrox.TFT_Set15.png
+
+two:
+  name: Kayle
+  tier: 4
+  traits: Redeemed / Slayer
+  image_url: tft-champion/TFT15_Kayle.TFT_Set15.png

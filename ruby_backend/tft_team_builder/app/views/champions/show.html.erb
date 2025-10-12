@@ -1,0 +1,28 @@
+<div class="container mt-4">
+  <div class="row">
+    <%# Left side displays large image %>
+    <div class="col-md-4">
+      <%= image_tag @champion.image_url, class: "img-fluid rounded shadow-sm", alt: @champion.name %>
+    </div>
+
+    <%# Right side displays detailed information %>
+    <div class="col-md-8">
+      <h1><%= @champion.name %></h1>
+      <hr>
+
+      <dl class="row">
+        <dt class="col-sm-3">Cost (Tier)</dt>
+        <dd class="col-sm-9"><%= @champion.tier %></dd>
+
+        <dt class="col-sm-3">Traits</dt>
+        <dd class="col-sm-9"><%= @champion.traits %></dd>
+      </dl>
+
+      <%# (Future: more information can be added here, such as skill descriptions) %>
+
+      <div class="mt-4">
+        <%= link_to 'Back to Champions List', champions_path, class: "btn btn-secondary" %>
+      </div>
+    </div>
+  </div>
+</div>

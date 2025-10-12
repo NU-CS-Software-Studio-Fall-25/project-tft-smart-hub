@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>TFT Team Builder</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%# Import Bootstrap CSS %>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body>
+    <div class="container">
+      <%# --- Our tab-style navigation --- %>
+      <header class="my-4">
+        <%# Wrap the title in a link pointing to root path %>
+        <%= link_to root_path, class: "text-decoration-none text-dark" do %>
+          <h1>TFT Team Builder</h1>
+        <% end %>
+        <ul class="nav nav-tabs">
+          <li class="nav-item">
+            <%# link_to is Rails' method for generating links %>
+            <%# current_page? is used to determine if we're currently on this page %>
+            <%= link_to "Champions List", champions_path, class: "nav-link #{'active' if current_page?(champions_path)}" %>
+          </li>
+          <li class="nav-item">
+            <%= link_to "My Teams", team_comps_path, class: "nav-link #{'active' if current_page?(team_comps_path)}" %>
+          </li>
+          <li class="nav-item">
+            <%= link_to "Create Team", new_team_comp_path, class: "nav-link #{'active' if current_page?(new_team_comp_path)}" %>
+          </li>
+        </ul>
+      </header>
+
+      <%# --- Main content area --- %>
+      <%# The yield keyword renders each page's own content here %>
+      <main>
+        <%= yield %>
+      </main>
+
+    </div>
+    <%# Import Bootstrap JS (optional, but recommended) %>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

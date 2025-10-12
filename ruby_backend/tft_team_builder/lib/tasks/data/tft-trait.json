@@ -1,0 +1,184 @@
+[
+  {
+    "id": "TFT15_Bastion",
+    "name": "Bastion",
+    "icon": "Trait_Icon_9_Bastion.png",
+    "sprite": "tft-trait0.png",
+    "group": "tft-trait"
+  },
+  {
+    "id": "TFT15_BattleAcademia",
+    "name": "Battle Academia",
+    "icon": "Trait_Icon_15_BattleClub.TFT_Set15.png",
+    "sprite": "tft-trait0.png",
+    "group": "tft-trait"
+  },
+  {
+    "id": "TFT15_Destroyer",
+    "name": "Executioner",
+    "icon": "Trait_Icon_15_Destroyer.TFT_Set15.png",
+    "sprite": "tft-trait0.png",
+    "group": "tft-trait"
+  },
+  {
+    "id": "TFT15_DragonFist",
+    "name": "Stance Master",
+    "icon": "Trait_Icon_15_DragonFist.TFT_Set15.png",
+    "sprite": "tft-trait0.png",
+    "group": "tft-trait"
+  },
+  {
+    "id": "TFT15_Edgelord",
+    "name": "Edgelord",
+    "icon": "Trait_Icon_10_Edgelord.png",
+    "sprite": "tft-trait0.png",
+    "group": "tft-trait"
+  },
+  {
+    "id": "TFT15_Empyrean",
+    "name": "Wraith",
+    "icon": "Trait_Icon_15_Empyrean.TFT_Set15.png",
+    "sprite": "tft-trait0.png",
+    "group": "tft-trait"
+  },
+  {
+    "id": "TFT15_Heavyweight",
+    "name": "Heavyweight",
+    "icon": "Trait_Icon_15_Heavyweight.TFT_Set15.png",
+    "sprite": "tft-trait0.png",
+    "group": "tft-trait"
+  },
+  {
+    "id": "TFT15_Spellslinger",
+    "name": "Sorcerer",
+    "icon": "Trait_Icon_15_Sorcerer.TFT_Set15.png",
+    "sprite": "tft-trait0.png",
+    "group": "tft-trait"
+  },
+  {
+    "id": "TFT15_MonsterTrainer",
+    "name": "Monster Trainer",
+    "icon": "Trait_Icon_15_MonsterTrainer.TFT_Set15.png",
+    "sprite": "tft-trait0.png",
+    "group": "tft-trait"
+  },
+  {
+    "id": "TFT15_OldMentor",
+    "name": "Mentor",
+    "icon": "Trait_Icon_15_OldMentor.TFT_Set15.png",
+    "sprite": "tft-trait0.png",
+    "group": "tft-trait"
+  },
+  {
+    "id": "TFT15_Prodigy",
+    "name": "Prodigy",
+    "icon": "Trait_Icon_15_Prodigy.TFT_Set15.png",
+    "sprite": "tft-trait0.png",
+    "group": "tft-trait"
+  },
+  {
+    "id": "TFT15_Protector",
+    "name": "Protector",
+    "icon": "Trait_Icon_6_Protector.png",
+    "sprite": "tft-trait1.png",
+    "group": "tft-trait"
+  },
+  {
+    "id": "TFT15_Juggernaut",
+    "name": "Juggernaut",
+    "icon": "Trait_Icon_9_Juggernaut.png",
+    "sprite": "tft-trait1.png",
+    "group": "tft-trait"
+  },
+  {
+    "id": "TFT15_Sniper",
+    "name": "Sniper",
+    "icon": "Trait_Icon_6_Sniper.png",
+    "sprite": "tft-trait1.png",
+    "group": "tft-trait"
+  },
+  {
+    "id": "TFT15_SoulFighter",
+    "name": "Soul Fighter",
+    "icon": "Trait_Icon_15_SoulFighter.TFT_Set15.png",
+    "sprite": "tft-trait1.png",
+    "group": "tft-trait"
+  },
+  {
+    "id": "TFT15_StarGuardian",
+    "name": "Star Guardian",
+    "icon": "Trait_Icon_8_StarGuardian.png",
+    "sprite": "tft-trait1.png",
+    "group": "tft-trait"
+  },
+  {
+    "id": "TFT15_SupremeCells",
+    "name": "Supreme Cells",
+    "icon": "Trait_Icon_15_SupremeCells.TFT_Set15.png",
+    "sprite": "tft-trait1.png",
+    "group": "tft-trait"
+  },
+  {
+    "id": "TFT15_SentaiRanger",
+    "name": "Mighty Mech",
+    "icon": "Trait_Icon_15_RoboRangers.TFT_Set15.png",
+    "sprite": "tft-trait1.png",
+    "group": "tft-trait"
+  },
+  {
+    "id": "TFT15_Luchador",
+    "name": "Luchador",
+    "icon": "Trait_Icon_15_RingKings.TFT_Set15.png",
+    "sprite": "tft-trait1.png",
+    "group": "tft-trait"
+  },
+  {
+    "id": "TFT15_GemForce",
+    "name": "Crystal Gambit",
+    "icon": "Trait_Icon_15_GemForce.TFT_Set15.png",
+    "sprite": "tft-trait1.png",
+    "group": "tft-trait"
+  },
+  {
+    "id": "TFT15_TheCrew",
+    "name": "The Crew",
+    "icon": "Trait_Icon_15_StarCrew.TFT_Set15.png",
+    "sprite": "tft-trait1.png",
+    "group": "tft-trait"
+  },
+  {
+    "id": "TFT15_Captain",
+    "name": "Rogue Captain",
+    "icon": "Trait_Icon_15_RogueCaptain.TFT_Set15.png",
+    "sprite": "tft-trait1.png",
+    "group": "tft-trait"
+  },
+  {
+    "id": "TFT15_Rosemother",
+    "name": "Rosemother",
+    "icon": "Trait_Icon_15_Rosemother.TFT_Set15.png",
+    "sprite": "tft-trait1.png",
+    "group": "tft-trait"
+  },
+  {
+    "id": "TFT15_Strategist",
+    "name": "Strategist",
+    "icon": "Trait_Icon_9_Strategist.png",
+    "sprite": "tft-trait1.png",
+    "group": "tft-trait"
+  },
+  {
+    "id": "TFT15_Duelist",
+    "name": "Duelist",
+    "icon": "Trait_Icon_8_Duelist.png",
+    "sprite": "tft-trait1.png",
+    "group": "tft-trait"
+  },
+  {
+    "id": "TFT15_ElTigre",
+    "name": "The Champ",
+    "icon": "Trait_Icon_15_TheChamp.TFT_Set15.png",
+    "sprite": "tft-trait1.png",
+    "group": "tft-trait"
+  }
+]

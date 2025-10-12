@@ -1,0 +1,39 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>My Team Compositions</h1>
+    <%= link_to "Create New Team", new_team_comp_path, class: "btn btn-primary" %>
+  </div>
+
+  <div id="team_comps">
+    <% @team_comps.each do |team_comp| %>
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title"><%= team_comp.name %></h5>
+          <p class="card-text"><%= team_comp.description %></p>
+
+          <%# --- This is the core modification --- %>
+          <%# 1. Split the champion names string into an array %>
+          <% champion_names = team_comp.champions.present? ? team_comp.champions.split(',') : [] %>
+
+          <%# 2. Iterate through the names array, use @champions_map to find champion objects and display images %>
+          <div class="d-flex flex-wrap gap-2 mt-2">
+            <% champion_names.each do |name| %>
+              <% champion = @champions_map[name.strip] %> <%# .strip removes possible spaces %>
+              <% if champion %>
+                <%= image_tag champion.image_url, 
+                              class: "border rounded", 
+                              style: "width: 48px; height: 48px;",
+                              title: champion.name %>
+              <% end %>
+            <% end %>
+          </div>
+
+          <div class="mt-3">
+            <%= link_to "View", team_comp, class: "btn btn-secondary btn-sm" %>
+            <%= link_to "Edit", edit_team_comp_path(team_comp), class: "btn btn-outline-secondary btn-sm" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

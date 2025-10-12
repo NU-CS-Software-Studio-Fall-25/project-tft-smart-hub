@@ -1,0 +1,127 @@
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  background-color: #0b0f17;
+  color: #e6e6ea;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.app-shell {
+  min-height: 100%;
+  background: linear-gradient(180deg, #0b0f17 0%, #111a2c 50%, #0b0f17 100%);
+}
+
+.page-dark-hero {
+  min-height: 100vh;
+  background:
+    radial-gradient(70% 60% at 50% 40%, rgba(38, 57, 95, 0.55), transparent 70%),
+    linear-gradient(180deg, #0b0f17 0%, #121725 100%);
+}
+
+.page-white {
+  min-height: 100vh;
+  background: #ffffff;
+  color: #212529;
+}
+
+.navbar .nav-link {
+  color: rgba(255, 255, 255, 0.65);
+  transition: color 0.2s ease;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+  color: #ffc107;
+}
+
+.navbar .navbar-brand {
+  color: #fff;
+}
+
+.tft-card-tile {
+  width: 92px;
+  flex: 0 0 92px;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.tft-card-tile:hover {
+  transform: translateY(-2px);
+}
+
+.tft-card-img {
+  width: 92px;
+  height: 92px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 2px solid #b89b5e;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  background: #1a1f2b;
+}
+
+.tft-card-tile.selected .tft-card-img {
+  border-color: #0d6efd;
+  box-shadow: 0 0 12px rgba(13, 110, 253, 0.45);
+}
+
+.tft-card-name {
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  text-align: center;
+  color: #e8e1cf;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tft-x-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #d9534f;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.horizontal-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.section-title {
+  border-left: 4px solid #b89b5e;
+  padding-left: 0.6rem;
+  font-weight: 700;
+  color: #e6e6ea;
+}
+
+.recommendation-card .card-header {
+  border-bottom: none;
+}
+
+.recommendation-card .card-footer {
+  border-top: none;
+}
+
+.recommendation-card-tile {
+  width: 80px;
+  flex: 0 0 80px;
+  cursor: pointer;
+}
+
+.recommendation-champions .tft-card-img {
+  width: 72px;
+  height: 72px;
+}

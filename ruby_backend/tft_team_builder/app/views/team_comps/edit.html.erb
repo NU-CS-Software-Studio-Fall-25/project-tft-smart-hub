@@ -1,0 +1,65 @@
+<%# app/views/team_comps/edit.html.erb %>
+
+<div data-controller="builder">
+  <h1>Edit Team Composition</h1>
+
+  <%# form_with will intelligently know this is an edit operation and submit the form to the update path %>
+  <%= form_with(model: @team_comp) do |form| %>
+    <div class="mb-3">
+      <%= form.label :name, class: "form-label" %>
+      <%= form.text_field :name, class: "form-control" %>
+    </div>
+
+    <div class="mb-3">
+      <%= form.label :description, class: "form-label" %>
+      <%= form.text_area :description, class: "form-control", rows: 3 %>
+    </div>
+
+    <%= form.hidden_field :champions, 'data-builder-target': "hiddenField" %>
+
+    <hr>
+
+    <%# --- This is the biggest difference from new.html.erb --- %>
+    <%# 1. Get the champion names string from database for this team and split into array %>
+    <% selected_champion_names = @team_comp.champions.present? ? @team_comp.champions.split(',') : [] %>
+    <%# 2. From all champions, find the complete objects of these champions by name %>
+    <% @selected_champions = @champions.where(name: selected_champion_names) %>
+
+    <h3>Current Lineup (<span data-builder-target="count">0</span>)</h3>
+    <div class="d-flex flex-wrap gap-2 p-3 border rounded bg-light mb-4 min-vh-25" data-builder-target="lineup">
+
+      <%# 3. Loop through selected champions and pre-render them %>
+      <% @selected_champions.each do |champion| %>
+        <div
+          data-action="click->builder#remove"
+          data-id="<%= champion.id %>"
+          data-name="<%= champion.name %>"
+          class="text-center" style="cursor: pointer;"
+        >
+          <%= image_tag champion.image_url, style: "width: 52px; height: 52px;", class: "border rounded" %>
+          <div class="small mt-1"><%= champion.name %></div>
+        </div>
+      <% end %>
+
+    </div>
+
+    <h3>Champion Pool</h3>
+    <div class="d-flex flex-wrap gap-2 p-3 border rounded">
+      <% @champions.each do |champion| %>
+        <div
+          data-action="click->builder#add"
+          data-id="<%= champion.id %>"
+          data-name="<%= champion.name %>"
+          class="text-center" style="cursor: pointer;"
+        >
+          <%= image_tag champion.image_url, style: "width: 52px; height: 52px;", class: "border rounded" %>
+          <div class="small mt-1"><%= champion.name %></div>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="mt-4">
+      <%= form.submit "Update Team Composition", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,32 @@
+<%= form_with(model: team_comp) do |form| %>
+  <% if team_comp.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(team_comp.errors.count, "error") %> prohibited this team_comp from being saved:</h2>
+
+      <ul>
+        <% team_comp.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :name, style: "display: block" %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div>
+    <%= form.label :description, style: "display: block" %>
+    <%= form.textarea :description %>
+  </div>
+
+  <div>
+    <%= form.label :champions, style: "display: block" %>
+    <%= form.text_field :champions %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

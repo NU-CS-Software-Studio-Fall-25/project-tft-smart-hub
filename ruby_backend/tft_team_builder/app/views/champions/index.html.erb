@@ -1,0 +1,29 @@
+<div class="container mt-4">
+  <h2 class="mb-4">Champions List</h2>
+
+  <div class="row">
+    <% @champions.each do |champion| %>
+      <%# Create a responsive grid column for each champion %>
+      <div class="col-6 col-md-4 col-lg-2 mb-4">
+        <%# Wrap the entire card in a link pointing to the champion's detail page %>
+        <%= link_to champion_path(champion), class: "text-decoration-none" do %>
+          <div class="card h-100 text-dark">
+            <%#
+              Use champion.image_url to get the filename for the large image (full body portrait).
+              card-img-top is a Bootstrap style that makes the image perfectly fit the top of the card.
+            %>
+            <%= image_tag champion.image_url, class: "card-img-top", alt: champion.name %>
+
+            <div class="card-body p-2">
+              <h6 class="card-title mb-1"><%= champion.name %></h6>
+              <p class="card-text small text-muted">
+                <strong>Cost:</strong> <%= champion.tier %><br>
+                <strong>Traits:</strong> <%= champion.traits %>
+              </p>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

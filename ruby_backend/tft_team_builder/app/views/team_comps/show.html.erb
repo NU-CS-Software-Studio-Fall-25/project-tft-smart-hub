@@ -1,0 +1,54 @@
+<div class="container my-4">
+
+  <%# Display basic information of the team composition %>
+  <div class="p-4 mb-4 bg-light rounded-3">
+    <h1><%= @team_comp.name %></h1>
+    <p class="lead"><%= @team_comp.description %></p>
+  </div>
+
+  <div class="row">
+    <%# Left side displays team members %>
+    <div class="col-md-8">
+      <h3>Team Members (<%= @lineup_champions.size %>)</h3>
+      <div class="row">
+        <% @lineup_champions.each do |champion| %>
+          <div class="col-6 col-md-4 col-lg-3 mb-4">
+            <%= link_to champion_path(champion), class: "text-decoration-none" do %>
+              <div class="card h-100 text-dark">
+                <%= image_tag champion.image_url, class: "card-img-top", alt: champion.name %>
+                <div class="card-body p-2 text-center">
+                  <h6 class="card-title mb-0"><%= champion.name %></h6>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <%# Right side displays active traits %>
+    <div class="col-md-4">
+      <h3>Active Traits</h3>
+      <% if @active_traits.any? %>
+        <ul class="list-group">
+          <% @active_traits.sort_by { |_trait, count| -count }.each do |trait_name, count| %>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <%= trait_name %>
+              <span class="badge bg-primary rounded-pill"><%= count %></span>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p>This team composition is empty.</p>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Bottom action buttons %>
+  <hr>
+  <div>
+    <%= link_to "Edit This Team", edit_team_comp_path(@team_comp), class: "btn btn-primary" %>
+    <%= link_to "Back to Team List", team_comps_path, class: "btn btn-secondary" %>
+  </div>
+
+</div>

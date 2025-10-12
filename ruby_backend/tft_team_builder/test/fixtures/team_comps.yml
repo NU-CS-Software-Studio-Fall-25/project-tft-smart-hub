@@ -1,0 +1,17 @@
+one:
+  name: Vanguard Test
+  description: Fixture comp built for controller specs.
+  champions: Aatrox, Kayle
+  win_rate: 0.55
+  play_rate: 0.12
+  notes: Fixture data
+  source: fixture
+
+two:
+  name: Swiftshot Fixture
+  description: Secondary fixture team.
+  champions: Kayle
+  win_rate: 0.45
+  play_rate: 0.08
+  notes: Fixture data
+  source: fixture
