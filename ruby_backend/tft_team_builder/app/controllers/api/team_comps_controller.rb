@@ -3,6 +3,8 @@
 module Api
   class TeamCompsController < BaseController
     before_action :set_team_comp, only: %i[show update destroy]
+    before_action :authenticate_user!, only: %i[create update destroy]
+    before_action :require_admin!, only: %i[update destroy]
 
     def index
       comps = TeamComp.order(win_rate: :desc, created_at: :desc)

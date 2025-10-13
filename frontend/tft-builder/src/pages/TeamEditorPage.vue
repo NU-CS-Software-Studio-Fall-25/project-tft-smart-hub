@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="page-white">
     <div class="container py-5">
       <div class="d-flex justify-content-between align-items-center mb-4">
@@ -12,6 +12,13 @@
           <i class="bi bi-chevron-left me-1"></i>
           Back
         </RouterLink>
+      </div>
+
+      <div v-if="!authStore.isAuthenticated()" class="alert alert-warning">
+        Please sign in to create a new team composition.
+      </div>
+      <div v-else-if="isEdit && !authStore.isAdmin()" class="alert alert-danger">
+        Only administrators can update or delete existing team compositions.
       </div>
 
       <form class="row g-4" @submit.prevent="submit">
@@ -160,8 +167,7 @@
               </span>
               <span v-else class="d-flex align-items-center gap-2">
                 <span class="spinner-border spinner-border-sm"></span>
-                Saving…
-              </span>
+                Saving鈥?              </span>
             </button>
           </div>
         </div>
@@ -172,11 +178,12 @@
 
 <script setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
-import { RouterLink, useRouter } from 'vue-router'
+import { RouterLink, useRouter, useRoute } from 'vue-router'
 import CardTile from '../components/CardTile.vue'
 import { store as selectionStore } from '../stores/selectionStore'
 import { teamStore } from '../stores/teamStore'
-import { fetchCards, fetchTeamComp, createTeamComp, updateTeamComp } from '../services/api'
+import { authStore } from '../stores/authStore'
+import { fetchCards, fetchTeamComp, createTeamComp, updateTeamComp, extractErrorMessage } from '../services/api'
 
 const props = defineProps({
   id: {
@@ -186,6 +193,7 @@ const props = defineProps({
 })
 
 const router = useRouter()
+const route = useRoute()
 const isEdit = computed(() => Boolean(props.id))
 const id = computed(() => props.id)
 
@@ -236,7 +244,11 @@ const selectedCards = computed(() =>
   cards.value.filter((card) => selectedIds.value.has(card.id))
 )
 
-const canSubmit = computed(() => form.name && form.description && selectedIds.value.size > 0)
+const canSubmit = computed(() => {
+  if (!authStore.isAuthenticated()) return false
+  if (isEdit.value && !authStore.isAdmin()) return false
+  return Boolean(form.name && form.description && selectedIds.value.size > 0)
+})
 
 const toggle = (championId) => {
   const clone = new Set(selectedIds.value)
@@ -275,7 +287,22 @@ const hydrate = (team) => {
 }
 
 const submit = async () => {
-  if (!canSubmit.value) return
+  if (!authStore.isAuthenticated()) {
+    error.value = "Please sign in to continue."
+    router.push({ name: "login", query: { redirect: route.fullPath } })
+    return
+  }
+
+  if (isEdit.value && !authStore.isAdmin()) {
+    error.value = "Administrator privileges are required to modify existing team compositions."
+    return
+  }
+
+  if (!canSubmit.value) {
+    error.value = "Please complete all required fields and select at least one champion."
+    return
+  }
+
   saving.value = true
   error.value = null
   const payload = {
@@ -287,14 +314,15 @@ const submit = async () => {
       ? await updateTeamComp(id.value, payload)
       : await createTeamComp(payload)
     teamStore.upsert(data)
-    router.push({ name: 'team-detail', params: { id: data.id } })
+    router.push({ name: "team-detail", params: { id: data.id } })
   } catch (err) {
-    error.value = 'Unable to save this team. Please check the form and try again.'
+    error.value = extractErrorMessage(err)
     console.error(err)
   } finally {
     saving.value = false
   }
 }
+
 
 const ensureCardsLoaded = async () => {
   if (!selectionStore.allCards.length) {
@@ -325,3 +353,6 @@ watch(
   }
 )
 </script>
+
+
+

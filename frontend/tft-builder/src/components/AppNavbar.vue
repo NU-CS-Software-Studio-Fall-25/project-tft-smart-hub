@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-primary sticky-top shadow-sm">
     <div class="container">
       <RouterLink class="navbar-brand fw-bold" to="/">
@@ -32,27 +32,72 @@
           </li>
         </ul>
 
-        <RouterLink class="btn btn-warning text-dark fw-semibold" to="/teams/new">
-          <i class="bi bi-plus-circle me-1"></i>
-          Create Team
-        </RouterLink>
+        <div class="d-flex align-items-center gap-2">
+          <RouterLink class="btn btn-warning text-dark fw-semibold" :to="createTeamDestination">
+            <i class="bi bi-plus-circle me-1"></i>
+            Create Team
+          </RouterLink>
+
+          <RouterLink
+            v-if="isAuthenticated"
+            class="btn btn-outline-light"
+            to="/profile"
+          >
+            <i class="bi bi-person-circle me-1"></i>
+            {{ displayName }}
+          </RouterLink>
+
+          <button
+            v-if="isAuthenticated"
+            class="btn btn-outline-danger"
+            type="button"
+            @click="logout"
+          >
+            <i class="bi bi-box-arrow-right me-1"></i>
+            Logout
+          </button>
+
+          <RouterLink
+            v-else
+            class="btn btn-outline-light"
+            :to="{ name: 'login' }"
+          >
+            <i class="bi bi-box-arrow-in-right me-1"></i>
+            Sign in
+          </RouterLink>
+        </div>
       </div>
     </div>
   </nav>
 </template>
 
 <script setup>
-import { useRoute } from 'vue-router'
+import { computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { authStore } from '../stores/authStore'
 
+const router = useRouter()
 const route = useRoute()
+
 const links = [
   { to: '/', label: 'Home', icon: 'bi-house', match: '/' },
   { to: '/builder', label: 'Search Builder', icon: 'bi-search', match: '/builder' },
   { to: '/teams', label: 'Team Library', icon: 'bi-collection', match: '/teams' },
 ]
 
+const isAuthenticated = computed(() => authStore.isAuthenticated())
+const displayName = computed(() => authStore.user?.displayName || authStore.user?.email)
+const createTeamDestination = computed(() => (
+  isAuthenticated.value ? { name: 'team-create' } : { name: 'login', query: { redirect: '/teams/new' } }
+))
+
 const isActive = (link) => {
   if (link.to === '/') return route.path === '/'
   return route.path.startsWith(link.match || link.to)
+}
+
+const logout = () => {
+  authStore.logout()
+  router.push({ name: 'home' })
 }
 </script>

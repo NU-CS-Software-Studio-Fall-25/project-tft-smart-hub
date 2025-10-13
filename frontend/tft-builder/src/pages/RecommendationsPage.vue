@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="page-white">
     <div class="container py-5">
       <div class="d-flex justify-content-between align-items-center mb-4">
@@ -49,7 +49,7 @@
                 </span>
                 <span v-else class="d-flex align-items-center gap-2">
                   <span class="spinner-border spinner-border-sm"></span>
-                  Updating…
+                  Updating...
                 </span>
               </button>
             </div>
@@ -59,7 +59,7 @@
         <div class="col-lg-8">
           <div v-if="loading" class="py-5 text-center">
             <div class="spinner-border"></div>
-            <div class="mt-3 text-body-secondary">Fetching updated recommendations…</div>
+            <div class="mt-3 text-body-secondary">Fetching updated recommendations...</div>
           </div>
 
           <div v-else>
@@ -134,7 +134,12 @@
                   <i class="bi bi-box-arrow-up-right me-1"></i>
                   View details
                 </RouterLink>
-                <button class="btn btn-sm btn-outline-secondary" @click="saveToLibrary(team)">
+                <button
+                  class="btn btn-sm btn-outline-secondary"
+                  @click="saveToLibrary(team)"
+                  :disabled="!isAuthenticated"
+                  :title="!isAuthenticated ? 'Sign in to save teams to your library' : ''"
+                >
                   <i class="bi bi-journal-plus me-1"></i>
                   Save in library
                 </button>
@@ -154,11 +159,14 @@ import CardTile from '../components/CardTile.vue'
 import SpriteImage from '../components/SpriteImage.vue'
 import { store as selectionStore } from '../stores/selectionStore'
 import { teamStore } from '../stores/teamStore'
+import { authStore } from '../stores/authStore'
 import { fetchRecommendations } from '../services/api'
 
 const router = useRouter()
 const loading = ref(false)
 const refreshing = ref(false)
+
+const isAuthenticated = computed(() => authStore.isAuthenticated())
 
 const selectedCards = computed(() => {
   const selected = selectionStore.selectedIds
@@ -193,6 +201,10 @@ const refreshRecommendations = async () => {
 }
 
 const saveToLibrary = (team) => {
+  if (!isAuthenticated.value) {
+    router.push({ name: 'login', query: { redirect: router.currentRoute.value.fullPath } })
+    return
+  }
   teamStore.upsert(team)
 }
 

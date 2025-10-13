@@ -1,4 +1,4 @@
-import axios from 'axios'
+﻿import axios from 'axios'
 import { fetchCardsMock, fetchRecommendationsMock } from '../mocks'
 
 const DEFAULT_BASE_URL = 'http://localhost:3000/api'
@@ -8,6 +8,18 @@ const USE_MOCK = String(import.meta.env.VITE_USE_MOCK || 'false').toLowerCase() 
 const http = axios.create({
   baseURL: API_BASE_URL,
   timeout: 15000,
+})
+
+let authToken = null
+
+http.interceptors.request.use((config) => {
+  if (authToken) {
+    config.headers = config.headers || {}
+    config.headers.Authorization = `Bearer ${authToken}`
+  } else if (config.headers?.Authorization) {
+    delete config.headers.Authorization
+  }
+  return config
 })
 
 http.interceptors.response.use(
@@ -21,6 +33,30 @@ http.interceptors.response.use(
     throw error
   }
 )
+
+export function setAuthToken(token) {
+  authToken = token || null
+}
+
+export async function registerUser(payload) {
+  const { data } = await http.post('/auth/register', { user: payload })
+  return data
+}
+
+export async function loginUser(payload) {
+  const { data } = await http.post('/auth/login', { user: payload })
+  return data
+}
+
+export async function fetchCurrentUser() {
+  const { data } = await http.get('/auth/me')
+  return data.user
+}
+
+export async function updateProfileRequest(updates) {
+  const { data } = await http.patch('/profile', { user: updates })
+  return data.user
+}
 
 export async function fetchCards() {
   if (USE_MOCK) return fetchCardsMock()
@@ -85,6 +121,14 @@ export async function updateTeamComp(id, payload) {
 
 export async function deleteTeamComp(id) {
   await http.delete(`/team_comps/${id}`)
+}
+
+export function extractErrorMessage(error) {
+  if (!error) return 'Unknown error'
+  const response = error.response?.data
+  if (response?.errors) return [].concat(response.errors).join(', ')
+  if (response?.error) return response.error
+  return error.message || 'Unknown error'
 }
 
 function normalizeRecommendationResponse(payload = {}) {

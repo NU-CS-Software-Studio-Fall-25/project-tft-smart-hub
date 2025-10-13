@@ -21,6 +21,7 @@ puts "Loaded #{champions_data.count} champions, "\
      "#{traits_data.count} traits, and #{champion_traits.count} trait mappings."
 
 puts "\nCleaning old data..."
+User.delete_all
 TeamComp.delete_all
 Champion.delete_all
 Trait.delete_all
@@ -90,6 +91,28 @@ sample_comps.each do |attrs|
   TeamComp.create!(attrs)
 end
 puts "Created #{TeamComp.count} team compositions."
+
+puts "\nCreating default accounts..."
+admin = User.create!(
+  email: "admin@example.com",
+  password: "Admin123!",
+  password_confirmation: "Admin123!",
+  role: "admin",
+  display_name: "Admin",
+  bio: "Default administrator account",
+  location: "Runeterra HQ"
+)
+
+User.create!(
+  email: "player@example.com",
+  password: "Player123!",
+  password_confirmation: "Player123!",
+  role: "user",
+  display_name: "Player One",
+  bio: "Strategy enthusiast ready to craft new comps.",
+  location: "Piltover"
+)
+puts "Created #{User.count} users (including admin #{admin.email})."
 
 puts "\n============================================="
 puts "            Seeding Complete!"

@@ -2329,3 +2329,642 @@ Processing by Api::TeamCompsController#index as HTML
 Completed 200 OK in 13ms (Views: 0.5ms | ActiveRecord: 2.1ms (4 queries, 0 cached) | GC: 0.0ms)
 
 
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT pg_try_advisory_lock(4787206999237665765) /*application='TftTeamBuilder'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (2.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='TftTeamBuilder'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (1.7ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='TftTeamBuilder'*/[0m
+Migrating to CreateUsers (20251013090000)
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[35m (15.2ms)[0m  [1m[35mCREATE TABLE "users" ("id" bigserial primary key, "email" character varying NOT NULL, "password_digest" character varying NOT NULL, "role" character varying DEFAULT 'user' NOT NULL, "display_name" character varying, "bio" text, "location" character varying, "avatar_url" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL) /*application='TftTeamBuilder'*/[0m
+  [1m[35m (2.1ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_users_on_email" ON "users" ("email") /*application='TftTeamBuilder'*/[0m
+  [1m[35m (2.4ms)[0m  [1m[35mCREATE INDEX "index_users_on_role" ON "users" ("role") /*application='TftTeamBuilder'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.6ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20251013090000') RETURNING "version" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.9ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[35m (0.5ms)[0m  [1m[34mSELECT pg_advisory_unlock(4787206999237665765) /*application='TftTeamBuilder'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='TftTeamBuilder'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (1.7ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='TftTeamBuilder'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (1.2ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='TftTeamBuilder'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='TftTeamBuilder'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.3ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='TftTeamBuilder'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='TftTeamBuilder'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.2ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='TftTeamBuilder'*/[0m
+  [1m[35mSQL (0.2ms)[0m  [1m[35mSET search_path TO public /*application='TftTeamBuilder'*/[0m
+  [1m[35m (223.7ms)[0m  [1m[35mDROP DATABASE IF EXISTS "tft_team_builder_test" /*application='TftTeamBuilder'*/[0m
+  [1m[35m (361.9ms)[0m  [1m[35mCREATE DATABASE "tft_team_builder_test" ENCODING = 'unicode' /*application='TftTeamBuilder'*/[0m
+  [1m[35mSQL (222.7ms)[0m  [1m[35mCREATE EXTENSION IF NOT EXISTS "plpgsql" SCHEMA pg_catalog /*application='TftTeamBuilder'*/[0m
+  [1m[35m (0.2ms)[0m  [1m[35mDROP TABLE IF EXISTS "champions" CASCADE /*application='TftTeamBuilder'*/[0m
+  [1m[35m (15.6ms)[0m  [1m[35mCREATE TABLE "champions" ("id" bigserial primary key, "name" character varying, "tier" integer, "traits" character varying, "image_url" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL, "sprite_name" character varying, "sprite_x" integer, "sprite_y" integer, "sprite_w" integer, "sprite_h" integer) /*application='TftTeamBuilder'*/[0m
+  [1m[35m (0.3ms)[0m  [1m[35mDROP TABLE IF EXISTS "team_comps" CASCADE /*application='TftTeamBuilder'*/[0m
+  [1m[35m (6.8ms)[0m  [1m[35mCREATE TABLE "team_comps" ("id" bigserial primary key, "name" character varying, "description" text, "champions" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL, "win_rate" decimal(5,4), "play_rate" decimal(5,4), "notes" text, "source" character varying) /*application='TftTeamBuilder'*/[0m
+  [1m[35m (2.2ms)[0m  [1m[35mCREATE INDEX "index_team_comps_on_play_rate" ON "team_comps" ("play_rate") /*application='TftTeamBuilder'*/[0m
+  [1m[35m (2.0ms)[0m  [1m[35mCREATE INDEX "index_team_comps_on_win_rate" ON "team_comps" ("win_rate") /*application='TftTeamBuilder'*/[0m
+  [1m[35m (0.2ms)[0m  [1m[35mDROP TABLE IF EXISTS "traits" CASCADE /*application='TftTeamBuilder'*/[0m
+  [1m[35m (5.5ms)[0m  [1m[35mCREATE TABLE "traits" ("id" bigserial primary key, "api_id" character varying, "name" character varying, "image_full" character varying, "image_sprite" character varying, "image_x" integer, "image_y" integer, "image_w" integer, "image_h" integer, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL) /*application='TftTeamBuilder'*/[0m
+  [1m[35m (0.3ms)[0m  [1m[35mDROP TABLE IF EXISTS "users" CASCADE /*application='TftTeamBuilder'*/[0m
+  [1m[35m (5.8ms)[0m  [1m[35mCREATE TABLE "users" ("id" bigserial primary key, "email" character varying NOT NULL, "password_digest" character varying NOT NULL, "role" character varying DEFAULT 'user' NOT NULL, "display_name" character varying, "bio" text, "location" character varying, "avatar_url" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL) /*application='TftTeamBuilder'*/[0m
+  [1m[35m (1.9ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_users_on_email" ON "users" ("email") /*application='TftTeamBuilder'*/[0m
+  [1m[35m (2.1ms)[0m  [1m[35mCREATE INDEX "index_users_on_role" ON "users" ("role") /*application='TftTeamBuilder'*/[0m
+  [1m[35m (4.9ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" character varying NOT NULL PRIMARY KEY) /*application='TftTeamBuilder'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (1.0ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='TftTeamBuilder'*/[0m
+  [1m[35m (0.9ms)[0m  [1m[32mINSERT INTO "schema_migrations" (version) VALUES (20251013090000) /*application='TftTeamBuilder'*/[0m
+  [1m[35m (0.4ms)[0m  [1m[32mINSERT INTO "schema_migrations" (version) VALUES
+(20251012093000),
+(20251011041503),
+(20251011041100),
+(20251011040930),
+(20251011030436),
+(20251011030427); /*application='TftTeamBuilder'*/[0m
+  [1m[35m (7.1ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" character varying NOT NULL PRIMARY KEY, "value" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL) /*application='TftTeamBuilder'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (1.3ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='TftTeamBuilder'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Create (0.9ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('environment', 'development', '2025-10-13 00:14:00.826734', '2025-10-13 00:14:00.826737') RETURNING "key" /*application='TftTeamBuilder'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.2ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='TftTeamBuilder'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Update (0.6ms)[0m  [1m[33mUPDATE "ar_internal_metadata" SET "value" = 'test', "updated_at" = '2025-10-13 00:14:00.831604' WHERE "ar_internal_metadata"."key" = 'environment' /*application='TftTeamBuilder'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.3ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'schema_sha1' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='TftTeamBuilder'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Create (0.4ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('schema_sha1', 'f39ad6cbc6c25303689a67ac6a49f8bd5f7408ae', '2025-10-13 00:14:00.834898', '2025-10-13 00:14:00.834900') RETURNING "key" /*application='TftTeamBuilder'*/[0m
+Started GET "/api/champions" for ::1 at 2025-10-12 21:48:50 -0700
+Started GET "/api/team_comps" for ::1 at 2025-10-12 21:48:50 -0700
+Started GET "/api/champions" for ::1 at 2025-10-12 21:48:50 -0700
+  [1m[36mActiveRecord::SchemaMigration Load (3.9ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='TftTeamBuilder'*/[0m
+  
+ActionController::RoutingError (No route matches [GET] "/api/champions"):
+  
+  
+ActionController::RoutingError (No route matches [GET] "/api/champions"):
+  
+Processing by Api::TeamCompsController#index as HTML
+  [1m[36mTeamComp Load (8.9ms)[0m  [1m[34mSELECT "team_comps".* FROM "team_comps" ORDER BY "team_comps"."win_rate" DESC, "team_comps"."created_at" DESC LIMIT 50 /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/controllers/api/team_comps_controller.rb:14:in 'Enumerable#map'
+  [1m[36mChampion Load (6.2ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Vel''Koz', 'Lux', 'Sona', 'Thresh', 'Syndra', 'Neeko') AND "champions"."name" IN ('Vel''Koz', 'Lux', 'Sona', 'Thresh', 'Syndra', 'Neeko') ORDER BY CASE WHEN "champions"."name" = 'Vel''Koz' THEN 1 WHEN "champions"."name" = 'Lux' THEN 2 WHEN "champions"."name" = 'Sona' THEN 3 WHEN "champions"."name" = 'Thresh' THEN 4 WHEN "champions"."name" = 'Syndra' THEN 5 WHEN "champions"."name" = 'Neeko' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+  [1m[36mChampion Load (5.7ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Aatrox', 'Darius', 'Gwen', 'Yasuo', 'Yone', 'Kayle') AND "champions"."name" IN ('Aatrox', 'Darius', 'Gwen', 'Yasuo', 'Yone', 'Kayle') ORDER BY CASE WHEN "champions"."name" = 'Aatrox' THEN 1 WHEN "champions"."name" = 'Darius' THEN 2 WHEN "champions"."name" = 'Gwen' THEN 3 WHEN "champions"."name" = 'Yasuo' THEN 4 WHEN "champions"."name" = 'Yone' THEN 5 WHEN "champions"."name" = 'Kayle' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+  [1m[36mChampion Load (1.3ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Ashe', 'Kindred', 'Ezreal', 'Shen', 'Taric', 'Riven') AND "champions"."name" IN ('Ashe', 'Kindred', 'Ezreal', 'Shen', 'Taric', 'Riven') ORDER BY CASE WHEN "champions"."name" = 'Ashe' THEN 1 WHEN "champions"."name" = 'Kindred' THEN 2 WHEN "champions"."name" = 'Ezreal' THEN 3 WHEN "champions"."name" = 'Shen' THEN 4 WHEN "champions"."name" = 'Taric' THEN 5 WHEN "champions"."name" = 'Riven' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+Completed 200 OK in 1236ms (Views: 4.1ms | ActiveRecord: 118.5ms (4 queries, 0 cached) | GC: 0.2ms)
+
+
+Started GET "/api/team_comps" for ::1 at 2025-10-12 21:49:31 -0700
+Started GET "/api/champions" for ::1 at 2025-10-12 21:49:31 -0700
+Started GET "/api/champions" for ::1 at 2025-10-12 21:49:31 -0700
+Processing by Api::TeamCompsController#index as HTML
+  [1m[36mTeamComp Load (5.5ms)[0m  [1m[34mSELECT "team_comps".* FROM "team_comps" ORDER BY "team_comps"."win_rate" DESC, "team_comps"."created_at" DESC LIMIT 50 /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/controllers/api/team_comps_controller.rb:14:in 'Enumerable#map'
+  [1m[36mChampion Load (2.2ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Vel''Koz', 'Lux', 'Sona', 'Thresh', 'Syndra', 'Neeko') AND "champions"."name" IN ('Vel''Koz', 'Lux', 'Sona', 'Thresh', 'Syndra', 'Neeko') ORDER BY CASE WHEN "champions"."name" = 'Vel''Koz' THEN 1 WHEN "champions"."name" = 'Lux' THEN 2 WHEN "champions"."name" = 'Sona' THEN 3 WHEN "champions"."name" = 'Thresh' THEN 4 WHEN "champions"."name" = 'Syndra' THEN 5 WHEN "champions"."name" = 'Neeko' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+  [1m[36mChampion Load (1.0ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Aatrox', 'Darius', 'Gwen', 'Yasuo', 'Yone', 'Kayle') AND "champions"."name" IN ('Aatrox', 'Darius', 'Gwen', 'Yasuo', 'Yone', 'Kayle') ORDER BY CASE WHEN "champions"."name" = 'Aatrox' THEN 1 WHEN "champions"."name" = 'Darius' THEN 2 WHEN "champions"."name" = 'Gwen' THEN 3 WHEN "champions"."name" = 'Yasuo' THEN 4 WHEN "champions"."name" = 'Yone' THEN 5 WHEN "champions"."name" = 'Kayle' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+  [1m[36mChampion Load (7.2ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Ashe', 'Kindred', 'Ezreal', 'Shen', 'Taric', 'Riven') AND "champions"."name" IN ('Ashe', 'Kindred', 'Ezreal', 'Shen', 'Taric', 'Riven') ORDER BY CASE WHEN "champions"."name" = 'Ashe' THEN 1 WHEN "champions"."name" = 'Kindred' THEN 2 WHEN "champions"."name" = 'Ezreal' THEN 3 WHEN "champions"."name" = 'Shen' THEN 4 WHEN "champions"."name" = 'Taric' THEN 5 WHEN "champions"."name" = 'Riven' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+Completed 200 OK in 72ms (Views: 2.4ms | ActiveRecord: 15.8ms (4 queries, 0 cached) | GC: 0.0ms)
+
+
+Processing by Api::ChampionsController#index as HTML
+Processing by Api::ChampionsController#index as HTML
+  [1m[36mChampion Load (8.7ms)[0m  [1m[34mSELECT "champions".* FROM "champions" ORDER BY "champions"."tier" ASC, "champions"."name" ASC /*action='index',application='TftTeamBuilder',controller='champions'*/[0m
+  ↳ app/controllers/api/champions_controller.rb:7:in 'Enumerable#map'
+Completed 200 OK in 135ms (Views: 0.5ms | ActiveRecord: 8.7ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+  [1m[36mChampion Load (782.6ms)[0m  [1m[34mSELECT "champions".* FROM "champions" ORDER BY "champions"."tier" ASC, "champions"."name" ASC /*action='index',application='TftTeamBuilder',controller='champions'*/[0m
+  ↳ app/controllers/api/champions_controller.rb:7:in 'Enumerable#map'
+Completed 200 OK in 1526ms (Views: 0.5ms | ActiveRecord: 1226.6ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/api/team_comps" for ::1 at 2025-10-12 21:49:52 -0700
+  [1m[36mActiveRecord::SchemaMigration Load (2.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='TftTeamBuilder'*/[0m
+  [1m[36mUser Delete All (4.7ms)[0m  [1m[31mDELETE FROM "users" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTeamComp Delete All (4.3ms)[0m  [1m[31mDELETE FROM "team_comps" /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Delete All (3.6ms)[0m  [1m[31mDELETE FROM "champions" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTrait Delete All (2.6ms)[0m  [1m[31mDELETE FROM "traits" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mTrait Create (6.4ms)[0m  [1m[32mINSERT INTO "traits" ("api_id", "name", "image_full", "image_sprite", "image_x", "image_y", "image_w", "image_h", "created_at", "updated_at") VALUES ('TFT15_Bastion', 'Bastion', 'Trait_Icon_9_Bastion.png', NULL, NULL, NULL, NULL, NULL, '2025-10-13 04:50:52.688420', '2025-10-13 04:50:52.688420') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mTrait Create (3.6ms)[0m  [1m[32mINSERT INTO "traits" ("api_id", "name", "image_full", "image_sprite", "image_x", "image_y", "image_w", "image_h", "created_at", "updated_at") VALUES ('TFT15_BattleAcademia', 'Battle Academia', 'Trait_Icon_15_BattleClub.TFT_Set15.png', NULL, NULL, NULL, NULL, NULL, '2025-10-13 04:50:52.701748', '2025-10-13 04:50:52.701748') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mTrait Create (3.5ms)[0m  [1m[32mINSERT INTO "traits" ("api_id", "name", "image_full", "image_sprite", "image_x", "image_y", "image_w", "image_h", "created_at", "updated_at") VALUES ('TFT15_Destroyer', 'Executioner', 'Trait_Icon_15_Destroyer.TFT_Set15.png', NULL, NULL, NULL, NULL, NULL, '2025-10-13 04:50:52.711678', '2025-10-13 04:50:52.711678') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mTrait Create (3.9ms)[0m  [1m[32mINSERT INTO "traits" ("api_id", "name", "image_full", "image_sprite", "image_x", "image_y", "image_w", "image_h", "created_at", "updated_at") VALUES ('TFT15_DragonFist', 'Stance Master', 'Trait_Icon_15_DragonFist.TFT_Set15.png', NULL, NULL, NULL, NULL, NULL, '2025-10-13 04:50:52.721530', '2025-10-13 04:50:52.721530') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mTrait Create (4.8ms)[0m  [1m[32mINSERT INTO "traits" ("api_id", "name", "image_full", "image_sprite", "image_x", "image_y", "image_w", "image_h", "created_at", "updated_at") VALUES ('TFT15_Edgelord', 'Edgelord', 'Trait_Icon_10_Edgelord.png', NULL, NULL, NULL, NULL, NULL, '2025-10-13 04:50:52.731897', '2025-10-13 04:50:52.731897') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.8ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mTrait Create (4.5ms)[0m  [1m[32mINSERT INTO "traits" ("api_id", "name", "image_full", "image_sprite", "image_x", "image_y", "image_w", "image_h", "created_at", "updated_at") VALUES ('TFT15_Empyrean', 'Wraith', 'Trait_Icon_15_Empyrean.TFT_Set15.png', NULL, NULL, NULL, NULL, NULL, '2025-10-13 04:50:52.744892', '2025-10-13 04:50:52.744892') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.7ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mTrait Create (4.1ms)[0m  [1m[32mINSERT INTO "traits" ("api_id", "name", "image_full", "image_sprite", "image_x", "image_y", "image_w", "image_h", "created_at", "updated_at") VALUES ('TFT15_Heavyweight', 'Heavyweight', 'Trait_Icon_15_Heavyweight.TFT_Set15.png', NULL, NULL, NULL, NULL, NULL, '2025-10-13 04:50:52.757164', '2025-10-13 04:50:52.757164') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.8ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mTrait Create (4.4ms)[0m  [1m[32mINSERT INTO "traits" ("api_id", "name", "image_full", "image_sprite", "image_x", "image_y", "image_w", "image_h", "created_at", "updated_at") VALUES ('TFT15_Spellslinger', 'Sorcerer', 'Trait_Icon_15_Sorcerer.TFT_Set15.png', NULL, NULL, NULL, NULL, NULL, '2025-10-13 04:50:52.768599', '2025-10-13 04:50:52.768599') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mTrait Create (3.6ms)[0m  [1m[32mINSERT INTO "traits" ("api_id", "name", "image_full", "image_sprite", "image_x", "image_y", "image_w", "image_h", "created_at", "updated_at") VALUES ('TFT15_MonsterTrainer', 'Monster Trainer', 'Trait_Icon_15_MonsterTrainer.TFT_Set15.png', NULL, NULL, NULL, NULL, NULL, '2025-10-13 04:50:52.779371', '2025-10-13 04:50:52.779371') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mTrait Create (3.9ms)[0m  [1m[32mINSERT INTO "traits" ("api_id", "name", "image_full", "image_sprite", "image_x", "image_y", "image_w", "image_h", "created_at", "updated_at") VALUES ('TFT15_OldMentor', 'Mentor', 'Trait_Icon_15_OldMentor.TFT_Set15.png', NULL, NULL, NULL, NULL, NULL, '2025-10-13 04:50:52.790048', '2025-10-13 04:50:52.790048') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.7ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mTrait Create (3.8ms)[0m  [1m[32mINSERT INTO "traits" ("api_id", "name", "image_full", "image_sprite", "image_x", "image_y", "image_w", "image_h", "created_at", "updated_at") VALUES ('TFT15_Prodigy', 'Prodigy', 'Trait_Icon_15_Prodigy.TFT_Set15.png', NULL, NULL, NULL, NULL, NULL, '2025-10-13 04:50:52.800374', '2025-10-13 04:50:52.800374') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.7ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mTrait Create (3.8ms)[0m  [1m[32mINSERT INTO "traits" ("api_id", "name", "image_full", "image_sprite", "image_x", "image_y", "image_w", "image_h", "created_at", "updated_at") VALUES ('TFT15_Protector', 'Protector', 'Trait_Icon_6_Protector.png', NULL, NULL, NULL, NULL, NULL, '2025-10-13 04:50:52.810659', '2025-10-13 04:50:52.810659') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.7ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mTrait Create (3.7ms)[0m  [1m[32mINSERT INTO "traits" ("api_id", "name", "image_full", "image_sprite", "image_x", "image_y", "image_w", "image_h", "created_at", "updated_at") VALUES ('TFT15_Juggernaut', 'Juggernaut', 'Trait_Icon_9_Juggernaut.png', NULL, NULL, NULL, NULL, NULL, '2025-10-13 04:50:52.821018', '2025-10-13 04:50:52.821018') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mTrait Create (3.8ms)[0m  [1m[32mINSERT INTO "traits" ("api_id", "name", "image_full", "image_sprite", "image_x", "image_y", "image_w", "image_h", "created_at", "updated_at") VALUES ('TFT15_Sniper', 'Sniper', 'Trait_Icon_6_Sniper.png', NULL, NULL, NULL, NULL, NULL, '2025-10-13 04:50:52.831316', '2025-10-13 04:50:52.831316') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (1.1ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mTrait Create (3.7ms)[0m  [1m[32mINSERT INTO "traits" ("api_id", "name", "image_full", "image_sprite", "image_x", "image_y", "image_w", "image_h", "created_at", "updated_at") VALUES ('TFT15_SoulFighter', 'Soul Fighter', 'Trait_Icon_15_SoulFighter.TFT_Set15.png', NULL, NULL, NULL, NULL, NULL, '2025-10-13 04:50:52.842351', '2025-10-13 04:50:52.842351') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.8ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mTrait Create (3.6ms)[0m  [1m[32mINSERT INTO "traits" ("api_id", "name", "image_full", "image_sprite", "image_x", "image_y", "image_w", "image_h", "created_at", "updated_at") VALUES ('TFT15_StarGuardian', 'Star Guardian', 'Trait_Icon_8_StarGuardian.png', NULL, NULL, NULL, NULL, NULL, '2025-10-13 04:50:52.852989', '2025-10-13 04:50:52.852989') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.8ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mTrait Create (6.0ms)[0m  [1m[32mINSERT INTO "traits" ("api_id", "name", "image_full", "image_sprite", "image_x", "image_y", "image_w", "image_h", "created_at", "updated_at") VALUES ('TFT15_SupremeCells', 'Supreme Cells', 'Trait_Icon_15_SupremeCells.TFT_Set15.png', NULL, NULL, NULL, NULL, NULL, '2025-10-13 04:50:52.866911', '2025-10-13 04:50:52.866911') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.8ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mTrait Create (7.4ms)[0m  [1m[32mINSERT INTO "traits" ("api_id", "name", "image_full", "image_sprite", "image_x", "image_y", "image_w", "image_h", "created_at", "updated_at") VALUES ('TFT15_SentaiRanger', 'Mighty Mech', 'Trait_Icon_15_RoboRangers.TFT_Set15.png', NULL, NULL, NULL, NULL, NULL, '2025-10-13 04:50:52.884337', '2025-10-13 04:50:52.884337') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.7ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mTrait Create (3.6ms)[0m  [1m[32mINSERT INTO "traits" ("api_id", "name", "image_full", "image_sprite", "image_x", "image_y", "image_w", "image_h", "created_at", "updated_at") VALUES ('TFT15_Luchador', 'Luchador', 'Trait_Icon_15_RingKings.TFT_Set15.png', NULL, NULL, NULL, NULL, NULL, '2025-10-13 04:50:52.903100', '2025-10-13 04:50:52.903100') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mTrait Create (3.4ms)[0m  [1m[32mINSERT INTO "traits" ("api_id", "name", "image_full", "image_sprite", "image_x", "image_y", "image_w", "image_h", "created_at", "updated_at") VALUES ('TFT15_GemForce', 'Crystal Gambit', 'Trait_Icon_15_GemForce.TFT_Set15.png', NULL, NULL, NULL, NULL, NULL, '2025-10-13 04:50:52.912909', '2025-10-13 04:50:52.912909') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mTrait Create (3.4ms)[0m  [1m[32mINSERT INTO "traits" ("api_id", "name", "image_full", "image_sprite", "image_x", "image_y", "image_w", "image_h", "created_at", "updated_at") VALUES ('TFT15_TheCrew', 'The Crew', 'Trait_Icon_15_StarCrew.TFT_Set15.png', NULL, NULL, NULL, NULL, NULL, '2025-10-13 04:50:52.921908', '2025-10-13 04:50:52.921908') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mTrait Create (3.4ms)[0m  [1m[32mINSERT INTO "traits" ("api_id", "name", "image_full", "image_sprite", "image_x", "image_y", "image_w", "image_h", "created_at", "updated_at") VALUES ('TFT15_Captain', 'Rogue Captain', 'Trait_Icon_15_RogueCaptain.TFT_Set15.png', NULL, NULL, NULL, NULL, NULL, '2025-10-13 04:50:52.931068', '2025-10-13 04:50:52.931068') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mTrait Create (3.0ms)[0m  [1m[32mINSERT INTO "traits" ("api_id", "name", "image_full", "image_sprite", "image_x", "image_y", "image_w", "image_h", "created_at", "updated_at") VALUES ('TFT15_Rosemother', 'Rosemother', 'Trait_Icon_15_Rosemother.TFT_Set15.png', NULL, NULL, NULL, NULL, NULL, '2025-10-13 04:50:52.940593', '2025-10-13 04:50:52.940593') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mTrait Create (3.2ms)[0m  [1m[32mINSERT INTO "traits" ("api_id", "name", "image_full", "image_sprite", "image_x", "image_y", "image_w", "image_h", "created_at", "updated_at") VALUES ('TFT15_Strategist', 'Strategist', 'Trait_Icon_9_Strategist.png', NULL, NULL, NULL, NULL, NULL, '2025-10-13 04:50:52.949010', '2025-10-13 04:50:52.949010') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mTrait Create (3.0ms)[0m  [1m[32mINSERT INTO "traits" ("api_id", "name", "image_full", "image_sprite", "image_x", "image_y", "image_w", "image_h", "created_at", "updated_at") VALUES ('TFT15_Duelist', 'Duelist', 'Trait_Icon_8_Duelist.png', NULL, NULL, NULL, NULL, NULL, '2025-10-13 04:50:52.957589', '2025-10-13 04:50:52.957589') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mTrait Create (3.5ms)[0m  [1m[32mINSERT INTO "traits" ("api_id", "name", "image_full", "image_sprite", "image_x", "image_y", "image_w", "image_h", "created_at", "updated_at") VALUES ('TFT15_ElTigre', 'The Champ', 'Trait_Icon_15_TheChamp.TFT_Set15.png', NULL, NULL, NULL, NULL, NULL, '2025-10-13 04:50:52.966155', '2025-10-13 04:50:52.966155') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.8ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTrait Count (0.6ms)[0m  [1m[34mSELECT COUNT(*) FROM "traits" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (4.1ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Aatrox', 1, 'Mighty Mech / Juggernaut / Heavyweight', 'tft-champion/TFT15_Aatrox.TFT_Set15.png', '2025-10-13 04:50:52.985451', '2025-10-13 04:50:52.985451', 'tft-champion1.png', 288, 0, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.8ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.6ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Ahri', 3, 'Star Guardian / Sorcerer', 'tft-champion/TFT15_Ahri.TFT_Set15.png', '2025-10-13 04:50:52.995746', '2025-10-13 04:50:52.995746', 'tft-champion1.png', 336, 0, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.9ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.6ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Akali', 4, 'Supreme Cells / Executioner', 'tft-champion/TFT15_Akali.TFT_Set15.png', '2025-10-13 04:50:53.005817', '2025-10-13 04:50:53.005817', 'tft-champion1.png', 384, 0, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.8ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.6ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Ashe', 4, 'Crystal Gambit / Duelist', 'tft-champion/TFT15_Ashe.TFT_Set15.png', '2025-10-13 04:50:53.016280', '2025-10-13 04:50:53.016280', 'tft-champion1.png', 432, 0, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.5ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Braum', 5, 'The Champ / Luchador / Bastion', 'tft-champion/TFT15_Braum.TFT_Set15.png', '2025-10-13 04:50:53.025359', '2025-10-13 04:50:53.025359', 'tft-champion1.png', 0, 48, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.4ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Caitlyn', 3, 'Battle Academia / Sniper', 'tft-champion/TFT15_Caitlyn.TFT_Set15.png', '2025-10-13 04:50:53.034677', '2025-10-13 04:50:53.034677', 'tft-champion1.png', 48, 48, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.0ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Darius', 3, 'Supreme Cells / Heavyweight', 'tft-champion/TFT15_Darius.TFT_Set15.png', '2025-10-13 04:50:53.043870', '2025-10-13 04:50:53.043870', 'tft-champion1.png', 96, 48, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.6ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Ezreal', 1, 'Battle Academia / Prodigy', 'tft-champion/TFT15_Ezreal.TFT_Set15.png', '2025-10-13 04:50:53.066336', '2025-10-13 04:50:53.066336', 'tft-champion1.png', 144, 48, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.5ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Garen', 1, 'Battle Academia / Bastion', 'tft-champion/TFT15_Garen.TFT_Set15.png', '2025-10-13 04:50:53.075855', '2025-10-13 04:50:53.075855', 'tft-champion1.png', 192, 48, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.7ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (5.0ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Gwen', 5, 'Soul Fighter / Sorcerer', 'tft-champion/TFT15_Gwen.TFT_Set15.png', '2025-10-13 04:50:53.085232', '2025-10-13 04:50:53.085232', 'tft-champion1.png', 240, 48, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.7ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (4.2ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Janna', 2, 'Crystal Gambit / Protector / Strategist', 'tft-champion/TFT15_Janna.TFT_Set15.png', '2025-10-13 04:50:53.097079', '2025-10-13 04:50:53.097079', 'tft-champion1.png', 288, 48, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.4ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Jarvan IV', 4, 'Mighty Mech / Strategist', 'tft-champion/TFT15_JarvanIV.TFT_Set15.png', '2025-10-13 04:50:53.108858', '2025-10-13 04:50:53.108858', 'tft-champion1.png', 336, 48, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.5ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Jayce', 3, 'Battle Academia / Heavyweight', 'tft-champion/TFT15_Jayce.TFT_Set15.png', '2025-10-13 04:50:53.119347', '2025-10-13 04:50:53.119347', 'tft-champion1.png', 384, 48, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.4ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Jhin', 2, 'Wraith / Sniper', 'tft-champion/TFT15_Jhin.TFT_Set15.png', '2025-10-13 04:50:53.128784', '2025-10-13 04:50:53.128784', 'tft-champion1.png', 432, 48, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.8ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.6ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Jinx', 4, 'Star Guardian / Sniper', 'tft-champion/TFT15_Jinx.TFT_Set15.png', '2025-10-13 04:50:53.139535', '2025-10-13 04:50:53.139535', 'tft-champion1.png', 0, 96, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.3ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('K''Sante', 4, 'Wraith / Protector', 'tft-champion/TFT15_KSante.TFT_Set15.png', '2025-10-13 04:50:53.149145', '2025-10-13 04:50:53.149145', 'tft-champion1.png', 48, 96, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (4.1ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Kai''Sa', 2, 'Supreme Cells / Duelist', 'tft-champion/TFT15_KaiSa.TFT_Set15.png', '2025-10-13 04:50:53.158361', '2025-10-13 04:50:53.158361', 'tft-champion1.png', 96, 96, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.5ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Kalista', 1, 'Soul Fighter / Executioner', 'tft-champion/TFT15_Kalista.TFT_Set15.png', '2025-10-13 04:50:53.168427', '2025-10-13 04:50:53.168427', 'tft-champion1.png', 144, 96, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.7ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (4.1ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Katarina', 2, 'Battle Academia / Executioner', 'tft-champion/TFT15_Katarina.TFT_Set15.png', '2025-10-13 04:50:53.178475', '2025-10-13 04:50:53.178475', 'tft-champion1.png', 192, 96, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.3ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Kayle', 1, 'Wraith / Duelist', 'tft-champion/TFT15_Kayle.TFT_Set15.png', '2025-10-13 04:50:53.188032', '2025-10-13 04:50:53.188032', 'tft-champion1.png', 240, 96, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.5ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Kennen', 1, 'Supreme Cells / Protector / Sorcerer', 'tft-champion/TFT15_Kennen.TFT_Set15.png', '2025-10-13 04:50:53.197179', '2025-10-13 04:50:53.197179', 'tft-champion1.png', 288, 96, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.9ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Kobuko', 2, 'Mentor / Heavyweight', 'tft-champion/TFT15_Kobuko.TFT_Set15.png', '2025-10-13 04:50:53.206839', '2025-10-13 04:50:53.206839', 'tft-champion1.png', 336, 96, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (5.0ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Lee Sin', 5, 'Stance Master', 'tft-champion/TFT15_LeeSin.TFT_Set15.png', '2025-10-13 04:50:53.219102', '2025-10-13 04:50:53.219102', 'tft-champion1.png', 384, 96, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (4.6ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Leona', 4, 'Battle Academia / Bastion', 'tft-champion/TFT15_Leona.TFT_Set15.png', '2025-10-13 04:50:53.233747', '2025-10-13 04:50:53.233747', 'tft-champion1.png', 432, 96, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (4.0ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Lulu', 3, 'Monster Trainer', 'tft-champion/TFT15_Lulu.TFT_Set15.png', '2025-10-13 04:50:53.245274', '2025-10-13 04:50:53.245274', 'tft-champion2.png', 0, 0, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.2ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Lux', 2, 'Soul Fighter / Sorcerer', 'tft-champion/TFT15_Lux.TFT_Set15.png', '2025-10-13 04:50:53.255274', '2025-10-13 04:50:53.255274', 'tft-champion2.png', 48, 0, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.6ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Malphite', 1, 'The Crew / Protector', 'tft-champion/TFT15_Malphite.TFT_Set15.png', '2025-10-13 04:50:53.264027', '2025-10-13 04:50:53.264027', 'tft-champion2.png', 96, 0, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.3ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Malzahar', 3, 'Wraith / Prodigy', 'tft-champion/TFT15_Malzahar.TFT_Set15.png', '2025-10-13 04:50:53.273068', '2025-10-13 04:50:53.273068', 'tft-champion2.png', 144, 0, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.2ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Naafiri', 1, 'Soul Fighter / Juggernaut', 'tft-champion/TFT15_Naafiri.TFT_Set15.png', '2025-10-13 04:50:53.282826', '2025-10-13 04:50:53.282826', 'tft-champion2.png', 192, 0, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.2ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Poppy', 4, 'Star Guardian / Heavyweight', 'tft-champion/TFT15_Poppy.TFT_Set15.png', '2025-10-13 04:50:53.291503', '2025-10-13 04:50:53.291503', 'tft-champion2.png', 240, 0, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.7ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Rakan', 2, 'Battle Academia / Protector', 'tft-champion/TFT15_Rakan.TFT_Set15.png', '2025-10-13 04:50:53.300812', '2025-10-13 04:50:53.300812', 'tft-champion2.png', 288, 0, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.8ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.8ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Rell', 1, 'Star Guardian / Bastion', 'tft-champion/TFT15_Rell.TFT_Set15.png', '2025-10-13 04:50:53.310697', '2025-10-13 04:50:53.310697', 'tft-champion2.png', 336, 0, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.4ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Ryze', 4, 'Mentor / Executioner / Strategist', 'tft-champion/TFT15_Ryze.TFT_Set15.png', '2025-10-13 04:50:53.320989', '2025-10-13 04:50:53.320989', 'tft-champion2.png', 384, 0, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.1ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Samira', 4, 'Soul Fighter / Edgelord', 'tft-champion/TFT15_Samira.TFT_Set15.png', '2025-10-13 04:50:53.330092', '2025-10-13 04:50:53.330092', 'tft-champion2.png', 432, 0, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.4ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Seraphine', 5, 'Star Guardian / Prodigy', 'tft-champion/TFT15_Seraphine.TFT_Set15.png', '2025-10-13 04:50:53.338585', '2025-10-13 04:50:53.338585', 'tft-champion2.png', 0, 48, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.4ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Sett', 4, 'Soul Fighter / Juggernaut', 'tft-champion/TFT15_Sett.TFT_Set15.png', '2025-10-13 04:50:53.347899', '2025-10-13 04:50:53.347899', 'tft-champion2.png', 48, 48, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.4ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Swain', 3, 'Crystal Gambit / Bastion / Sorcerer', 'tft-champion/TFT15_Swain.TFT_Set15.png', '2025-10-13 04:50:53.357505', '2025-10-13 04:50:53.357505', 'tft-champion2.png', 96, 48, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.1ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Syndra', 1, 'Crystal Gambit / Star Guardian / Prodigy', 'tft-champion/TFT15_Syndra.TFT_Set15.png', '2025-10-13 04:50:53.366498', '2025-10-13 04:50:53.366498', 'tft-champion2.png', 144, 48, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.1ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Udyr', 3, 'Mentor / Juggernaut / Duelist', 'tft-champion/TFT15_Udyr.TFT_Set15.png', '2025-10-13 04:50:53.374895', '2025-10-13 04:50:53.374895', 'tft-champion2.png', 192, 48, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.1ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Varus', 5, 'Wraith / Sniper', 'tft-champion/TFT15_Varus.TFT_Set15.png', '2025-10-13 04:50:53.383424', '2025-10-13 04:50:53.383424', 'tft-champion2.png', 240, 48, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.8ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Viego', 3, 'Soul Fighter / Duelist', 'tft-champion/TFT15_Viego.TFT_Set15.png', '2025-10-13 04:50:53.393067', '2025-10-13 04:50:53.393067', 'tft-champion2.png', 288, 48, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.1ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Xayah', 2, 'Star Guardian / Edgelord', 'tft-champion/TFT15_Xayah.TFT_Set15.png', '2025-10-13 04:50:53.402993', '2025-10-13 04:50:53.402993', 'tft-champion2.png', 336, 48, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.6ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Xin Zhao', 2, 'Soul Fighter / Bastion', 'tft-champion/TFT15_XinZhao.TFT_Set15.png', '2025-10-13 04:50:53.422433', '2025-10-13 04:50:53.422433', 'tft-champion2.png', 384, 48, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.1ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Yasuo', 3, 'Mentor / Edgelord', 'tft-champion/TFT15_Yasuo.TFT_Set15.png', '2025-10-13 04:50:53.431842', '2025-10-13 04:50:53.431842', 'tft-champion2.png', 432, 48, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.6ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Yone', 5, 'Mighty Mech / Edgelord', 'tft-champion/TFT15_Yone.TFT_Set15.png', '2025-10-13 04:50:53.440049', '2025-10-13 04:50:53.440049', 'tft-champion2.png', 0, 96, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.1ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Yuumi', 4, 'Battle Academia / Prodigy', 'tft-champion/TFT15_Yuumi.TFT_Set15.png', '2025-10-13 04:50:53.449093', '2025-10-13 04:50:53.449093', 'tft-champion2.png', 48, 96, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.5ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Zac', 1, 'Wraith / Heavyweight', 'tft-champion/TFT15_Zac.TFT_Set15.png', '2025-10-13 04:50:53.457360', '2025-10-13 04:50:53.457360', 'tft-champion2.png', 96, 96, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.8ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Ziggs', 3, 'The Crew / Strategist', 'tft-champion/TFT15_Ziggs.TFT_Set15.png', '2025-10-13 04:50:53.466653', '2025-10-13 04:50:53.466653', 'tft-champion2.png', 144, 96, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.4ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Volibear', 4, 'Luchador / Edgelord', 'tft-champion/TFT15_Volibear.TFT_Set15.png', '2025-10-13 04:50:53.476615', '2025-10-13 04:50:53.476615', 'tft-champion2.png', 192, 96, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.1ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Kog''Maw', 3, 'Monster Trainer', 'tft-champion/TFT15_KogMaw.TFT_Set15.png', '2025-10-13 04:50:53.485951', '2025-10-13 04:50:53.485951', 'tft-champion2.png', 240, 96, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.1ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Smolder', 3, 'Monster Trainer', 'tft-champion/TFT15_Smolder.TFT_Set15.png', '2025-10-13 04:50:53.494565', '2025-10-13 04:50:53.494565', 'tft-champion2.png', 288, 96, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.6ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Senna', 3, 'Mighty Mech / Executioner', 'tft-champion/TFT15_Senna.TFT_Set15.png', '2025-10-13 04:50:53.502391', '2025-10-13 04:50:53.502391', 'tft-champion2.png', 336, 96, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.0ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Lucian', 1, 'Mighty Mech / Sorcerer', 'tft-champion/TFT15_Lucian.TFT_Set15.png', '2025-10-13 04:50:53.510955', '2025-10-13 04:50:53.510955', 'tft-champion2.png', 384, 96, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.0ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Gangplank', 2, 'Mighty Mech / Duelist', 'tft-champion/TFT15_Gangplank.TFT_Set15.png', '2025-10-13 04:50:53.519062', '2025-10-13 04:50:53.519062', 'tft-champion2.png', 432, 96, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (2.7ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Dr. Mundo', 2, 'Luchador / Juggernaut', 'tft-champion/TFT15_DrMundo.TFT_Set15.png', '2025-10-13 04:50:53.527191', '2025-10-13 04:50:53.527191', 'tft-champion3.png', 0, 0, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.0ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Gnar', 1, 'Luchador / Sniper', 'tft-champion/TFT15_Gnar.TFT_Set15.png', '2025-10-13 04:50:53.534504', '2025-10-13 04:50:53.534504', 'tft-champion3.png', 48, 0, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.5ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Karma', 4, 'Mighty Mech / Sorcerer', 'tft-champion/TFT15_Karma.TFT_Set15.png', '2025-10-13 04:50:53.542546', '2025-10-13 04:50:53.542546', 'tft-champion3.png', 96, 0, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.3ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Vi', 2, 'Crystal Gambit / Juggernaut', 'tft-champion/TFT15_Vi.TFT_Set15.png', '2025-10-13 04:50:53.551220', '2025-10-13 04:50:53.551220', 'tft-champion3.png', 144, 0, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.9ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Sivir', 1, 'The Crew / Sniper', 'tft-champion/TFT15_Sivir.TFT_Set15.png', '2025-10-13 04:50:53.559774', '2025-10-13 04:50:53.559774', 'tft-champion3.png', 192, 0, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.7ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.8ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Twisted Fate', 5, 'Rogue Captain / The Crew', 'tft-champion/TFT15_TwistedFate.TFT_Set15.png', '2025-10-13 04:50:53.571249', '2025-10-13 04:50:53.571249', 'tft-champion3.png', 240, 0, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.5ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Shen', 2, 'The Crew / Bastion / Edgelord', 'tft-champion/TFT15_Shen.TFT_Set15.png', '2025-10-13 04:50:53.580532', '2025-10-13 04:50:53.580532', 'tft-champion3.png', 288, 0, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.5ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Rammus', 3, 'Monster Trainer', 'tft-champion/TFT15_Rammus.TFT_Set15.png', '2025-10-13 04:50:53.590036', '2025-10-13 04:50:53.590036', 'tft-champion3.png', 336, 0, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (3.4ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Zyra', 5, 'Crystal Gambit / Rosemother', 'tft-champion/TFT15_Zyra.TFT_Set15.png', '2025-10-13 04:50:53.598582', '2025-10-13 04:50:53.598582', 'tft-champion3.png', 384, 0, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Create (2.9ms)[0m  [1m[32mINSERT INTO "champions" ("name", "tier", "traits", "image_url", "created_at", "updated_at", "sprite_name", "sprite_x", "sprite_y", "sprite_w", "sprite_h") VALUES ('Neeko', 3, 'Star Guardian / Protector', 'tft-champion/TFT15_Neeko.TFT_Set15.png', '2025-10-13 04:50:53.608150', '2025-10-13 04:50:53.608150', 'tft-champion3.png', 432, 0, 48, 48) RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mChampion Count (0.4ms)[0m  [1m[34mSELECT COUNT(*) FROM "champions" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mTeamComp Create (3.6ms)[0m  [1m[32mINSERT INTO "team_comps" ("name", "description", "champions", "created_at", "updated_at", "win_rate", "play_rate", "notes", "source") VALUES ('Blade Vanguard Primer', 'Example comp seeded for local development. Mix of frontline blades and sustain.', 'Aatrox, Darius, Gwen, Yasuo, Yone, Kayle', '2025-10-13 04:50:53.625040', '2025-10-13 04:50:53.625040', 0.58, 0.12, 'Seed data only. Replace with real curated comps once integration is complete.', 'seed') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.7ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mTeamComp Create (3.5ms)[0m  [1m[32mINSERT INTO "team_comps" ("name", "description", "champions", "created_at", "updated_at", "win_rate", "play_rate", "notes", "source") VALUES ('Void Rift Artillery', 'Long-range magic damage core built around Vel''Koz and support control tools.', 'Vel''Koz, Lux, Sona, Thresh, Syndra, Neeko', '2025-10-13 04:50:53.636049', '2025-10-13 04:50:53.636049', 0.62, 0.08, 'Demonstrates high match rate comp for recommendations API.', 'seed') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mTeamComp Create (3.0ms)[0m  [1m[32mINSERT INTO "team_comps" ("name", "description", "champions", "created_at", "updated_at", "win_rate", "play_rate", "notes", "source") VALUES ('Swiftshot Tempo', 'Aggressive early tempo comp leveraging swiftshot trait for fast pivots.', 'Ashe, Kindred, Ezreal, Shen, Taric, Riven', '2025-10-13 04:50:53.645530', '2025-10-13 04:50:53.645530', 0.55, 0.15, 'Helps populate the builder list when no filters are supplied.', 'seed') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTeamComp Count (0.6ms)[0m  [1m[34mSELECT COUNT(*) FROM "team_comps" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mUser Exists? (4.0ms)[0m  [1m[34mSELECT 1 AS one FROM "users" WHERE LOWER("users"."email") = LOWER('admin@example.com') LIMIT 1 /*application='TftTeamBuilder'*/[0m
+  [1m[36mUser Create (2.2ms)[0m  [1m[32mINSERT INTO "users" ("email", "password_digest", "role", "display_name", "bio", "location", "avatar_url", "created_at", "updated_at") VALUES ('admin@example.com', '$2a$12$6lmNjaxtywO.FJUaWEvSsONu.ddBJTG.h3HwmJUszJ0B3F6jVxlBC', 'admin', 'Admin', 'Default administrator account', 'Runeterra HQ', NULL, '2025-10-13 04:50:54.013067', '2025-10-13 04:50:54.013067') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN /*application='TftTeamBuilder'*/[0m
+  [1m[36mUser Exists? (4.1ms)[0m  [1m[34mSELECT 1 AS one FROM "users" WHERE LOWER("users"."email") = LOWER('player@example.com') LIMIT 1 /*application='TftTeamBuilder'*/[0m
+  [1m[36mUser Create (0.4ms)[0m  [1m[32mINSERT INTO "users" ("email", "password_digest", "role", "display_name", "bio", "location", "avatar_url", "created_at", "updated_at") VALUES ('player@example.com', '$2a$12$AxjIsYybkV5zulLMKaOEJOUvT2rCO1oy0/ZLcQAh2UAkLsaZ3BC6a', 'user', 'Player One', 'Strategy enthusiast ready to craft new comps.', 'Piltover', NULL, '2025-10-13 04:50:54.338259', '2025-10-13 04:50:54.338259') RETURNING "id" /*application='TftTeamBuilder'*/[0m
+  [1m[36mTRANSACTION (1.2ms)[0m  [1m[35mCOMMIT /*application='TftTeamBuilder'*/[0m
+  [1m[36mUser Count (0.3ms)[0m  [1m[34mSELECT COUNT(*) FROM "users" /*application='TftTeamBuilder'*/[0m
+  [1m[35m (0.5ms)[0m  [1m[34mSELECT pg_try_advisory_lock(4787206999237665765) /*application='TftTeamBuilder'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (3.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='TftTeamBuilder'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (3.4ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='TftTeamBuilder'*/[0m
+  [1m[35m (0.6ms)[0m  [1m[34mSELECT pg_advisory_unlock(4787206999237665765) /*application='TftTeamBuilder'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.5ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='TftTeamBuilder'*/[0m
+Started GET "/api/champions" for ::1 at 2025-10-12 21:52:19 -0700
+Started GET "/api/champions" for ::1 at 2025-10-12 21:52:19 -0700
+Started GET "/api/team_comps" for ::1 at 2025-10-12 21:52:19 -0700
+  [1m[36mActiveRecord::SchemaMigration Load (4.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='TftTeamBuilder'*/[0m
+  
+ActionController::RoutingError (No route matches [GET] "/api/champions"):
+  
+  
+ActionController::RoutingError (No route matches [GET] "/api/champions"):
+  
+Processing by Api::TeamCompsController#index as HTML
+  [1m[36mTeamComp Load (4.7ms)[0m  [1m[34mSELECT "team_comps".* FROM "team_comps" ORDER BY "team_comps"."win_rate" DESC, "team_comps"."created_at" DESC LIMIT 50 /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/controllers/api/team_comps_controller.rb:14:in 'Enumerable#map'
+  [1m[36mChampion Load (6.4ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Vel''Koz', 'Lux', 'Sona', 'Thresh', 'Syndra', 'Neeko') AND "champions"."name" IN ('Vel''Koz', 'Lux', 'Sona', 'Thresh', 'Syndra', 'Neeko') ORDER BY CASE WHEN "champions"."name" = 'Vel''Koz' THEN 1 WHEN "champions"."name" = 'Lux' THEN 2 WHEN "champions"."name" = 'Sona' THEN 3 WHEN "champions"."name" = 'Thresh' THEN 4 WHEN "champions"."name" = 'Syndra' THEN 5 WHEN "champions"."name" = 'Neeko' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+  [1m[36mChampion Load (6.7ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Aatrox', 'Darius', 'Gwen', 'Yasuo', 'Yone', 'Kayle') AND "champions"."name" IN ('Aatrox', 'Darius', 'Gwen', 'Yasuo', 'Yone', 'Kayle') ORDER BY CASE WHEN "champions"."name" = 'Aatrox' THEN 1 WHEN "champions"."name" = 'Darius' THEN 2 WHEN "champions"."name" = 'Gwen' THEN 3 WHEN "champions"."name" = 'Yasuo' THEN 4 WHEN "champions"."name" = 'Yone' THEN 5 WHEN "champions"."name" = 'Kayle' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+  [1m[36mChampion Load (2.3ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Ashe', 'Kindred', 'Ezreal', 'Shen', 'Taric', 'Riven') AND "champions"."name" IN ('Ashe', 'Kindred', 'Ezreal', 'Shen', 'Taric', 'Riven') ORDER BY CASE WHEN "champions"."name" = 'Ashe' THEN 1 WHEN "champions"."name" = 'Kindred' THEN 2 WHEN "champions"."name" = 'Ezreal' THEN 3 WHEN "champions"."name" = 'Shen' THEN 4 WHEN "champions"."name" = 'Taric' THEN 5 WHEN "champions"."name" = 'Riven' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+Completed 200 OK in 752ms (Views: 3.4ms | ActiveRecord: 92.1ms (4 queries, 0 cached) | GC: 0.3ms)
+
+
+Started GET "/api/champions" for ::1 at 2025-10-12 21:52:53 -0700
+Started GET "/api/team_comps" for ::1 at 2025-10-12 21:52:53 -0700
+Started GET "/api/champions" for ::1 at 2025-10-12 21:52:53 -0700
+Processing by Api::TeamCompsController#index as HTML
+  [1m[36mTeamComp Load (1.0ms)[0m  [1m[34mSELECT "team_comps".* FROM "team_comps" ORDER BY "team_comps"."win_rate" DESC, "team_comps"."created_at" DESC LIMIT 50 /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/controllers/api/team_comps_controller.rb:14:in 'Enumerable#map'
+  [1m[36mChampion Load (1.0ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Vel''Koz', 'Lux', 'Sona', 'Thresh', 'Syndra', 'Neeko') AND "champions"."name" IN ('Vel''Koz', 'Lux', 'Sona', 'Thresh', 'Syndra', 'Neeko') ORDER BY CASE WHEN "champions"."name" = 'Vel''Koz' THEN 1 WHEN "champions"."name" = 'Lux' THEN 2 WHEN "champions"."name" = 'Sona' THEN 3 WHEN "champions"."name" = 'Thresh' THEN 4 WHEN "champions"."name" = 'Syndra' THEN 5 WHEN "champions"."name" = 'Neeko' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+  [1m[36mChampion Load (1.5ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Aatrox', 'Darius', 'Gwen', 'Yasuo', 'Yone', 'Kayle') AND "champions"."name" IN ('Aatrox', 'Darius', 'Gwen', 'Yasuo', 'Yone', 'Kayle') ORDER BY CASE WHEN "champions"."name" = 'Aatrox' THEN 1 WHEN "champions"."name" = 'Darius' THEN 2 WHEN "champions"."name" = 'Gwen' THEN 3 WHEN "champions"."name" = 'Yasuo' THEN 4 WHEN "champions"."name" = 'Yone' THEN 5 WHEN "champions"."name" = 'Kayle' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+  [1m[36mChampion Load (1.0ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Ashe', 'Kindred', 'Ezreal', 'Shen', 'Taric', 'Riven') AND "champions"."name" IN ('Ashe', 'Kindred', 'Ezreal', 'Shen', 'Taric', 'Riven') ORDER BY CASE WHEN "champions"."name" = 'Ashe' THEN 1 WHEN "champions"."name" = 'Kindred' THEN 2 WHEN "champions"."name" = 'Ezreal' THEN 3 WHEN "champions"."name" = 'Shen' THEN 4 WHEN "champions"."name" = 'Taric' THEN 5 WHEN "champions"."name" = 'Riven' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+Completed 200 OK in 37ms (Views: 1.7ms | ActiveRecord: 4.4ms (4 queries, 0 cached) | GC: 0.0ms)
+
+
+Processing by Api::ChampionsController#index as HTML
+Processing by Api::ChampionsController#index as HTML
+  [1m[36mChampion Load (19.9ms)[0m  [1m[34mSELECT "champions".* FROM "champions" ORDER BY "champions"."tier" ASC, "champions"."name" ASC /*action='index',application='TftTeamBuilder',controller='champions'*/[0m
+  ↳ app/controllers/api/champions_controller.rb:7:in 'Enumerable#map'
+Completed 200 OK in 222ms (Views: 0.9ms | ActiveRecord: 19.9ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+  [1m[36mChampion Load (1055.9ms)[0m  [1m[34mSELECT "champions".* FROM "champions" ORDER BY "champions"."tier" ASC, "champions"."name" ASC /*action='index',application='TftTeamBuilder',controller='champions'*/[0m
+  ↳ app/controllers/api/champions_controller.rb:7:in 'Enumerable#map'
+Completed 200 OK in 2440ms (Views: 0.9ms | ActiveRecord: 1714.4ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/api/team_comps" for ::1 at 2025-10-12 21:53:15 -0700
+Processing by Api::TeamCompsController#index as HTML
+  [1m[36mTeamComp Load (19.6ms)[0m  [1m[34mSELECT "team_comps".* FROM "team_comps" ORDER BY "team_comps"."win_rate" DESC, "team_comps"."created_at" DESC LIMIT 50 /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/controllers/api/team_comps_controller.rb:14:in 'Enumerable#map'
+  [1m[36mChampion Load (21.4ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Vel''Koz', 'Lux', 'Sona', 'Thresh', 'Syndra', 'Neeko') AND "champions"."name" IN ('Vel''Koz', 'Lux', 'Sona', 'Thresh', 'Syndra', 'Neeko') ORDER BY CASE WHEN "champions"."name" = 'Vel''Koz' THEN 1 WHEN "champions"."name" = 'Lux' THEN 2 WHEN "champions"."name" = 'Sona' THEN 3 WHEN "champions"."name" = 'Thresh' THEN 4 WHEN "champions"."name" = 'Syndra' THEN 5 WHEN "champions"."name" = 'Neeko' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+  [1m[36mChampion Load (20.2ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Aatrox', 'Darius', 'Gwen', 'Yasuo', 'Yone', 'Kayle') AND "champions"."name" IN ('Aatrox', 'Darius', 'Gwen', 'Yasuo', 'Yone', 'Kayle') ORDER BY CASE WHEN "champions"."name" = 'Aatrox' THEN 1 WHEN "champions"."name" = 'Darius' THEN 2 WHEN "champions"."name" = 'Gwen' THEN 3 WHEN "champions"."name" = 'Yasuo' THEN 4 WHEN "champions"."name" = 'Yone' THEN 5 WHEN "champions"."name" = 'Kayle' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+  [1m[36mChampion Load (11.4ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Ashe', 'Kindred', 'Ezreal', 'Shen', 'Taric', 'Riven') AND "champions"."name" IN ('Ashe', 'Kindred', 'Ezreal', 'Shen', 'Taric', 'Riven') ORDER BY CASE WHEN "champions"."name" = 'Ashe' THEN 1 WHEN "champions"."name" = 'Kindred' THEN 2 WHEN "champions"."name" = 'Ezreal' THEN 3 WHEN "champions"."name" = 'Shen' THEN 4 WHEN "champions"."name" = 'Taric' THEN 5 WHEN "champions"."name" = 'Riven' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+Completed 200 OK in 153ms (Views: 2.2ms | ActiveRecord: 72.3ms (4 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/api/champions" for ::1 at 2025-10-12 21:53:17 -0700
+Started GET "/api/team_comps" for ::1 at 2025-10-12 21:53:18 -0700
+Processing by Api::ChampionsController#index as HTML
+  [1m[36mChampion Load (11.3ms)[0m  [1m[34mSELECT "champions".* FROM "champions" ORDER BY "champions"."tier" ASC, "champions"."name" ASC /*action='index',application='TftTeamBuilder',controller='champions'*/[0m
+  ↳ app/controllers/api/champions_controller.rb:7:in 'Enumerable#map'
+Completed 200 OK in 157ms (Views: 0.5ms | ActiveRecord: 11.2ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Processing by Api::TeamCompsController#index as HTML
+  [1m[36mTeamComp Load (27.4ms)[0m  [1m[34mSELECT "team_comps".* FROM "team_comps" ORDER BY "team_comps"."win_rate" DESC, "team_comps"."created_at" DESC LIMIT 50 /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/controllers/api/team_comps_controller.rb:14:in 'Enumerable#map'
+  [1m[36mChampion Load (28.3ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Vel''Koz', 'Lux', 'Sona', 'Thresh', 'Syndra', 'Neeko') AND "champions"."name" IN ('Vel''Koz', 'Lux', 'Sona', 'Thresh', 'Syndra', 'Neeko') ORDER BY CASE WHEN "champions"."name" = 'Vel''Koz' THEN 1 WHEN "champions"."name" = 'Lux' THEN 2 WHEN "champions"."name" = 'Sona' THEN 3 WHEN "champions"."name" = 'Thresh' THEN 4 WHEN "champions"."name" = 'Syndra' THEN 5 WHEN "champions"."name" = 'Neeko' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+  [1m[36mChampion Load (25.1ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Aatrox', 'Darius', 'Gwen', 'Yasuo', 'Yone', 'Kayle') AND "champions"."name" IN ('Aatrox', 'Darius', 'Gwen', 'Yasuo', 'Yone', 'Kayle') ORDER BY CASE WHEN "champions"."name" = 'Aatrox' THEN 1 WHEN "champions"."name" = 'Darius' THEN 2 WHEN "champions"."name" = 'Gwen' THEN 3 WHEN "champions"."name" = 'Yasuo' THEN 4 WHEN "champions"."name" = 'Yone' THEN 5 WHEN "champions"."name" = 'Kayle' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+  [1m[36mChampion Load (15.7ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Ashe', 'Kindred', 'Ezreal', 'Shen', 'Taric', 'Riven') AND "champions"."name" IN ('Ashe', 'Kindred', 'Ezreal', 'Shen', 'Taric', 'Riven') ORDER BY CASE WHEN "champions"."name" = 'Ashe' THEN 1 WHEN "champions"."name" = 'Kindred' THEN 2 WHEN "champions"."name" = 'Ezreal' THEN 3 WHEN "champions"."name" = 'Shen' THEN 4 WHEN "champions"."name" = 'Taric' THEN 5 WHEN "champions"."name" = 'Riven' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+Completed 200 OK in 248ms (Views: 0.9ms | ActiveRecord: 96.4ms (4 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/api/champions" for ::1 at 2025-10-12 21:53:27 -0700
+Processing by Api::ChampionsController#index as HTML
+  [1m[36mChampion Load (1.3ms)[0m  [1m[34mSELECT "champions".* FROM "champions" ORDER BY "champions"."tier" ASC, "champions"."name" ASC /*action='index',application='TftTeamBuilder',controller='champions'*/[0m
+  ↳ app/controllers/api/champions_controller.rb:7:in 'Enumerable#map'
+Completed 200 OK in 21ms (Views: 0.4ms | ActiveRecord: 1.2ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/api/team_comps" for ::1 at 2025-10-12 21:53:28 -0700
+Started GET "/api/champions" for ::1 at 2025-10-12 21:53:28 -0700
+Processing by Api::TeamCompsController#index as HTML
+  [1m[36mTeamComp Load (1.0ms)[0m  [1m[34mSELECT "team_comps".* FROM "team_comps" ORDER BY "team_comps"."win_rate" DESC, "team_comps"."created_at" DESC LIMIT 50 /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/controllers/api/team_comps_controller.rb:14:in 'Enumerable#map'
+  [1m[36mChampion Load (18.3ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Vel''Koz', 'Lux', 'Sona', 'Thresh', 'Syndra', 'Neeko') AND "champions"."name" IN ('Vel''Koz', 'Lux', 'Sona', 'Thresh', 'Syndra', 'Neeko') ORDER BY CASE WHEN "champions"."name" = 'Vel''Koz' THEN 1 WHEN "champions"."name" = 'Lux' THEN 2 WHEN "champions"."name" = 'Sona' THEN 3 WHEN "champions"."name" = 'Thresh' THEN 4 WHEN "champions"."name" = 'Syndra' THEN 5 WHEN "champions"."name" = 'Neeko' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+  [1m[36mChampion Load (16.0ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Aatrox', 'Darius', 'Gwen', 'Yasuo', 'Yone', 'Kayle') AND "champions"."name" IN ('Aatrox', 'Darius', 'Gwen', 'Yasuo', 'Yone', 'Kayle') ORDER BY CASE WHEN "champions"."name" = 'Aatrox' THEN 1 WHEN "champions"."name" = 'Darius' THEN 2 WHEN "champions"."name" = 'Gwen' THEN 3 WHEN "champions"."name" = 'Yasuo' THEN 4 WHEN "champions"."name" = 'Yone' THEN 5 WHEN "champions"."name" = 'Kayle' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+  [1m[36mChampion Load (0.8ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Ashe', 'Kindred', 'Ezreal', 'Shen', 'Taric', 'Riven') AND "champions"."name" IN ('Ashe', 'Kindred', 'Ezreal', 'Shen', 'Taric', 'Riven') ORDER BY CASE WHEN "champions"."name" = 'Ashe' THEN 1 WHEN "champions"."name" = 'Kindred' THEN 2 WHEN "champions"."name" = 'Ezreal' THEN 3 WHEN "champions"."name" = 'Shen' THEN 4 WHEN "champions"."name" = 'Taric' THEN 5 WHEN "champions"."name" = 'Riven' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+Completed 200 OK in 198ms (Views: 2.7ms | ActiveRecord: 36.0ms (4 queries, 0 cached) | GC: 0.0ms)
+
+
+Processing by Api::ChampionsController#index as HTML
+  [1m[36mChampion Load (1.3ms)[0m  [1m[34mSELECT "champions".* FROM "champions" ORDER BY "champions"."tier" ASC, "champions"."name" ASC /*action='index',application='TftTeamBuilder',controller='champions'*/[0m
+  ↳ app/controllers/api/champions_controller.rb:7:in 'Enumerable#map'
+Completed 200 OK in 189ms (Views: 0.5ms | ActiveRecord: 1.3ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started POST "/api/auth/register" for ::1 at 2025-10-12 21:53:32 -0700
+Processing by Api::AuthController#register as HTML
+  Parameters: {"user" => {"email" => "[FILTERED]", "password" => "[FILTERED]", "password_confirmation" => "[FILTERED]", "display_name" => "tester"}, "auth" => {"user" => {"email" => "[FILTERED]", "password" => "[FILTERED]", "password_confirmation" => "[FILTERED]", "display_name" => "tester"}}}
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN /*action='register',application='TftTeamBuilder',controller='auth'*/[0m
+  ↳ app/controllers/api/auth_controller.rb:9:in 'Api::AuthController#register'
+  [1m[36mUser Exists? (8.9ms)[0m  [1m[34mSELECT 1 AS one FROM "users" WHERE LOWER("users"."email") = LOWER('tester@test.com') LIMIT 1 /*action='register',application='TftTeamBuilder',controller='auth'*/[0m
+  ↳ app/controllers/api/auth_controller.rb:9:in 'Api::AuthController#register'
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[31mROLLBACK /*action='register',application='TftTeamBuilder',controller='auth'*/[0m
+  ↳ app/controllers/api/auth_controller.rb:9:in 'Api::AuthController#register'
+Completed 422 Unprocessable Content in 354ms (Views: 0.1ms | ActiveRecord: 35.7ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started POST "/api/auth/register" for ::1 at 2025-10-12 21:54:14 -0700
+Processing by Api::AuthController#register as HTML
+  Parameters: {"user" => {"email" => "[FILTERED]", "password" => "[FILTERED]", "password_confirmation" => "[FILTERED]", "display_name" => "tester"}, "auth" => {"user" => {"email" => "[FILTERED]", "password" => "[FILTERED]", "password_confirmation" => "[FILTERED]", "display_name" => "tester"}}}
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mBEGIN /*action='register',application='TftTeamBuilder',controller='auth'*/[0m
+  ↳ app/controllers/api/auth_controller.rb:9:in 'Api::AuthController#register'
+  [1m[36mUser Exists? (3.9ms)[0m  [1m[34mSELECT 1 AS one FROM "users" WHERE LOWER("users"."email") = LOWER('testeryouranma@test.com') LIMIT 1 /*action='register',application='TftTeamBuilder',controller='auth'*/[0m
+  ↳ app/controllers/api/auth_controller.rb:9:in 'Api::AuthController#register'
+  [1m[36mUser Create (1.3ms)[0m  [1m[32mINSERT INTO "users" ("email", "password_digest", "role", "display_name", "bio", "location", "avatar_url", "created_at", "updated_at") VALUES ('testeryouranma@test.com', '$2a$12$iXSBxMS8B9va/KTREH4QfO6v1EymuEgzSYaAKzu/Yal7lgDsVgFHK', 'user', 'tester', NULL, NULL, NULL, '2025-10-13 04:54:15.043264', '2025-10-13 04:54:15.043264') RETURNING "id" /*action='register',application='TftTeamBuilder',controller='auth'*/[0m
+  ↳ app/controllers/api/auth_controller.rb:9:in 'Api::AuthController#register'
+  [1m[36mTRANSACTION (2.9ms)[0m  [1m[35mCOMMIT /*action='register',application='TftTeamBuilder',controller='auth'*/[0m
+  ↳ app/controllers/api/auth_controller.rb:9:in 'Api::AuthController#register'
+Completed 201 Created in 634ms (Views: 0.6ms | ActiveRecord: 8.5ms (2 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/api/champions" for ::1 at 2025-10-12 21:54:19 -0700
+Processing by Api::ChampionsController#index as HTML
+  [1m[36mUser Load (0.9ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 3 LIMIT 1 /*action='index',application='TftTeamBuilder',controller='champions'*/[0m
+  ↳ app/controllers/api/base_controller.rb:56:in 'Api::BaseController#find_user_from_token'
+  [1m[36mChampion Load (0.9ms)[0m  [1m[34mSELECT "champions".* FROM "champions" ORDER BY "champions"."tier" ASC, "champions"."name" ASC /*action='index',application='TftTeamBuilder',controller='champions'*/[0m
+  ↳ app/controllers/api/champions_controller.rb:7:in 'Enumerable#map'
+Completed 200 OK in 33ms (Views: 0.5ms | ActiveRecord: 1.8ms (2 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/api/team_comps?limit=6" for ::1 at 2025-10-12 21:54:26 -0700
+Processing by Api::TeamCompsController#index as HTML
+  Parameters: {"limit" => "6"}
+  [1m[36mUser Load (1.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 3 LIMIT 1 /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/controllers/api/base_controller.rb:56:in 'Api::BaseController#find_user_from_token'
+  [1m[36mTeamComp Load (0.7ms)[0m  [1m[34mSELECT "team_comps".* FROM "team_comps" ORDER BY "team_comps"."win_rate" DESC, "team_comps"."created_at" DESC LIMIT 6 /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/controllers/api/team_comps_controller.rb:14:in 'Enumerable#map'
+  [1m[36mChampion Load (1.1ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Vel''Koz', 'Lux', 'Sona', 'Thresh', 'Syndra', 'Neeko') AND "champions"."name" IN ('Vel''Koz', 'Lux', 'Sona', 'Thresh', 'Syndra', 'Neeko') ORDER BY CASE WHEN "champions"."name" = 'Vel''Koz' THEN 1 WHEN "champions"."name" = 'Lux' THEN 2 WHEN "champions"."name" = 'Sona' THEN 3 WHEN "champions"."name" = 'Thresh' THEN 4 WHEN "champions"."name" = 'Syndra' THEN 5 WHEN "champions"."name" = 'Neeko' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+  [1m[36mChampion Load (1.1ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Aatrox', 'Darius', 'Gwen', 'Yasuo', 'Yone', 'Kayle') AND "champions"."name" IN ('Aatrox', 'Darius', 'Gwen', 'Yasuo', 'Yone', 'Kayle') ORDER BY CASE WHEN "champions"."name" = 'Aatrox' THEN 1 WHEN "champions"."name" = 'Darius' THEN 2 WHEN "champions"."name" = 'Gwen' THEN 3 WHEN "champions"."name" = 'Yasuo' THEN 4 WHEN "champions"."name" = 'Yone' THEN 5 WHEN "champions"."name" = 'Kayle' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+  [1m[36mChampion Load (1.3ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Ashe', 'Kindred', 'Ezreal', 'Shen', 'Taric', 'Riven') AND "champions"."name" IN ('Ashe', 'Kindred', 'Ezreal', 'Shen', 'Taric', 'Riven') ORDER BY CASE WHEN "champions"."name" = 'Ashe' THEN 1 WHEN "champions"."name" = 'Kindred' THEN 2 WHEN "champions"."name" = 'Ezreal' THEN 3 WHEN "champions"."name" = 'Shen' THEN 4 WHEN "champions"."name" = 'Taric' THEN 5 WHEN "champions"."name" = 'Riven' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+Completed 200 OK in 64ms (Views: 10.6ms | ActiveRecord: 5.3ms (5 queries, 0 cached) | GC: 0.0ms)
+
+
+Started PATCH "/api/profile" for ::1 at 2025-10-12 21:54:48 -0700
+Processing by Api::ProfilesController#update as HTML
+  Parameters: {"user" => {"display_name" => "testeryouranma", "bio" => "", "location" => "", "avatar_url" => ""}, "profile" => {"user" => {"display_name" => "testeryouranma", "bio" => "", "location" => "", "avatar_url" => ""}}}
+  [1m[36mUser Load (1.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 3 LIMIT 1 /*action='update',application='TftTeamBuilder',controller='profiles'*/[0m
+  ↳ app/controllers/api/base_controller.rb:56:in 'Api::BaseController#find_user_from_token'
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mBEGIN /*action='update',application='TftTeamBuilder',controller='profiles'*/[0m
+  ↳ app/controllers/api/profiles_controller.rb:12:in 'Api::ProfilesController#update'
+  [1m[36mUser Exists? (10.2ms)[0m  [1m[34mSELECT 1 AS one FROM "users" WHERE LOWER("users"."email") = LOWER('testeryouranma@test.com') AND "users"."id" != 3 LIMIT 1 /*action='update',application='TftTeamBuilder',controller='profiles'*/[0m
+  ↳ app/controllers/api/profiles_controller.rb:12:in 'Api::ProfilesController#update'
+  [1m[36mUser Update (2.1ms)[0m  [1m[33mUPDATE "users" SET "display_name" = 'testeryouranma', "bio" = '', "location" = '', "avatar_url" = '', "updated_at" = '2025-10-13 04:54:50.078183' WHERE "users"."id" = 3 /*action='update',application='TftTeamBuilder',controller='profiles'*/[0m
+  ↳ app/controllers/api/profiles_controller.rb:12:in 'Api::ProfilesController#update'
+  [1m[36mTRANSACTION (1.3ms)[0m  [1m[35mCOMMIT /*action='update',application='TftTeamBuilder',controller='profiles'*/[0m
+  ↳ app/controllers/api/profiles_controller.rb:12:in 'Api::ProfilesController#update'
+Completed 200 OK in 44ms (Views: 3.0ms | ActiveRecord: 15.4ms (3 queries, 0 cached) | GC: 0.0ms)
+
+
+Started PATCH "/api/profile" for ::1 at 2025-10-12 21:55:00 -0700
+Processing by Api::ProfilesController#update as HTML
+  Parameters: {"user" => {"display_name" => "testeryouranma", "bio" => "", "location" => "", "avatar_url" => ""}, "profile" => {"user" => {"display_name" => "testeryouranma", "bio" => "", "location" => "", "avatar_url" => ""}}}
+  [1m[36mUser Load (1.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 3 LIMIT 1 /*action='update',application='TftTeamBuilder',controller='profiles'*/[0m
+  ↳ app/controllers/api/base_controller.rb:56:in 'Api::BaseController#find_user_from_token'
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*action='update',application='TftTeamBuilder',controller='profiles'*/[0m
+  ↳ app/controllers/api/profiles_controller.rb:12:in 'Api::ProfilesController#update'
+  [1m[36mUser Exists? (4.2ms)[0m  [1m[34mSELECT 1 AS one FROM "users" WHERE LOWER("users"."email") = LOWER('testeryouranma@test.com') AND "users"."id" != 3 LIMIT 1 /*action='update',application='TftTeamBuilder',controller='profiles'*/[0m
+  ↳ app/controllers/api/profiles_controller.rb:12:in 'Api::ProfilesController#update'
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*action='update',application='TftTeamBuilder',controller='profiles'*/[0m
+  ↳ app/controllers/api/profiles_controller.rb:12:in 'Api::ProfilesController#update'
+Completed 200 OK in 16ms (Views: 0.4ms | ActiveRecord: 6.1ms (2 queries, 0 cached) | GC: 0.0ms)
+
+
+[ActionDispatch::HostAuthorization::DefaultResponseApp] Blocked hosts: www.example.com
+[ActionDispatch::HostAuthorization::DefaultResponseApp] Blocked hosts: www.example.com
+Started GET "/api/champions" for ::1 at 2025-10-12 22:05:34 -0700
+Started GET "/api/team_comps" for ::1 at 2025-10-12 22:05:34 -0700
+  [1m[36mActiveRecord::SchemaMigration Load (1.5ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='TftTeamBuilder'*/[0m
+  
+ActionController::RoutingError (No route matches [GET] "/api/champions"):
+  
+Processing by Api::TeamCompsController#index as HTML
+  [1m[36mTeamComp Load (8.2ms)[0m  [1m[34mSELECT "team_comps".* FROM "team_comps" ORDER BY "team_comps"."win_rate" DESC, "team_comps"."created_at" DESC LIMIT 50 /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/controllers/api/team_comps_controller.rb:14:in 'Enumerable#map'
+  [1m[36mChampion Load (8.0ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Vel''Koz', 'Lux', 'Sona', 'Thresh', 'Syndra', 'Neeko') AND "champions"."name" IN ('Vel''Koz', 'Lux', 'Sona', 'Thresh', 'Syndra', 'Neeko') ORDER BY CASE WHEN "champions"."name" = 'Vel''Koz' THEN 1 WHEN "champions"."name" = 'Lux' THEN 2 WHEN "champions"."name" = 'Sona' THEN 3 WHEN "champions"."name" = 'Thresh' THEN 4 WHEN "champions"."name" = 'Syndra' THEN 5 WHEN "champions"."name" = 'Neeko' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+  [1m[36mChampion Load (7.2ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Aatrox', 'Darius', 'Gwen', 'Yasuo', 'Yone', 'Kayle') AND "champions"."name" IN ('Aatrox', 'Darius', 'Gwen', 'Yasuo', 'Yone', 'Kayle') ORDER BY CASE WHEN "champions"."name" = 'Aatrox' THEN 1 WHEN "champions"."name" = 'Darius' THEN 2 WHEN "champions"."name" = 'Gwen' THEN 3 WHEN "champions"."name" = 'Yasuo' THEN 4 WHEN "champions"."name" = 'Yone' THEN 5 WHEN "champions"."name" = 'Kayle' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+  [1m[36mChampion Load (7.6ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Ashe', 'Kindred', 'Ezreal', 'Shen', 'Taric', 'Riven') AND "champions"."name" IN ('Ashe', 'Kindred', 'Ezreal', 'Shen', 'Taric', 'Riven') ORDER BY CASE WHEN "champions"."name" = 'Ashe' THEN 1 WHEN "champions"."name" = 'Kindred' THEN 2 WHEN "champions"."name" = 'Ezreal' THEN 3 WHEN "champions"."name" = 'Shen' THEN 4 WHEN "champions"."name" = 'Taric' THEN 5 WHEN "champions"."name" = 'Riven' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+Completed 200 OK in 373ms (Views: 0.8ms | ActiveRecord: 130.1ms (4 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/api/champions" for ::1 at 2025-10-12 22:05:38 -0700
+Started GET "/api/team_comps" for ::1 at 2025-10-12 22:05:38 -0700
+Processing by Api::ChampionsController#index as HTML
+  [1m[36mChampion Load (0.6ms)[0m  [1m[34mSELECT "champions".* FROM "champions" ORDER BY "champions"."tier" ASC, "champions"."name" ASC /*action='index',application='TftTeamBuilder',controller='champions'*/[0m
+  ↳ app/controllers/api/champions_controller.rb:7:in 'Enumerable#map'
+Processing by Api::TeamCompsController#index as HTML
+  [1m[36mTeamComp Load (0.5ms)[0m  [1m[34mSELECT "team_comps".* FROM "team_comps" ORDER BY "team_comps"."win_rate" DESC, "team_comps"."created_at" DESC LIMIT 50 /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/controllers/api/team_comps_controller.rb:14:in 'Enumerable#map'
+Completed 200 OK in 27ms (Views: 0.3ms | ActiveRecord: 0.6ms (1 query, 0 cached) | GC: 0.2ms)
+
+
+  [1m[36mChampion Load (0.7ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Vel''Koz', 'Lux', 'Sona', 'Thresh', 'Syndra', 'Neeko') AND "champions"."name" IN ('Vel''Koz', 'Lux', 'Sona', 'Thresh', 'Syndra', 'Neeko') ORDER BY CASE WHEN "champions"."name" = 'Vel''Koz' THEN 1 WHEN "champions"."name" = 'Lux' THEN 2 WHEN "champions"."name" = 'Sona' THEN 3 WHEN "champions"."name" = 'Thresh' THEN 4 WHEN "champions"."name" = 'Syndra' THEN 5 WHEN "champions"."name" = 'Neeko' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+  [1m[36mChampion Load (0.4ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Aatrox', 'Darius', 'Gwen', 'Yasuo', 'Yone', 'Kayle') AND "champions"."name" IN ('Aatrox', 'Darius', 'Gwen', 'Yasuo', 'Yone', 'Kayle') ORDER BY CASE WHEN "champions"."name" = 'Aatrox' THEN 1 WHEN "champions"."name" = 'Darius' THEN 2 WHEN "champions"."name" = 'Gwen' THEN 3 WHEN "champions"."name" = 'Yasuo' THEN 4 WHEN "champions"."name" = 'Yone' THEN 5 WHEN "champions"."name" = 'Kayle' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+  [1m[36mChampion Load (0.3ms)[0m  [1m[34mSELECT "champions".* FROM "champions" WHERE "champions"."name" IN ('Ashe', 'Kindred', 'Ezreal', 'Shen', 'Taric', 'Riven') AND "champions"."name" IN ('Ashe', 'Kindred', 'Ezreal', 'Shen', 'Taric', 'Riven') ORDER BY CASE WHEN "champions"."name" = 'Ashe' THEN 1 WHEN "champions"."name" = 'Kindred' THEN 2 WHEN "champions"."name" = 'Ezreal' THEN 3 WHEN "champions"."name" = 'Shen' THEN 4 WHEN "champions"."name" = 'Taric' THEN 5 WHEN "champions"."name" = 'Riven' THEN 6 END ASC /*action='index',application='TftTeamBuilder',controller='team_comps'*/[0m
+  ↳ app/serializers/team_comp_serializer.rb:36:in 'Enumerable#map'
+Completed 200 OK in 34ms (Views: 0.6ms | ActiveRecord: 1.9ms (4 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/api/champions" for ::1 at 2025-10-12 22:05:40 -0700
+Processing by Api::ChampionsController#index as HTML
+  [1m[36mChampion Load (0.5ms)[0m  [1m[34mSELECT "champions".* FROM "champions" ORDER BY "champions"."tier" ASC, "champions"."name" ASC /*action='index',application='TftTeamBuilder',controller='champions'*/[0m
+  ↳ app/controllers/api/champions_controller.rb:7:in 'Enumerable#map'
+Completed 200 OK in 12ms (Views: 0.2ms | ActiveRecord: 0.5ms (1 query, 0 cached) | GC: 0.0ms)
+
+

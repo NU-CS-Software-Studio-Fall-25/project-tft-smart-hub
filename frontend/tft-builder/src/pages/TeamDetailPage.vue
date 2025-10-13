@@ -91,11 +91,15 @@
               </div>
 
               <div class="d-flex flex-wrap gap-2 mt-3">
-                <RouterLink class="btn btn-outline-primary flex-grow-1" :to="{ name: 'team-edit', params: { id } }">
+                <RouterLink
+                  v-if="isAdmin"
+                  class="btn btn-outline-primary flex-grow-1"
+                  :to="{ name: 'team-edit', params: { id } }"
+                >
                   <i class="bi bi-pencil me-1"></i>
                   Edit team
                 </RouterLink>
-                <button class="btn btn-outline-danger flex-grow-1" @click="removeTeam">
+                <button v-if="isAdmin" class="btn btn-outline-danger flex-grow-1" @click="removeTeam">
                   <i class="bi bi-trash me-1"></i>
                   Delete
                 </button>
@@ -112,9 +116,10 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import SpriteImage from '../components/SpriteImage.vue'
-import { store as selectionStore } from '../stores/selectionStore'
 import { fetchTeamComp, deleteTeamComp } from '../services/api'
+import { store as selectionStore } from '../stores/selectionStore'
 import { teamStore } from '../stores/teamStore'
+import { authStore } from '../stores/authStore'
 
 const props = defineProps({
   id: {
@@ -126,12 +131,12 @@ const props = defineProps({
 const router = useRouter()
 const loading = ref(false)
 const id = computed(() => props.id)
-
 const team = computed(() => teamStore.getById(Number(id.value)))
+const isAdmin = computed(() => authStore.isAdmin())
 
 const percentage = (value) => {
   if (value === null || value === undefined) return 'N/A'
-  return `${(value * 100).toFixed(1)}%`
+  return (value * 100).toFixed(1) + '%'
 }
 
 const formatDate = (value) => {
@@ -151,6 +156,7 @@ const loadTeam = async () => {
 }
 
 const removeTeam = async () => {
+  if (!authStore.isAdmin()) return
   const confirmed = window.confirm('Delete this team permanently?')
   if (!confirmed) return
   await deleteTeamComp(id.value)
@@ -173,7 +179,7 @@ watch(
   async () => {
     if (!team.value) await loadTeam()
   }
- );
+)
 </script>
 
 <style scoped>
@@ -231,4 +237,3 @@ watch(
   gap: 0.25rem;
 }
 </style>
-

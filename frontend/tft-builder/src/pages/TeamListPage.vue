@@ -8,7 +8,7 @@
             Review curated comps, compare win rates, and jump straight into the details.
           </p>
         </div>
-        <RouterLink class="btn btn-primary" :to="{ name: 'team-create' }">
+        <RouterLink class="btn btn-primary" :to="createRoute">
           <i class="bi bi-plus-circle me-1"></i>
           Add a new team
         </RouterLink>
@@ -74,7 +74,7 @@
                 >
                   View details
                 </RouterLink>
-                <button class="btn btn-sm btn-outline-danger" @click="removeTeam(team.id)">
+                <button v-if="isAdmin" class="btn btn-sm btn-outline-danger" @click="removeTeam(team.id)">
                   <i class="bi bi-trash"></i>
                 </button>
               </div>
@@ -90,6 +90,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import SpriteImage from '../components/SpriteImage.vue'
+import { authStore } from '../stores/authStore'
 import { store as selectionStore } from '../stores/selectionStore'
 import { fetchTeamComps, deleteTeamComp } from '../services/api'
 import { teamStore } from '../stores/teamStore'
@@ -97,18 +98,24 @@ import { teamStore } from '../stores/teamStore'
 const loading = ref(false)
 
 const teams = computed(() => teamStore.list)
+const isAuthenticated = computed(() => authStore.isAuthenticated())
+const isAdmin = computed(() => authStore.isAdmin())
+const createRoute = computed(() => (
+  isAuthenticated.value ? { name: 'team-create' } : { name: 'login', query: { redirect: '/teams/new' } }
+))
 
 const percentage = (value) => {
   if (value === null || value === undefined) return 'N/A'
-  return `${(value * 100).toFixed(1)}%`
+  return (value * 100).toFixed(1) + '%'
 }
 
 const truncate = (text, limit) => {
   if (!text) return ''
-  return text.length > limit ? `${text.slice(0, limit)}…` : text
+  return text.length > limit ? text.slice(0, limit) + '...' : text
 }
 
 const removeTeam = async (id) => {
+  if (!isAdmin.value) return
   const confirmed = window.confirm('Remove this team from your library?')
   if (!confirmed) return
   await deleteTeamComp(id)
@@ -157,3 +164,7 @@ onMounted(async () => {
   box-shadow: 0 4px 10px rgba(15, 23, 42, 0.35);
 }
 </style>
+
+
+
+

@@ -3,6 +3,16 @@ require "test_helper"
 class Api::TeamCompsControllerTest < ActionDispatch::IntegrationTest
   fixtures :champions, :team_comps
 
+  setup do
+    User.delete_all
+    @user = User.create!(email: "user@example.com", password: "Password123!", role: "user")
+    @admin = User.create!(email: "admin@example.com", password: "Password123!", role: "admin")
+  end
+
+  def auth_header(user)
+    { "Authorization" => "Bearer #{JsonWebToken.encode({ sub: user.id })}" }
+  end
+
   test "index returns serialized comps with cards" do
     get api_team_comps_path, as: :json
     assert_response :success
@@ -25,7 +35,7 @@ class Api::TeamCompsControllerTest < ActionDispatch::IntegrationTest
     }
 
     assert_difference -> { TeamComp.count }, +1 do
-      post api_team_comps_path, params: body, as: :json
+      post api_team_comps_path, params: body, headers: auth_header(@user), as: :json
       assert_response :created
     end
 
@@ -46,4 +56,23 @@ class Api::TeamCompsControllerTest < ActionDispatch::IntegrationTest
     assert_equal include_ids, payload["requestedChampionIds"]
     assert payload["teams"].first["meta"]["matchCount"] >= 0
   end
+
+  test "update requires admin" do
+    team = team_comps(:one)
+    patch api_team_comp_path(team),
+          params: { team_comp: { description: "Updated", champion_ids: Champion.pluck(:id) } },
+          headers: auth_header(@user),
+          as: :json
+
+    assert_response :forbidden
+
+    patch api_team_comp_path(team),
+          params: { team_comp: { description: "Updated", champion_ids: Champion.pluck(:id) } },
+          headers: auth_header(@admin),
+          as: :json
+
+    assert_response :success
+    assert_equal "Updated", JSON.parse(response.body)["description"]
+  end
 end
+
