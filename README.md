@@ -1,5 +1,7 @@
 # TFT Team Builder & Smart Compare
 
+# Temporary Link: https://tft-smartcomp-b3f1e37435eb.herokuapp.com/
+
 ## How To Run Locally
 - Prerequisites: `Ruby 3.4+`, `Node.js 18+` (tested with Node 20), `PostgreSQL 14+`, `bundler`, `npm`.
 - Backend (Rails API):
