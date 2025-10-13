@@ -1,4 +1,4 @@
-# TFT Team Builder — Concise README
+# TFT Team Builder & Smart Compare
 
 ## How To Run Locally
 - Prerequisites: `Ruby 3.4+`, `Node.js 18+` (tested with Node 20), `PostgreSQL 14+`, `bundler`, `npm`.
@@ -17,7 +17,7 @@
   ```
 - Open `http://localhost:5173`. The SPA calls the API at `http://localhost:3000/api`.
 - Optional env:
-  - Backend: `FRONTEND_ORIGINS=http://localhost:5173` (CORS), `DATABASE_URL=...`.
+  - Backend: `FRONTEND_ORIGINS=http://localhost:5173` (CORS).
   - Frontend: create `frontend/tft-builder/.env` with `VITE_API_BASE_URL=http://localhost:3000/api`.
 
 ## How To Deploy To Heroku (Rails API)
@@ -26,36 +26,36 @@ Deploy the Rails API; host the SPA separately (e.g., Netlify/Vercel) and point i
 1) Create the app and Postgres
 ```bash
 heroku login
-heroku create your-tft-api --stack=heroku-22
-heroku addons:create heroku-postgresql:mini -a your-tft-api
+heroku create tft-smartcomp-api --stack=heroku-22
+heroku addons:create heroku-postgresql:mini -a tft-smartcomp-api
 ```
 
 2) Configure environment
 ```bash
 # Required if using Rails credentials
-heroku config:set RAILS_MASTER_KEY=... -a your-tft-api
+heroku config:set RAILS_MASTER_KEY=... -a tft-smartcomp-api
 
 # CORS: set your production frontend origin(s)
-heroku config:set FRONTEND_ORIGINS=https://your-frontend.example.com -a your-tft-api
+heroku config:set FRONTEND_ORIGINS=https://frontend.tftcompapi.com -a tft-smartcomp-api
 
 # Optional
-heroku config:set RAILS_LOG_TO_STDOUT=enabled RACK_ENV=production RAILS_ENV=production -a your-tft-api
+heroku config:set RAILS_LOG_TO_STDOUT=enabled RACK_ENV=production RAILS_ENV=production -a tft-smartcomp-api
 ```
 
-3) Push from monorepo (using git subtree)
+3) Push from repo (using git subtree)
 ```bash
-# From the repo root where your main branch is present
+# From the repo root
 git subtree push --prefix ruby_backend/tft_team_builder heroku main
 ```
 
 4) Run migrations (and optional seed)
 ```bash
-heroku run rails db:migrate -a your-tft-api
-heroku run rails db:seed -a your-tft-api # optional
+heroku run rails db:migrate -a tft-smartcomp-api
+heroku run rails db:seed -a tft-smartcomp-api # optional
 ```
 
 5) Point the SPA to Heroku
-- Set `VITE_API_BASE_URL=https://your-tft-api.herokuapp.com/api` in the frontend’s environment and deploy your SPA.
+- Set `VITE_API_BASE_URL=https://tft-smartcomp-api.herokuapp.com/api` in the frontend’s environment and deploy your SPA.
 
 ---
 
@@ -73,10 +73,9 @@ heroku run rails db:seed -a your-tft-api # optional
 - Database (PostgreSQL): users, champions, traits, team comps; stores win/play rates, notes and source.
 
 ## Changelog (Brief)
-- Added JWT auth and role-based permissions (user/admin).
 - Implemented team comp CRUD and recommendation endpoint.
 - Unified serializer output (e.g., `winRate`, `playRate`, `cards`) and absolute image/sprite URLs.
-- Integrated SPA flows: search/recommendations/library/editor and auth/profile.
+- Added JWT auth and role-based permissions (user/admin).
 
 ## Database Schema (Core Fields)
 
@@ -163,6 +162,7 @@ heroku run rails db:seed -a your-tft-api # optional
 Note: Use `Authorization: Bearer <token>` for protected endpoints. Response fields follow the serializers in the codebase.
 
 ## Roadmap
+- Bug fix: adjust sprite picture cut and improve UI view.
 - Data ingestion: hook into live/external data for dynamic comps and rates.
 - Recommendation: add exclusions, trait weighting, patch filters.
 - Quality: E2E tests (Playwright/Cypress) and fuller backend coverage.
