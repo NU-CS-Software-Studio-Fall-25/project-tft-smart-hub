@@ -10,7 +10,7 @@ puts "\nCleaning old user accounts..."
 User.delete_all
 
 puts "\nImporting official TFT data..."
-Importers::TftDataImporter.new.call
+Services::Importers::TftDataImporter.new.call
 puts "Champions: #{Champion.count} | Traits: #{Trait.count} | Team comps: #{TeamComp.count}"
 
 puts "\nCreating default accounts..."
