@@ -1,0 +1,26 @@
+# Deployment documentation (keep local only)
+DEPLOYMENT.md
+
+# Deployment script with sensitive info
+deploy-to-heroku.sh
+
+# Environment files
+*.env
+.env.*
+!.env.example
+
+# Temporary files
+*.log
+tmp/
+log/
+
+# Node modules
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
