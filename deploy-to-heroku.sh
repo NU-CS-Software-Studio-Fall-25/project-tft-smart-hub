@@ -1,55 +1,90 @@
 #!/bin/bash
 
-# TFT Smart Hub - Heroku 部署脚本
-# 此脚本会构建前端并将其与后端一起部署到 Heroku
+# TFT Smart Hub - Heroku Deployment Script
+# Builds frontend and deploys full-stack app to Heroku
 
-set -e  # 遇到错误立即退出
+set -e  # Exit on error
 
-echo "🚀 开始部署到 Heroku..."
+HEROKU_APP="tft-smartcomp"
+HEROKU_GIT_URL="https://git.heroku.com/${HEROKU_APP}.git"
+PROJECT_ROOT="$(cd "$(dirname "$0")" && pwd)"
 
-# 1. 构建前端
+echo "🚀 Starting Heroku deployment..."
 echo ""
-echo "📦 步骤 1: 构建前端..."
-cd frontend/tft-builder
-echo "设置环境变量..."
-export VITE_API_BASE_URL=https://tft-smartcomp-b3f1e37435eb.herokuapp.com/api
-export VITE_USE_MOCK=false
 
-echo "安装依赖..."
-npm install
+# Step 1: Build frontend
+echo "📦 Step 1: Building frontend..."
+cd "${PROJECT_ROOT}/frontend/tft-builder"
 
-echo "构建生产版本..."
+if [ ! -d "node_modules" ]; then
+    echo "Installing npm dependencies..."
+    npm install
+fi
+
+echo "Building production bundle..."
+VITE_API_BASE_URL="https://${HEROKU_APP}-b3f1e37435eb.herokuapp.com/api" \
+VITE_USE_MOCK=false \
 npm run build
 
-# 2. 复制构建文件到 Rails public 目录
+if [ ! -f "dist/index.html" ]; then
+    echo "❌ Build failed: dist/index.html not found"
+    exit 1
+fi
+echo "✅ Frontend built successfully"
 echo ""
-echo "📋 步骤 2: 复制前端构建文件到 Rails public 目录..."
-cd ../..
+
+# Step 2: Copy assets to Rails public directory
+echo "📋 Step 2: Copying frontend assets to Rails..."
+cd "${PROJECT_ROOT}"
+
+# Clean old assets (keep tft-champion and tft-trait folders)
+find ruby_backend/tft_team_builder/public -maxdepth 1 -type f -delete
 rm -rf ruby_backend/tft_team_builder/public/assets
-rm -f ruby_backend/tft_team_builder/public/index.html
+
+# Copy new build
 cp -r frontend/tft-builder/dist/* ruby_backend/tft_team_builder/public/
-
-echo "✅ 前端文件已复制到: ruby_backend/tft_team_builder/public/"
-
-# 3. 更新 Rails 路由以服务 SPA
+echo "✅ Assets copied to ruby_backend/tft_team_builder/public/"
 echo ""
-echo "📝 步骤 3: 确保 Rails 配置正确..."
-# Rails 会自动服务 public 目录中的静态文件
 
-# 4. 提交更改
-echo ""
-echo "💾 步骤 4: 提交更改到 Git..."
+# Step 3: Commit to GitHub (optional but recommended)
+echo "💾 Step 3: Committing to GitHub..."
 git add ruby_backend/tft_team_builder/public/
-git commit -m "Add built frontend for Heroku deployment" || echo "没有新的更改需要提交"
+if git diff --cached --quiet; then
+    echo "No changes to commit"
+else
+    git commit -m "Update frontend build for deployment"
+    git push origin main
+    echo "✅ Pushed to GitHub"
+fi
+echo ""
 
-# 5. 部署到 Heroku
-echo ""
-echo "🚢 步骤 5: 部署到 Heroku..."
-git push heroku $(git subtree split --prefix ruby_backend/tft_team_builder main):main --force
+# Step 4: Deploy to Heroku using subdirectory push
+echo "🚢 Step 4: Deploying to Heroku..."
+cd "${PROJECT_ROOT}/ruby_backend/tft_team_builder"
 
+# Remove any existing git repo in subdirectory
+rm -rf .git
+
+# Initialize temporary git repo
+git init
+git add .
+git commit -m "Deploy to Heroku"
+
+# Force push to Heroku
+echo "Pushing to Heroku (this may take a few minutes)..."
+git push "${HEROKU_GIT_URL}" HEAD:main --force
+
+# Cleanup
+rm -rf .git
+
+cd "${PROJECT_ROOT}"
 echo ""
-echo "✨ 部署完成！"
+echo "✨ Deployment complete!"
 echo ""
-echo "📱 应用地址: https://tft-smartcomp-b3f1e37435eb.herokuapp.com/"
+echo "📱 App URL: https://${HEROKU_APP}-b3f1e37435eb.herokuapp.com/"
+echo "📊 Logs: heroku logs --tail --app ${HEROKU_APP}"
 echo ""
-echo "⚠️  注意: 如果页面显示不正确，请检查浏览器控制台的错误信息"
+echo "💡 Tips:"
+echo "   - Clear browser cache if UI doesn't update"
+echo "   - Check console for any errors"
+echo "   - Run 'heroku restart --app ${HEROKU_APP}' if needed"
