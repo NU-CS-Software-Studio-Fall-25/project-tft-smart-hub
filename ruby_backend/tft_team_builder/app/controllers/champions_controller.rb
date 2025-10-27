@@ -1,12 +1,12 @@
 class ChampionsController < ApplicationController
-  # è¿™ä¸ªæ–¹æ³•å¯¹åº” "è‹±é›„åˆ—è¡¨" é¡µé¢ (GET /champions)
+  # Õâ¸ö·½·¨¶ÔÓ¦ "Ó¢ÐÛÁÐ±í" Ò³Ãæ (GET /champions)
   def index
-    # ä»Žæ•°æ®åº“ä¸­èŽ·å–æ‰€æœ‰ Champion è®°å½•ï¼Œå¹¶æŒ‰è´¹ç”¨(tier)æŽ’åº
-    @champions = Champion.all.order(:tier)
+    # ´ÓÊý¾Ý¿âÖÐ»ñÈ¡ËùÓÐ Champion ¼ÇÂ¼£¬²¢°´·ÑÓÃ (tier) ÅÅÐò
+    @champions = Champion.for_set(params[:set]).ordered_for_picker
   end
 
-  # è¿™ä¸ªæ–¹æ³•å¯¹åº” "è‹±é›„è¯¦æƒ…" é¡µé¢ (GET /champions/:id)
-  # æˆ‘ä»¬ä¹‹åŽä¼šç”¨åˆ°
+  # Õâ¸ö·½·¨¶ÔÓ¦ "Ó¢ÐÛÏêÇé" Ò³Ãæ (GET /champions/:id)
+  # ÎÒÃÇÖ®ºó»áÓÃµ½
   def show
     @champion = Champion.find(params[:id])
   end

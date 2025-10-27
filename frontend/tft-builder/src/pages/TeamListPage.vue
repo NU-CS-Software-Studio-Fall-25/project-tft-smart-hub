@@ -29,14 +29,27 @@
           <div v-for="team in teams" :key="team.id" class="col">
             <div class="team-card card h-100 shadow-sm border-0">
               <div class="card-body d-flex flex-column">
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                  <div class="pe-3">
-                    <h2 class="h4 fw-semibold mb-1">{{ team.name }}</h2>
-                    <p class="text-body-secondary small mb-0">
-                      {{ truncate(team.description, 150) }}
+                <div class="team-card-header d-flex justify-content-between align-items-start mb-3">
+                  <div class="pe-3 flex-grow-1">
+                    <h2 class="h4 fw-semibold mb-2">{{ team.name }}</h2>
+                    <div class="team-card-tags" v-if="team.set || unitCount(team)">
+                      <span v-if="team.set" class="meta-pill">{{ formatSet(team.set) }}</span>
+                      <span v-if="unitCount(team)" class="meta-pill">{{ unitCount(team) }} units</span>
+                    </div>
+                    <ul
+                      v-if="descriptionSegments(team).length"
+                      class="team-description-list text-body-secondary small mb-0"
+                    >
+                      <li v-for="segment in descriptionSegments(team)" :key="segment.label || segment.value">
+                        <span v-if="segment.label" class="team-description-label">{{ segment.label }}</span>
+                        <span class="team-description-value">{{ summarize(segment.value, 120) }}</span>
+                      </li>
+                    </ul>
+                    <p v-else class="text-body-secondary small mb-0">
+                      {{ summarize(team.description, 140) }}
                     </p>
                   </div>
-                  <span class="badge bg-success-subtle text-success-emphasis fs-6">
+                  <span class="badge bg-success-subtle text-success-emphasis fs-6 win-pill">
                     Win {{ percentage(team.winRate) }}
                   </span>
                 </div>
@@ -59,12 +72,39 @@
                   </div>
                 </div>
 
-                <div class="d-flex justify-content-between align-items-center mt-4 small text-body-secondary">
-                  <div>
-                    <i class="bi bi-people me-1"></i>
-                    Play {{ percentage(team.playRate) }}
+                <div class="team-meta-row d-flex flex-wrap gap-3 align-items-center mt-4 small text-body-secondary">
+                  <div class="meta-item">
+                    <i class="bi bi-people"></i>
+                    <div>
+                      <div class="meta-label">Play rate</div>
+                      <div class="meta-value">{{ percentage(team.playRate) }}</div>
+                    </div>
                   </div>
-                  <div v-if="team.source">Source: {{ team.source }}</div>
+                  <div class="meta-item">
+                    <i class="bi bi-grid-3x3-gap"></i>
+                    <div>
+                      <div class="meta-label">Board size</div>
+                      <div class="meta-value">{{ unitCount(team) }} units</div>
+                    </div>
+                  </div>
+                  <div v-if="avgPlacement(team)" class="meta-item">
+                    <i class="bi bi-trophy"></i>
+                    <div>
+                      <div class="meta-label">Avg placement</div>
+                      <div class="meta-value">{{ avgPlacement(team) }}</div>
+                    </div>
+                  </div>
+                  <div v-if="playCount(team)" class="meta-item">
+                    <i class="bi bi-controller"></i>
+                    <div>
+                      <div class="meta-label">Games tracked</div>
+                      <div class="meta-value">{{ playCount(team) }}</div>
+                    </div>
+                  </div>
+                  <div class="meta-item meta-source" v-if="team.source">
+                    <div class="meta-label text-uppercase">Source</div>
+                    <div class="meta-value fw-semibold">{{ team.source }}</div>
+                  </div>
                 </div>
               </div>
               <div class="card-footer bg-white d-flex justify-content-between gap-3">
@@ -94,6 +134,7 @@ import { authStore } from '../stores/authStore'
 import { store as selectionStore } from '../stores/selectionStore'
 import { fetchTeamComps, deleteTeamComp } from '../services/api'
 import { teamStore } from '../stores/teamStore'
+import { extractDescriptionSegments } from '../utils/descriptionUtils'
 
 const loading = ref(false)
 
@@ -104,14 +145,46 @@ const createRoute = computed(() => (
   isAuthenticated.value ? { name: 'team-create' } : { name: 'login', query: { redirect: '/teams/new' } }
 ))
 
+const numberFormatter = new Intl.NumberFormat()
+
 const percentage = (value) => {
   if (value === null || value === undefined) return 'N/A'
   return (value * 100).toFixed(1) + '%'
 }
 
-const truncate = (text, limit) => {
+const summarize = (text, limit = 160) => {
   if (!text) return ''
-  return text.length > limit ? text.slice(0, limit) + '...' : text
+  return text.length > limit ? `${text.slice(0, limit)}…` : text
+}
+
+const formatSet = (set) => {
+  if (!set) return ''
+  const match = String(set).match(/TFT(\d+)/i)
+  return match ? `Set ${match[1]}` : set
+}
+
+const unitCount = (team) => {
+  if (!team) return 0
+  return team.size || team.championNames?.length || team.cards?.length || 0
+}
+
+const avgPlacement = (team) => {
+  const value = team?.meta?.avgPlacement
+  if (value === undefined || value === null) return null
+  const numeric = Number(value)
+  if (Number.isNaN(numeric)) return null
+  return numeric.toFixed(2)
+}
+
+const playCount = (team) => {
+  const value = team?.meta?.playCount
+  if (!value) return null
+  return numberFormatter.format(value)
+}
+
+const descriptionSegments = (team) => {
+  if (!team) return []
+  return extractDescriptionSegments(team.description).slice(0, 2)
 }
 
 const removeTeam = async (id) => {
@@ -127,10 +200,12 @@ const preview = (card) => {
 }
 
 onMounted(async () => {
-  if (teamStore.list.length) return
-  loading.value = true
+  const hadData = teamStore.list.length > 0
+  if (!hadData) {
+    loading.value = true
+  }
   try {
-    const data = await fetchTeamComps()
+    const data = await fetchTeamComps({ limit: 500 })
     teamStore.setTeams(data)
   } finally {
     loading.value = false
@@ -162,6 +237,83 @@ onMounted(async () => {
   border-radius: 14px;
   border: 3px solid rgba(184, 155, 94, 0.65);
   box-shadow: 0 4px 10px rgba(15, 23, 42, 0.35);
+}
+
+.team-meta-row {
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  padding-top: 0.75rem;
+}
+
+.team-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+
+.meta-pill {
+  background: rgba(13, 110, 253, 0.08);
+  color: #0d6efd;
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.team-description-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.team-description-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #5f6b81;
+  margin-right: 0.35rem;
+  font-weight: 700;
+}
+
+.team-description-value {
+  color: #4d5768;
+}
+
+.win-pill {
+  white-space: nowrap;
+}
+
+.meta-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.meta-item i {
+  font-size: 1.1rem;
+  color: #6c7385;
+  margin-top: 0.1rem;
+}
+
+.meta-source {
+  margin-left: auto;
+  text-align: right;
+  align-items: flex-end;
+}
+
+.meta-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #9aa3b8;
+}
+
+.meta-value {
+  font-weight: 600;
+  color: #212529;
 }
 </style>
 

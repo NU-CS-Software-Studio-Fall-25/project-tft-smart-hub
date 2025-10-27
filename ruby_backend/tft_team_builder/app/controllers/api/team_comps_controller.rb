@@ -7,8 +7,8 @@ module Api
     before_action :require_admin!, only: %i[update destroy]
 
     def index
-      comps = TeamComp.order(win_rate: :desc, created_at: :desc)
-      limit = params.fetch(:limit, 50).to_i.clamp(1, 100)
+      comps = team_comp_scope.order(win_rate: :desc, created_at: :desc)
+      limit = params.fetch(:limit, 50).to_i.clamp(1, 500)
       comps = comps.limit(limit)
 
       render json: comps.map { |comp| serialize(comp, include_cards: include_cards?) }
@@ -43,9 +43,9 @@ module Api
 
     def recommendations
       include_ids = extract_card_ids
-      include_names = Champion.where(id: include_ids).pluck(:name)
+      include_names = Champion.for_set(requested_set).where(id: include_ids).pluck(:name)
 
-      results = TeamComp.order(win_rate: :desc, created_at: :desc).map do |team_comp|
+      results = team_comp_scope.order(win_rate: :desc, created_at: :desc).map do |team_comp|
         names = team_comp.champion_names
         matches = (names & include_names)
 
@@ -99,13 +99,13 @@ module Api
     end
 
     def set_team_comp
-      @team_comp = TeamComp.find_by(id: params[:id])
+      @team_comp = team_comp_scope.find_by(id: params[:id])
       render_not_found("Team comp") unless @team_comp
     end
 
     def team_comp_attributes
       permitted = params.require(:team_comp).permit(:name, :description, :notes, :source, :win_rate, :play_rate,
-                                                    champion_ids: [], champion_names: [], champions: [])
+                                                    :set_identifier, champion_ids: [], champion_names: [], champions: [])
 
       names = Array(permitted.delete(:champion_names)).map(&:to_s)
       ids = Array(permitted.delete(:champion_ids)).map(&:to_i)
@@ -115,6 +115,7 @@ module Api
       permitted[:champions] = names.map(&:strip).reject(&:blank?).uniq.join(", ")
       permitted[:win_rate] = normalize_rate(permitted[:win_rate])
       permitted[:play_rate] = normalize_rate(permitted[:play_rate])
+      permitted[:set_identifier] = sanitized_set_identifier(permitted[:set_identifier])
 
       permitted
     end
@@ -130,6 +131,18 @@ module Api
     def extract_card_ids
       raw = params[:include_cards] || params[:include_card_ids] || params[:includeCards] || params[:includeCardIds]
       Array(raw).map { |value| value.to_i }.reject(&:zero?)
+    end
+
+    def sanitized_set_identifier(current_value)
+      current_value.presence || requested_set || @team_comp&.set_identifier || TeamComp::DEFAULT_SET_IDENTIFIER
+    end
+
+    def requested_set
+      params[:set].presence || params[:set_identifier].presence
+    end
+
+    def team_comp_scope
+      TeamComp.for_set(requested_set)
     end
   end
 end

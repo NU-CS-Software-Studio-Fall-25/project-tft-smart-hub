@@ -3,8 +3,8 @@ class TeamCompsController < ApplicationController
 
   # GET /team_comps or /team_comps.json
   def index
-    @team_comps = TeamComp.all
-    @champions_map = Champion.all.index_by(&:name)
+    @team_comps = TeamComp.for_set(params[:set])
+    @champions_map = Champion.for_set(params[:set]).ordered_for_picker.index_by(&:name)
   end
 
   # GET /team_comps/1 or /team_comps/1.json
@@ -16,7 +16,10 @@ class TeamCompsController < ApplicationController
 
     # 2. 根据名字数组，从数据库中一次性找出所有对应的英雄对象
     # 为了保持阵容顺序，我们需要对结果进行排序
-    @lineup_champions = Champion.where(name: champion_names).in_order_of(:name, champion_names)
+    @lineup_champions = Champion
+                          .for_set(@team_comp.set_identifier)
+                          .where(name: champion_names)
+                          .in_order_of(:name, champion_names)
 
     # 3. (进阶) 分析并统计所有激活的羁绊
     # .flat_map - 将所有英雄的羁绊字符串打散成一个大数组
@@ -27,12 +30,12 @@ class TeamCompsController < ApplicationController
   # GET /team_comps/new
   def new
     @team_comp = TeamComp.new
-    @champions = Champion.all.order(:tier, :name)
+    @champions = Champion.for_set(params[:set]).ordered_for_picker
   end
 
   # GET /team_comps/1/edit
   def edit
-    @champions = Champion.all.order(:tier, :name)
+    @champions = Champion.for_set(@team_comp.set_identifier).ordered_for_picker
   end
 
   # POST /team_comps or /team_comps.json
@@ -81,6 +84,6 @@ class TeamCompsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def team_comp_params
-      params.require(:team_comp).permit(:name, :description, :champions)
+      params.require(:team_comp).permit(:name, :description, :champions, :set_identifier)
     end
 end

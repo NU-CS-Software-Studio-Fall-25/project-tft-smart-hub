@@ -52,19 +52,23 @@
                 class="d-flex justify-content-between align-items-center border-bottom py-2"
               >
                 <div>
-                  <RouterLink :to="{ name: 'team-detail', params: { id: team.id } }">
+                  <RouterLink
+                    :to="{ name: 'team-detail', params: { id: team.id } }"
+                    @click.prevent="viewTeam(team.id)"
+                  >
                     {{ team.name }}
                   </RouterLink>
                   <div class="text-body-secondary">
                     Win {{ percentage(team.winRate) }} · Pick {{ percentage(team.playRate) }}
                   </div>
                 </div>
-                <RouterLink
+                <button
                   class="btn btn-sm btn-outline-primary"
-                  :to="{ name: 'team-detail', params: { id: team.id } }"
+                  type="button"
+                  @click="viewTeam(team.id)"
                 >
                   View
-                </RouterLink>
+                </button>
               </li>
             </ul>
           </div>
@@ -76,11 +80,12 @@
 
 <script setup>
 import { computed, onMounted, onBeforeUnmount } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import SpriteImage from './SpriteImage.vue'
 import { store as selectionStore } from '../stores/selectionStore'
 import { teamStore } from '../stores/teamStore'
 
+const router = useRouter()
 const champion = computed(() => selectionStore.focusedChampion)
 
 const teamsWithChampion = computed(() => {
@@ -97,6 +102,12 @@ const percentage = (value) => {
 
 const close = () => {
   selectionStore.clearFocusedChampion()
+}
+
+const viewTeam = (id) => {
+  if (!id) return
+  close()
+  router.push({ name: 'team-detail', params: { id } })
 }
 
 const onKeydown = (event) => {

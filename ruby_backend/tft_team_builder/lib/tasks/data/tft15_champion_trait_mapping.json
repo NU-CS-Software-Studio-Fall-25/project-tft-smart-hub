@@ -1,0 +1,454 @@
+[
+  {
+    "championId": "TFT15_Aatrox",
+    "traits": [
+      "Mighty Mech",
+      "Juggernaut",
+      "Heavyweight"
+    ]
+  },
+  {
+    "championId": "TFT15_Ahri",
+    "traits": [
+      "Star Guardian",
+      "Sorcerer"
+    ]
+  },
+  {
+    "championId": "TFT15_Akali",
+    "traits": [
+      "Supreme Cells",
+      "Executioner"
+    ]
+  },
+  {
+    "championId": "TFT15_Ashe",
+    "traits": [
+      "Crystal Gambit",
+      "Duelist"
+    ]
+  },
+  {
+    "championId": "TFT15_Braum",
+    "traits": [
+      "The Champ",
+      "Luchador",
+      "Bastion"
+    ]
+  },
+  {
+    "championId": "TFT15_Caitlyn",
+    "traits": [
+      "Battle Academia",
+      "Sniper"
+    ]
+  },
+  {
+    "championId": "TFT15_Darius",
+    "traits": [
+      "Supreme Cells",
+      "Heavyweight"
+    ]
+  },
+  {
+    "championId": "TFT15_Ezreal",
+    "traits": [
+      "Battle Academia",
+      "Prodigy"
+    ]
+  },
+  {
+    "championId": "TFT15_Garen",
+    "traits": [
+      "Battle Academia",
+      "Bastion"
+    ]
+  },
+  {
+    "championId": "TFT15_Gwen",
+    "traits": [
+      "Soul Fighter",
+      "Sorcerer"
+    ]
+  },
+  {
+    "championId": "TFT15_Janna",
+    "traits": [
+      "Crystal Gambit",
+      "Protector",
+      "Strategist"
+    ]
+  },
+  {
+    "championId": "TFT15_JarvanIV",
+    "traits": [
+      "Mighty Mech",
+      "Strategist"
+    ]
+  },
+  {
+    "championId": "TFT15_Jayce",
+    "traits": [
+      "Battle Academia",
+      "Heavyweight"
+    ]
+  },
+  {
+    "championId": "TFT15_Jhin",
+    "traits": [
+      "Wraith",
+      "Sniper"
+    ]
+  },
+  {
+    "championId": "TFT15_Jinx",
+    "traits": [
+      "Star Guardian",
+      "Sniper"
+    ]
+  },
+  {
+    "championId": "TFT15_KSante",
+    "traits": [
+      "Wraith",
+      "Protector"
+    ]
+  },
+  {
+    "championId": "TFT15_KaiSa",
+    "traits": [
+      "Supreme Cells",
+      "Duelist"
+    ]
+  },
+  {
+    "championId": "TFT15_Kalista",
+    "traits": [
+      "Soul Fighter",
+      "Executioner"
+    ]
+  },
+  {
+    "championId": "TFT15_Katarina",
+    "traits": [
+      "Battle Academia",
+      "Executioner"
+    ]
+  },
+  {
+    "championId": "TFT15_Kayle",
+    "traits": [
+      "Wraith",
+      "Duelist"
+    ]
+  },
+  {
+    "championId": "TFT15_Kennen",
+    "traits": [
+      "Supreme Cells",
+      "Protector",
+      "Sorcerer"
+    ]
+  },
+  {
+    "championId": "TFT15_Kobuko",
+    "traits": [
+      "Mentor",
+      "Heavyweight"
+    ]
+  },
+  {
+    "championId": "TFT15_LeeSin",
+    "traits": [
+      "Stance Master"
+    ]
+  },
+  {
+    "championId": "TFT15_Leona",
+    "traits": [
+      "Battle Academia",
+      "Bastion"
+    ]
+  },
+  {
+    "championId": "TFT15_Lulu",
+    "traits": [
+      "Monster Trainer"
+    ]
+  },
+  {
+    "championId": "TFT15_Lux",
+    "traits": [
+      "Soul Fighter",
+      "Sorcerer"
+    ]
+  },
+  {
+    "championId": "TFT15_Malphite",
+    "traits": [
+      "The Crew",
+      "Protector"
+    ]
+  },
+  {
+    "championId": "TFT15_Malzahar",
+    "traits": [
+      "Wraith",
+      "Prodigy"
+    ]
+  },
+  {
+    "championId": "TFT15_Naafiri",
+    "traits": [
+      "Soul Fighter",
+      "Juggernaut"
+    ]
+  },
+  {
+    "championId": "TFT15_Poppy",
+    "traits": [
+      "Star Guardian",
+      "Heavyweight"
+    ]
+  },
+  {
+    "championId": "TFT15_Rakan",
+    "traits": [
+      "Battle Academia",
+      "Protector"
+    ]
+  },
+  {
+    "championId": "TFT15_Rell",
+    "traits": [
+      "Star Guardian",
+      "Bastion"
+    ]
+  },
+  {
+    "championId": "TFT15_Ryze",
+    "traits": [
+      "Mentor",
+      "Executioner",
+      "Strategist"
+    ]
+  },
+  {
+    "championId": "TFT15_Samira",
+    "traits": [
+      "Soul Fighter",
+      "Edgelord"
+    ]
+  },
+  {
+    "championId": "TFT15_Seraphine",
+    "traits": [
+      "Star Guardian",
+      "Prodigy"
+    ]
+  },
+  {
+    "championId": "TFT15_Sett",
+    "traits": [
+      "Soul Fighter",
+      "Juggernaut"
+    ]
+  },
+  {
+    "championId": "TFT15_Swain",
+    "traits": [
+      "Crystal Gambit",
+      "Bastion",
+      "Sorcerer"
+    ]
+  },
+  {
+    "championId": "TFT15_Syndra",
+    "traits": [
+      "Crystal Gambit",
+      "Star Guardian",
+      "Prodigy"
+    ]
+  },
+  {
+    "championId": "TFT15_Udyr",
+    "traits": [
+      "Mentor",
+      "Juggernaut",
+      "Duelist"
+    ]
+  },
+  {
+    "championId": "TFT15_Varus",
+    "traits": [
+      "Wraith",
+      "Sniper"
+    ]
+  },
+  {
+    "championId": "TFT15_Viego",
+    "traits": [
+      "Soul Fighter",
+      "Duelist"
+    ]
+  },
+  {
+    "championId": "TFT15_Xayah",
+    "traits": [
+      "Star Guardian",
+      "Edgelord"
+    ]
+  },
+  {
+    "championId": "TFT15_XinZhao",
+    "traits": [
+      "Soul Fighter",
+      "Bastion"
+    ]
+  },
+  {
+    "championId": "TFT15_Yasuo",
+    "traits": [
+      "Mentor",
+      "Edgelord"
+    ]
+  },
+  {
+    "championId": "TFT15_Yone",
+    "traits": [
+      "Mighty Mech",
+      "Edgelord"
+    ]
+  },
+  {
+    "championId": "TFT15_Yuumi",
+    "traits": [
+      "Battle Academia",
+      "Prodigy"
+    ]
+  },
+  {
+    "championId": "TFT15_Zac",
+    "traits": [
+      "Wraith",
+      "Heavyweight"
+    ]
+  },
+  {
+    "championId": "TFT15_Ziggs",
+    "traits": [
+      "The Crew",
+      "Strategist"
+    ]
+  },
+  {
+    "championId": "TFT15_Volibear",
+    "traits": [
+      "Luchador",
+      "Edgelord"
+    ]
+  },
+  {
+    "championId": "TFT15_KogMaw",
+    "traits": [
+      "Monster Trainer"
+    ]
+  },
+  {
+    "championId": "TFT15_Smolder",
+    "traits": [
+      "Monster Trainer"
+    ]
+  },
+  {
+    "championId": "TFT15_Senna",
+    "traits": [
+      "Mighty Mech",
+      "Executioner"
+    ]
+  },
+  {
+    "championId": "TFT15_Lucian",
+    "traits": [
+      "Mighty Mech",
+      "Sorcerer"
+    ]
+  },
+  {
+    "championId": "TFT15_Gangplank",
+    "traits": [
+      "Mighty Mech",
+      "Duelist"
+    ]
+  },
+  {
+    "championId": "TFT15_DrMundo",
+    "traits": [
+      "Luchador",
+      "Juggernaut"
+    ]
+  },
+  {
+    "championId": "TFT15_Gnar",
+    "traits": [
+      "Luchador",
+      "Sniper"
+    ]
+  },
+  {
+    "championId": "TFT15_Karma",
+    "traits": [
+      "Mighty Mech",
+      "Sorcerer"
+    ]
+  },
+  {
+    "championId": "TFT15_Vi",
+    "traits": [
+      "Crystal Gambit",
+      "Juggernaut"
+    ]
+  },
+  {
+    "championId": "TFT15_Sivir",
+    "traits": [
+      "The Crew",
+      "Sniper"
+    ]
+  },
+  {
+    "championId": "TFT15_TwistedFate",
+    "traits": [
+      "Rogue Captain",
+      "The Crew"
+    ]
+  },
+  {
+    "championId": "TFT15_Shen",
+    "traits": [
+      "The Crew",
+      "Bastion",
+      "Edgelord"
+    ]
+  },
+  {
+    "championId": "TFT15_Rammus",
+    "traits": [
+      "Monster Trainer"
+    ]
+  },
+  {
+    "championId": "TFT15_Zyra",
+    "traits": [
+      "Crystal Gambit",
+      "Rosemother"
+    ]
+  },
+  {
+    "championId": "TFT15_Neeko",
+    "traits": [
+      "Star Guardian",
+      "Protector"
+    ]
+  }
+]

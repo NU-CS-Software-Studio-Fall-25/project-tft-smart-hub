@@ -59,7 +59,7 @@
 
     <section class="py-5 bg-body-secondary">
       <div class="container">
-        <h2 class="h3 fw-bold mb-4">Why use TFT Team Lab?</h2>
+        <h2 class="h3 fw-bold mb-4 section-heading">Why use TFT Team Lab?</h2>
         <div class="row g-4">
           <div v-for="feature in features" :key="feature.title" class="col-md-4">
             <div class="card h-100 shadow-sm border-0">
@@ -169,5 +169,23 @@ onMounted(async () => {
   display: grid;
   place-items: center;
   font-size: 1.25rem;
+}
+
+.section-heading {
+  color: #0b2255;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  position: relative;
+}
+
+.section-heading::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -0.3rem;
+  width: 72px;
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #f39c12, #ffdd57);
 }
 </style>

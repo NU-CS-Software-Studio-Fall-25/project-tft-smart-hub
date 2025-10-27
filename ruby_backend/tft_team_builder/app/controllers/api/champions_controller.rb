@@ -3,7 +3,7 @@
 module Api
   class ChampionsController < BaseController
     def index
-      champions = Champion.order(:tier, :name)
+      champions = Champion.for_set(requested_set).ordered_for_picker
       render json: champions.map { |champion| serialize(champion) }
     end
 
@@ -18,6 +18,10 @@ module Api
 
     def serialize(champion)
       ChampionSerializer.new(champion, request: request).as_json
+    end
+
+    def requested_set
+      params[:set].presence
     end
   end
 end

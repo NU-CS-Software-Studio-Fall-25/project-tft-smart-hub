@@ -11,8 +11,11 @@ class ChampionSerializer
   def as_json(_options = {})
     {
       id: champion.id,
+      apiId: champion.api_id,
+      set: champion.set_identifier,
       name: champion.name,
-      tier: champion.tier,
+      tier: champion.cost_value || champion.tier,
+      cost: champion.cost_value,
       traits: trait_names,
       imageUrl: absolute_asset(champion.image_url),
       sprite: sprite_payload
@@ -24,7 +27,7 @@ class ChampionSerializer
   attr_reader :champion, :request
 
   def trait_names
-    champion.traits.to_s.split(" / ").map(&:strip).reject(&:blank?)
+    champion.trait_names
   end
 
   def absolute_asset(path)
