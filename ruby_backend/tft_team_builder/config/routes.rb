@@ -17,4 +17,10 @@ Rails.application.routes.draw do
   end
 
   get "up" => "rails/health#show", as: :rails_health_check
+
+  # Serve Vue SPA - catch all routes and serve index.html
+  # This must be the last route
+  get "*path", to: "application#fallback_index_html", constraints: ->(request) do
+    !request.xhr? && request.format.html?
+  end
 end
