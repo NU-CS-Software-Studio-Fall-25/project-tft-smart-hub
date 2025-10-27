@@ -38,13 +38,13 @@
             Create Team
           </RouterLink>
 
-          <template v-if="isAuthenticated">
+          <template v-if="authStore.token && authStore.user">
             <RouterLink
               class="btn btn-outline-light"
               to="/profile"
             >
               <i class="bi bi-person-circle me-1"></i>
-              {{ displayName }}
+              {{ authStore.user.displayName || authStore.user.email }}
             </RouterLink>
 
             <button
@@ -86,19 +86,8 @@ const links = [
   { to: '/teams', label: 'Team Library', icon: 'bi-collection', match: '/teams' },
 ]
 
-const isAuthenticated = computed(() => {
-  const result = authStore.isAuthenticated()
-  console.debug('[AppNavbar] isAuthenticated:', result, {
-    token: !!authStore.token,
-    user: !!authStore.user
-  })
-  return result
-})
-
-const displayName = computed(() => authStore.user?.displayName || authStore.user?.email)
-
 const createTeamDestination = computed(() => (
-  isAuthenticated.value ? { name: 'team-create' } : { name: 'login', query: { redirect: '/teams/new' } }
+  (authStore.token && authStore.user) ? { name: 'team-create' } : { name: 'login', query: { redirect: '/teams/new' } }
 ))
 
 const isActive = (link) => {
@@ -112,6 +101,9 @@ const logout = () => {
 }
 
 onMounted(() => {
-  console.debug('[AppNavbar] Mounted')
+  console.debug('[AppNavbar] Mounted, auth state:', {
+    token: !!authStore.token,
+    user: !!authStore.user
+  })
 })
 </script>
