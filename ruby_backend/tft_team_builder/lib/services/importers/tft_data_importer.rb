@@ -3,8 +3,9 @@
 require "json"
 require "digest"
 
-module Importers
-  class TftDataImporter
+module Services
+  module Importers
+    class TftDataImporter
     CHAMPION_ID_PATTERN = /TFT\d+_[A-Za-z]+/.freeze
 
     def initialize(set_identifier: TeamComp::DEFAULT_SET_IDENTIFIER,
@@ -227,4 +228,5 @@ module Importers
       logger&.info("[tft-data-import] #{message}")
     end
   end
+end
 end
