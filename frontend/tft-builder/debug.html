@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TFT API Debug Tool</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #e0e0e0;
+        }
+        h1 { color: #4fc3f7; }
+        .test-section {
+            background: #2d2d2d;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 4px solid #4fc3f7;
+        }
+        button {
+            background: #4fc3f7;
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #29b6f6; }
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+        .result {
+            background: #1e1e1e;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 6px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success { color: #4caf50; }
+        .error { color: #f44336; }
+        .warning { color: #ff9800; }
+        .info { color: #2196f3; }
+    </style>
+</head>
+<body>
+    <h1>🔍 TFT Smart Hub - API Debug Tool</h1>
+    <p>This tool helps diagnose connectivity issues between the frontend and backend.</p>
+
+    <div class="test-section">
+        <h2>Test 1: Backend Server Status</h2>
+        <button onclick="testBackend()">Check Backend</button>
+        <div id="backend-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 2: CORS Configuration</h2>
+        <button onclick="testCORS()">Test CORS</button>
+        <div id="cors-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 3: Champions API</h2>
+        <button onclick="testChampions()">Fetch Champions</button>
+        <div id="champions-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 4: Team Comps API</h2>
+        <button onclick="testTeamComps()">Fetch Team Comps</button>
+        <div id="teamcomps-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 5: Full Integration Test</h2>
+        <button onclick="testAll()">Run All Tests</button>
+        <div id="all-result" class="result"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000';
+        
+        function log(elementId, message, type = 'info') {
+            const el = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            el.innerHTML += `<div class="${type}">[${timestamp}] ${message}</div>`;
+        }
+
+        function clear(elementId) {
+            document.getElementById(elementId).innerHTML = '';
+        }
+
+        async function testBackend() {
+            const resultId = 'backend-result';
+            clear(resultId);
+            log(resultId, 'Testing backend connectivity...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/champions`, {
+                    method: 'HEAD'
+                });
+                
+                if (response.ok) {
+                    log(resultId, `✓ Backend is ONLINE (Status: ${response.status})`, 'success');
+                } else {
+                    log(resultId, `✗ Backend returned error: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                log(resultId, `✗ Cannot reach backend: ${error.message}`, 'error');
+                log(resultId, 'Make sure Rails server is running on port 3000', 'warning');
+            }
+        }
+
+        async function testCORS() {
+            const resultId = 'cors-result';
+            clear(resultId);
+            log(resultId, 'Testing CORS configuration...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/champions`, {
+                    method: 'GET',
+                    headers: {
+                        'Origin': window.location.origin
+                    }
+                });
+                
+                const corsHeader = response.headers.get('access-control-allow-origin');
+                
+                if (corsHeader) {
+                    log(resultId, `✓ CORS is configured correctly`, 'success');
+                    log(resultId, `  Allowed origin: ${corsHeader}`, 'info');
+                } else {
+                    log(resultId, `✗ CORS header missing`, 'error');
+                }
+            } catch (error) {
+                log(resultId, `✗ CORS test failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function testChampions() {
+            const resultId = 'champions-result';
+            clear(resultId);
+            log(resultId, 'Fetching champions from API...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/champions`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                log(resultId, `✓ Successfully fetched ${data.length} champions`, 'success');
+                
+                if (data.length > 0) {
+                    const sample = data.slice(0, 5);
+                    log(resultId, '\nSample champions:', 'info');
+                    sample.forEach(champ => {
+                        log(resultId, `  • ${champ.name} (Tier ${champ.tier}, Cost ${champ.cost})`, 'info');
+                        log(resultId, `    Traits: ${champ.traits.join(', ')}`, 'info');
+                    });
+                } else {
+                    log(resultId, '⚠ No champions found in database!', 'warning');
+                    log(resultId, 'Run: bundle exec rails db:seed', 'warning');
+                }
+            } catch (error) {
+                log(resultId, `✗ Failed to fetch champions: ${error.message}`, 'error');
+            }
+        }
+
+        async function testTeamComps() {
+            const resultId = 'teamcomps-result';
+            clear(resultId);
+            log(resultId, 'Fetching team comps from API...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/team_comps?limit=5`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                log(resultId, `✓ Successfully fetched ${data.length} team comps`, 'success');
+                
+                if (data.length > 0) {
+                    log(resultId, '\nSample team comps:', 'info');
+                    data.forEach(team => {
+                        log(resultId, `  • ${team.name}`, 'info');
+                        if (team.winRate) {
+                            log(resultId, `    Win Rate: ${(team.winRate * 100).toFixed(1)}%`, 'info');
+                        }
+                        if (team.championNames && team.championNames.length > 0) {
+                            log(resultId, `    Champions: ${team.championNames.join(', ')}`, 'info');
+                        }
+                    });
+                } else {
+                    log(resultId, '⚠ No team comps found in database!', 'warning');
+                    log(resultId, 'Run: bundle exec rails db:seed', 'warning');
+                }
+            } catch (error) {
+                log(resultId, `✗ Failed to fetch team comps: ${error.message}`, 'error');
+            }
+        }
+
+        async function testAll() {
+            const resultId = 'all-result';
+            clear(resultId);
+            log(resultId, 'Running comprehensive diagnostic...', 'info');
+            log(resultId, '═══════════════════════════════════════\n', 'info');
+            
+            // Test 1: Backend
+            log(resultId, '1. Backend Server', 'info');
+            try {
+                const response = await fetch(`${API_BASE}/api/champions`, { method: 'HEAD' });
+                log(resultId, response.ok ? '   ✓ Online' : '   ✗ Offline', response.ok ? 'success' : 'error');
+            } catch (e) {
+                log(resultId, '   ✗ Cannot connect', 'error');
+            }
+            
+            // Test 2: CORS
+            log(resultId, '\n2. CORS Configuration', 'info');
+            try {
+                const response = await fetch(`${API_BASE}/api/champions`);
+                const corsHeader = response.headers.get('access-control-allow-origin');
+                log(resultId, corsHeader ? '   ✓ Configured' : '   ✗ Missing', corsHeader ? 'success' : 'error');
+            } catch (e) {
+                log(resultId, '   ✗ Test failed', 'error');
+            }
+            
+            // Test 3: Champions
+            log(resultId, '\n3. Champions Data', 'info');
+            try {
+                const response = await fetch(`${API_BASE}/api/champions`);
+                const data = await response.json();
+                log(resultId, `   ✓ ${data.length} champions loaded`, data.length > 0 ? 'success' : 'warning');
+            } catch (e) {
+                log(resultId, '   ✗ Failed to load', 'error');
+            }
+            
+            // Test 4: Team Comps
+            log(resultId, '\n4. Team Compositions', 'info');
+            try {
+                const response = await fetch(`${API_BASE}/api/team_comps`);
+                const data = await response.json();
+                log(resultId, `   ✓ ${data.length} team comps loaded`, data.length > 0 ? 'success' : 'warning');
+            } catch (e) {
+                log(resultId, '   ✗ Failed to load', 'error');
+            }
+            
+            log(resultId, '\n═══════════════════════════════════════', 'info');
+            log(resultId, '\n✅ Diagnostic complete!', 'success');
+            log(resultId, '\nIf all tests pass but the Vue app shows no data:', 'warning');
+            log(resultId, '1. Check browser console (F12) for JavaScript errors', 'warning');
+            log(resultId, '2. Check Network tab for failed API requests', 'warning');
+            log(resultId, '3. Ensure VITE_USE_MOCK=false in .env file', 'warning');
+            log(resultId, '4. Try hard refresh (Ctrl+Shift+R)', 'warning');
+        }
+
+        // Run initial test on load
+        window.addEventListener('load', () => {
+            setTimeout(testAll, 500);
+        });
+    </script>
+</body>
+</html>

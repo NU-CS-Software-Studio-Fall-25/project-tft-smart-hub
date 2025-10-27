@@ -72,7 +72,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { authStore } from '../stores/authStore'
 
@@ -85,8 +85,20 @@ const links = [
   { to: '/teams', label: 'Team Library', icon: 'bi-collection', match: '/teams' },
 ]
 
-const isAuthenticated = computed(() => authStore.isAuthenticated())
-const displayName = computed(() => authStore.user?.displayName || authStore.user?.email)
+// Force reactivity with a trigger
+const authTrigger = ref(0)
+
+const isAuthenticated = computed(() => {
+  // Access authTrigger to ensure reactivity
+  authTrigger.value
+  return authStore.isAuthenticated()
+})
+
+const displayName = computed(() => {
+  authTrigger.value
+  return authStore.user?.displayName || authStore.user?.email
+})
+
 const createTeamDestination = computed(() => (
   isAuthenticated.value ? { name: 'team-create' } : { name: 'login', query: { redirect: '/teams/new' } }
 ))
@@ -98,6 +110,13 @@ const isActive = (link) => {
 
 const logout = () => {
   authStore.logout()
+  authTrigger.value++
   router.push({ name: 'home' })
 }
+
+// Ensure auth state is loaded on mount
+onMounted(() => {
+  // Force a re-check of auth state
+  authTrigger.value++
+})
 </script>
