@@ -4,11 +4,6 @@ class ApplicationController < ActionController::Base
 
   # Fallback to serve Vue SPA for non-API routes
   def fallback_index_html
-    # Set cache control headers to prevent stale cached versions
-    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-    response.headers["Pragma"] = "no-cache"
-    response.headers["Expires"] = "0"
-    
-    render file: Rails.public_path.join("index.html")
+    render file: Rails.public_path.join("index.html"), layout: false
   end
 end

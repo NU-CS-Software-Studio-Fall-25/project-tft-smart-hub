@@ -72,7 +72,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref, watchEffect } from 'vue'
+import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { authStore } from '../stores/authStore'
 
@@ -85,27 +85,9 @@ const links = [
   { to: '/teams', label: 'Team Library', icon: 'bi-collection', match: '/teams' },
 ]
 
-// Force reactivity with multiple triggers
-const authTrigger = ref(0)
-const forceUpdate = ref(0)
+const isAuthenticated = computed(() => authStore.isAuthenticated())
 
-const isAuthenticated = computed(() => {
-  // Access both triggers to ensure reactivity
-  authTrigger.value
-  forceUpdate.value
-  const result = authStore.isAuthenticated()
-  console.log('[AppNavbar] isAuthenticated computed:', result, {
-    token: !!authStore.token,
-    user: !!authStore.user
-  })
-  return result
-})
-
-const displayName = computed(() => {
-  authTrigger.value
-  forceUpdate.value
-  return authStore.user?.displayName || authStore.user?.email
-})
+const displayName = computed(() => authStore.user?.displayName || authStore.user?.email)
 
 const createTeamDestination = computed(() => (
   isAuthenticated.value ? { name: 'team-create' } : { name: 'login', query: { redirect: '/teams/new' } }
@@ -118,35 +100,6 @@ const isActive = (link) => {
 
 const logout = () => {
   authStore.logout()
-  authTrigger.value++
-  forceUpdate.value++
   router.push({ name: 'home' })
 }
-
-// Watch for auth store changes
-watchEffect(() => {
-  console.log('[AppNavbar] Auth state changed:', {
-    token: !!authStore.token,
-    user: !!authStore.user,
-    initialized: authStore.initialized
-  })
-  forceUpdate.value++
-})
-
-// Ensure auth state is loaded on mount
-onMounted(() => {
-  console.log('[AppNavbar] Mounted, checking auth state...')
-  // Force multiple checks
-  authTrigger.value++
-  setTimeout(() => {
-    forceUpdate.value++
-    console.log('[AppNavbar] Delayed auth check:', {
-      token: !!authStore.token,
-      user: !!authStore.user
-    })
-  }, 100)
-  setTimeout(() => {
-    forceUpdate.value++
-  }, 500)
-})
 </script>

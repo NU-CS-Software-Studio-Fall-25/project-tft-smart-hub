@@ -11,19 +11,12 @@ import {
 const TOKEN_KEY = 'tft_auth_token'
 const USER_KEY = 'tft_auth_user'
 
-// Force immediate localStorage read on module load
-const persistedToken = (() => {
-  const token = localStorage.getItem(TOKEN_KEY)
-  console.log('[authStore] Initial token load:', token ? 'found' : 'not found')
-  return token
-})()
-
+// Read from localStorage synchronously on module load
+const persistedToken = localStorage.getItem(TOKEN_KEY)
 const persistedUser = (() => {
   try {
     const userStr = localStorage.getItem(USER_KEY)
-    const user = userStr ? JSON.parse(userStr) : null
-    console.log('[authStore] Initial user load:', user ? user.email : 'not found')
-    return user
+    return userStr ? JSON.parse(userStr) : null
   } catch (e) {
     console.warn('[auth] failed to parse stored user, clearing', e)
     localStorage.removeItem(USER_KEY)
@@ -33,7 +26,6 @@ const persistedUser = (() => {
 
 if (persistedToken) {
   setAuthToken(persistedToken)
-  console.log('[authStore] Token set in API client')
 }
 
 export const authStore = reactive({
@@ -41,7 +33,6 @@ export const authStore = reactive({
   user: persistedUser,
   loading: false,
   error: null,
-  initialized: true, // Flag to indicate store is ready
 
   async login(credentials) {
     this.loading = true
