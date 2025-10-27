@@ -72,7 +72,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { authStore } from '../stores/authStore'
 
@@ -85,17 +85,25 @@ const links = [
   { to: '/teams', label: 'Team Library', icon: 'bi-collection', match: '/teams' },
 ]
 
-// Force reactivity with a trigger
+// Force reactivity with multiple triggers
 const authTrigger = ref(0)
+const forceUpdate = ref(0)
 
 const isAuthenticated = computed(() => {
-  // Access authTrigger to ensure reactivity
+  // Access both triggers to ensure reactivity
   authTrigger.value
-  return authStore.isAuthenticated()
+  forceUpdate.value
+  const result = authStore.isAuthenticated()
+  console.log('[AppNavbar] isAuthenticated computed:', result, {
+    token: !!authStore.token,
+    user: !!authStore.user
+  })
+  return result
 })
 
 const displayName = computed(() => {
   authTrigger.value
+  forceUpdate.value
   return authStore.user?.displayName || authStore.user?.email
 })
 
@@ -111,12 +119,34 @@ const isActive = (link) => {
 const logout = () => {
   authStore.logout()
   authTrigger.value++
+  forceUpdate.value++
   router.push({ name: 'home' })
 }
 
+// Watch for auth store changes
+watchEffect(() => {
+  console.log('[AppNavbar] Auth state changed:', {
+    token: !!authStore.token,
+    user: !!authStore.user,
+    initialized: authStore.initialized
+  })
+  forceUpdate.value++
+})
+
 // Ensure auth state is loaded on mount
 onMounted(() => {
-  // Force a re-check of auth state
+  console.log('[AppNavbar] Mounted, checking auth state...')
+  // Force multiple checks
   authTrigger.value++
+  setTimeout(() => {
+    forceUpdate.value++
+    console.log('[AppNavbar] Delayed auth check:', {
+      token: !!authStore.token,
+      user: !!authStore.user
+    })
+  }, 100)
+  setTimeout(() => {
+    forceUpdate.value++
+  }, 500)
 })
 </script>
