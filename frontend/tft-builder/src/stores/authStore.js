@@ -28,11 +28,18 @@ if (persistedToken) {
   setAuthToken(persistedToken)
 }
 
+console.debug('[authStore] Module loaded:', { 
+  hasToken: !!persistedToken, 
+  hasUser: !!persistedUser,
+  userEmail: persistedUser?.email 
+})
+
 export const authStore = reactive({
   token: persistedToken,
   user: persistedUser,
   loading: false,
   error: null,
+  initialized: true,
 
   async login(credentials) {
     this.loading = true

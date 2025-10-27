@@ -38,33 +38,34 @@
             Create Team
           </RouterLink>
 
-          <RouterLink
-            v-if="isAuthenticated"
-            class="btn btn-outline-light"
-            to="/profile"
-          >
-            <i class="bi bi-person-circle me-1"></i>
-            {{ displayName }}
-          </RouterLink>
+          <template v-if="isAuthenticated">
+            <RouterLink
+              class="btn btn-outline-light"
+              to="/profile"
+            >
+              <i class="bi bi-person-circle me-1"></i>
+              {{ displayName }}
+            </RouterLink>
 
-          <button
-            v-if="isAuthenticated"
-            class="btn btn-outline-danger"
-            type="button"
-            @click="logout"
-          >
-            <i class="bi bi-box-arrow-right me-1"></i>
-            Logout
-          </button>
+            <button
+              class="btn btn-outline-danger"
+              type="button"
+              @click="logout"
+            >
+              <i class="bi bi-box-arrow-right me-1"></i>
+              Logout
+            </button>
+          </template>
 
-          <RouterLink
-            v-else
-            class="btn btn-outline-light"
-            :to="{ name: 'login' }"
-          >
-            <i class="bi bi-box-arrow-in-right me-1"></i>
-            Sign in
-          </RouterLink>
+          <template v-else>
+            <RouterLink
+              class="btn btn-outline-light"
+              :to="{ name: 'login' }"
+            >
+              <i class="bi bi-box-arrow-in-right me-1"></i>
+              Sign in
+            </RouterLink>
+          </template>
         </div>
       </div>
     </div>
@@ -72,7 +73,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { authStore } from '../stores/authStore'
 
@@ -85,7 +86,14 @@ const links = [
   { to: '/teams', label: 'Team Library', icon: 'bi-collection', match: '/teams' },
 ]
 
-const isAuthenticated = computed(() => authStore.isAuthenticated())
+const isAuthenticated = computed(() => {
+  const result = authStore.isAuthenticated()
+  console.debug('[AppNavbar] isAuthenticated:', result, {
+    token: !!authStore.token,
+    user: !!authStore.user
+  })
+  return result
+})
 
 const displayName = computed(() => authStore.user?.displayName || authStore.user?.email)
 
@@ -102,4 +110,8 @@ const logout = () => {
   authStore.logout()
   router.push({ name: 'home' })
 }
+
+onMounted(() => {
+  console.debug('[AppNavbar] Mounted')
+})
 </script>
