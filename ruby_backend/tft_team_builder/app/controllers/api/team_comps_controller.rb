@@ -7,11 +7,31 @@ module Api
     before_action :require_admin!, only: %i[update destroy]
 
     def index
-      comps = team_comp_scope.order(win_rate: :desc, created_at: :desc)
-      limit = params.fetch(:limit, 50).to_i.clamp(1, 500)
-      comps = comps.limit(limit)
+      scope = team_comp_scope.order(win_rate: :desc, created_at: :desc)
 
-      render json: comps.map { |comp| serialize(comp, include_cards: include_cards?) }
+      per_page = params.fetch(:per, params.fetch(:limit, 50)).to_i.clamp(1, 200)
+      page = params.fetch(:page, 1).to_i
+      page = 1 if page < 1
+
+      total_count = scope.count
+      total_pages = (total_count / per_page.to_f).ceil
+      offset = (page - 1) * per_page
+
+      comps = scope.offset(offset).limit(per_page)
+      payload = comps.map { |comp| serialize(comp, include_cards: include_cards?) }
+
+      render json: {
+        teams: payload,
+        meta: {
+          page:,
+          per: per_page,
+          total: total_count,
+          totalPages: total_pages,
+          hasMore: page < total_pages,
+          search: search_query.presence,
+          set: requested_set.presence
+        }.compact
+      }
     end
 
     def show
@@ -99,7 +119,7 @@ module Api
     end
 
     def set_team_comp
-      @team_comp = team_comp_scope.find_by(id: params[:id])
+      @team_comp = TeamComp.find_by(id: params[:id])
       render_not_found("Team comp") unless @team_comp
     end
 
@@ -142,7 +162,16 @@ module Api
     end
 
     def team_comp_scope
-      TeamComp.for_set(requested_set)
+      scope = TeamComp.for_set(requested_set)
+      if search_query.present?
+        term = "%#{search_query.downcase}%"
+        scope = scope.where("LOWER(name) LIKE :term OR LOWER(champions) LIKE :term", term:)
+      end
+      scope
+    end
+
+    def search_query
+      params[:search]&.to_s&.strip
     end
   end
 end

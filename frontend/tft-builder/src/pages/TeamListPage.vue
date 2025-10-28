@@ -14,120 +14,164 @@
         </RouterLink>
       </div>
 
-      <div v-if="loading" class="py-5 text-center">
+      <div class="row align-items-center g-3 mb-4">
+        <div class="col-lg-6">
+          <div class="input-group shadow-sm">
+            <span class="input-group-text bg-white text-secondary">
+              <i class="bi bi-search"></i>
+            </span>
+            <input
+              v-model="searchTerm"
+              class="form-control"
+              type="search"
+              placeholder="Search compositions or champion names"
+            />
+          </div>
+        </div>
+        <div class="col-lg-6 text-lg-end text-body-secondary small">
+          Showing {{ displayedCount }} of {{ totalCount }} team comps
+        </div>
+      </div>
+
+      <div v-if="loading && !teams.length" class="py-5 text-center">
         <div class="spinner-border"></div>
         <div class="mt-3 text-body-secondary">Loading team compositions...</div>
       </div>
 
       <div v-else>
         <div v-if="teams.length === 0" class="alert alert-info">
-          No team compositions saved yet. Create your first comp via the
-          <RouterLink to="/teams/new">team builder</RouterLink>.
+          <template v-if="searchActive">
+            No team compositions match "{{ searchTerm }}". Try different keywords or traits.
+          </template>
+          <template v-else>
+            No team compositions saved yet. Create your first comp via the
+            <RouterLink to="/teams/new">team builder</RouterLink>.
+          </template>
         </div>
 
-        <div v-else class="row g-4 row-cols-1 row-cols-lg-2">
-          <div v-for="team in teams" :key="team.id" class="col">
-            <div class="team-card card h-100 shadow-sm border-0">
-              <div class="card-body d-flex flex-column">
-                <div class="team-card-header d-flex justify-content-between align-items-start mb-3">
-                  <div class="pe-3 flex-grow-1">
-                    <h2 class="h4 fw-semibold mb-2">{{ team.name }}</h2>
-                    <div class="team-card-tags" v-if="team.set || unitCount(team)">
-                      <span v-if="team.set" class="meta-pill">{{ formatSet(team.set) }}</span>
-                      <span v-if="unitCount(team)" class="meta-pill">{{ unitCount(team) }} units</span>
+        <template v-else>
+          <div class="row g-4 row-cols-1 row-cols-lg-2">
+            <div v-for="team in teams" :key="team.id" class="col">
+              <div class="team-card card h-100 shadow-sm border-0">
+                <div class="card-body d-flex flex-column">
+                  <div class="team-card-header d-flex justify-content-between align-items-start mb-3">
+                    <div class="pe-3 flex-grow-1">
+                      <h2 class="h4 fw-semibold mb-2">{{ team.name }}</h2>
+                      <div class="team-card-tags" v-if="team.set || unitCount(team)">
+                        <span v-if="team.set" class="meta-pill">{{ formatSet(team.set) }}</span>
+                        <span v-if="unitCount(team)" class="meta-pill">{{ unitCount(team) }} units</span>
+                      </div>
+                      <ul
+                        v-if="descriptionSegments(team).length"
+                        class="team-description-list text-body-secondary small mb-0"
+                      >
+                        <li v-for="segment in descriptionSegments(team)" :key="segment.label || segment.value">
+                          <span v-if="segment.label" class="team-description-label">{{ segment.label }}</span>
+                          <span class="team-description-value">{{ summarize(segment.value, 120) }}</span>
+                        </li>
+                      </ul>
+                      <p v-else class="text-body-secondary small mb-0">
+                        {{ summarize(team.description, 140) }}
+                      </p>
                     </div>
-                    <ul
-                      v-if="descriptionSegments(team).length"
-                      class="team-description-list text-body-secondary small mb-0"
+                    <span class="badge bg-success-subtle text-success-emphasis fs-6 win-pill">
+                      Win {{ percentage(team.winRate) }}
+                    </span>
+                  </div>
+
+                  <div class="team-card-strip horizontal-scroll d-flex gap-3 pb-2">
+                    <div
+                      v-for="card in team.cards"
+                      :key="`${team.id}-${card.id}`"
+                      class="mini-card"
+                      :title="card.name"
+                      @contextmenu.prevent="preview(card)"
                     >
-                      <li v-for="segment in descriptionSegments(team)" :key="segment.label || segment.value">
-                        <span v-if="segment.label" class="team-description-label">{{ segment.label }}</span>
-                        <span class="team-description-value">{{ summarize(segment.value, 120) }}</span>
-                      </li>
-                    </ul>
-                    <p v-else class="text-body-secondary small mb-0">
-                      {{ summarize(team.description, 140) }}
-                    </p>
+                      <SpriteImage
+                        :sprite="card.sprite"
+                        :image-url="card.imageUrl"
+                        :alt="card.name"
+                        :size="72"
+                        class-name="mini-card-img"
+                      />
+                    </div>
                   </div>
-                  <span class="badge bg-success-subtle text-success-emphasis fs-6 win-pill">
-                    Win {{ percentage(team.winRate) }}
-                  </span>
-                </div>
 
-                <div class="team-card-strip horizontal-scroll d-flex gap-3 pb-2">
-                  <div
-                    v-for="card in team.cards"
-                    :key="`${team.id}-${card.id}`"
-                    class="mini-card"
-                    :title="card.name"
-                    @contextmenu.prevent="preview(card)"
+                  <div class="team-meta-row d-flex flex-wrap gap-3 align-items-center mt-4 small text-body-secondary">
+                    <div class="meta-item">
+                      <i class="bi bi-people"></i>
+                      <div>
+                        <div class="meta-label">Play rate</div>
+                        <div class="meta-value">{{ percentage(team.playRate) }}</div>
+                      </div>
+                    </div>
+                    <div class="meta-item">
+                      <i class="bi bi-grid-3x3-gap"></i>
+                      <div>
+                        <div class="meta-label">Board size</div>
+                        <div class="meta-value">{{ unitCount(team) }} units</div>
+                      </div>
+                    </div>
+                    <div v-if="avgPlacement(team)" class="meta-item">
+                      <i class="bi bi-trophy"></i>
+                      <div>
+                        <div class="meta-label">Avg placement</div>
+                        <div class="meta-value">{{ avgPlacement(team) }}</div>
+                      </div>
+                    </div>
+                    <div v-if="playCount(team)" class="meta-item">
+                      <i class="bi bi-controller"></i>
+                      <div>
+                        <div class="meta-label">Games tracked</div>
+                        <div class="meta-value">{{ playCount(team) }}</div>
+                      </div>
+                    </div>
+                    <div class="meta-item meta-source" v-if="team.source">
+                      <div class="meta-label text-uppercase">Source</div>
+                      <div class="meta-value fw-semibold">{{ team.source }}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer bg-white d-flex justify-content-between gap-3">
+                  <RouterLink
+                    class="btn btn-sm btn-outline-primary flex-grow-1"
+                    :to="{ name: 'team-detail', params: { id: team.id } }"
                   >
-                    <SpriteImage
-                      :sprite="card.sprite"
-                      :image-url="card.imageUrl"
-                      :alt="card.name"
-                      :size="72"
-                      class-name="mini-card-img"
-                    />
-                  </div>
+                    View details
+                  </RouterLink>
+                  <button v-if="isAdmin" class="btn btn-sm btn-outline-danger" @click="removeTeam(team.id)">
+                    <i class="bi bi-trash"></i>
+                  </button>
                 </div>
-
-                <div class="team-meta-row d-flex flex-wrap gap-3 align-items-center mt-4 small text-body-secondary">
-                  <div class="meta-item">
-                    <i class="bi bi-people"></i>
-                    <div>
-                      <div class="meta-label">Play rate</div>
-                      <div class="meta-value">{{ percentage(team.playRate) }}</div>
-                    </div>
-                  </div>
-                  <div class="meta-item">
-                    <i class="bi bi-grid-3x3-gap"></i>
-                    <div>
-                      <div class="meta-label">Board size</div>
-                      <div class="meta-value">{{ unitCount(team) }} units</div>
-                    </div>
-                  </div>
-                  <div v-if="avgPlacement(team)" class="meta-item">
-                    <i class="bi bi-trophy"></i>
-                    <div>
-                      <div class="meta-label">Avg placement</div>
-                      <div class="meta-value">{{ avgPlacement(team) }}</div>
-                    </div>
-                  </div>
-                  <div v-if="playCount(team)" class="meta-item">
-                    <i class="bi bi-controller"></i>
-                    <div>
-                      <div class="meta-label">Games tracked</div>
-                      <div class="meta-value">{{ playCount(team) }}</div>
-                    </div>
-                  </div>
-                  <div class="meta-item meta-source" v-if="team.source">
-                    <div class="meta-label text-uppercase">Source</div>
-                    <div class="meta-value fw-semibold">{{ team.source }}</div>
-                  </div>
-                </div>
-              </div>
-              <div class="card-footer bg-white d-flex justify-content-between gap-3">
-                <RouterLink
-                  class="btn btn-sm btn-outline-primary flex-grow-1"
-                  :to="{ name: 'team-detail', params: { id: team.id } }"
-                >
-                  View details
-                </RouterLink>
-                <button v-if="isAdmin" class="btn btn-sm btn-outline-danger" @click="removeTeam(team.id)">
-                  <i class="bi bi-trash"></i>
-                </button>
               </div>
             </div>
           </div>
-        </div>
+
+          <div class="text-center mt-4">
+            <button
+              v-if="hasMore"
+              class="btn btn-outline-primary"
+              :disabled="isLoadingMore"
+              @click="loadMore"
+            >
+              <span v-if="!isLoadingMore">Load more</span>
+              <span v-else class="d-flex align-items-center justify-content-center gap-2">
+                <span class="spinner-border spinner-border-sm"></span>
+                Loading
+              </span>
+            </button>
+            <div v-else class="text-body-secondary small">
+              Showing all {{ totalCount }} team compositions.
+            </div>
+          </div>
+        </template>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import SpriteImage from '../components/SpriteImage.vue'
 import { authStore } from '../stores/authStore'
@@ -137,13 +181,24 @@ import { teamStore } from '../stores/teamStore'
 import { extractDescriptionSegments } from '../utils/descriptionUtils'
 
 const loading = ref(false)
+const isLoadingMore = ref(false)
+const searchTerm = ref('')
+const page = ref(1)
+const perPage = 60
+const hasMore = ref(true)
+const debounceDelay = 350
+let searchTimeoutId
+const hasMounted = ref(false)
 
 const teams = computed(() => teamStore.list)
+const totalCount = computed(() => teamStore.meta?.total ?? teamStore.list.length)
+const displayedCount = computed(() => teams.value.length)
 const isAuthenticated = computed(() => authStore.isAuthenticated())
 const isAdmin = computed(() => authStore.isAdmin())
 const createRoute = computed(() => (
   isAuthenticated.value ? { name: 'team-create' } : { name: 'login', query: { redirect: '/teams/new' } }
 ))
+const searchActive = computed(() => searchTerm.value.trim().length > 0)
 
 const numberFormatter = new Intl.NumberFormat()
 
@@ -154,7 +209,7 @@ const percentage = (value) => {
 
 const summarize = (text, limit = 160) => {
   if (!text) return ''
-  return text.length > limit ? `${text.slice(0, limit)}…` : text
+  return text.length > limit ? `${text.slice(0, limit)}...` : text
 }
 
 const formatSet = (set) => {
@@ -187,6 +242,56 @@ const descriptionSegments = (team) => {
   return extractDescriptionSegments(team.description).slice(0, 2)
 }
 
+const buildParams = (targetPage) => {
+  const params = {
+    page: targetPage,
+    per: perPage,
+  }
+  const query = searchTerm.value.trim()
+  if (query) {
+    params.search = query
+  }
+  return params
+}
+
+const loadTeams = async ({ reset = false, page: targetPage } = {}) => {
+  const requestedPage = targetPage || (reset ? 1 : page.value)
+  const params = buildParams(requestedPage)
+  const { teams: newTeams, meta } = await fetchTeamComps(params)
+
+  if (reset) {
+    teamStore.setTeams(newTeams, meta)
+  } else {
+    teamStore.appendTeams(newTeams, meta)
+  }
+
+  page.value = meta?.page || requestedPage
+  const per = meta?.per || perPage
+  const total = meta?.total ?? totalCount.value
+  const totalPages = meta?.totalPages || Math.max(1, Math.ceil(total / per))
+  hasMore.value = typeof meta?.hasMore === 'boolean' ? meta.hasMore : page.value < totalPages
+}
+
+const loadInitial = async () => {
+  loading.value = true
+  try {
+    await loadTeams({ reset: true, page: 1 })
+  } finally {
+    loading.value = false
+    hasMounted.value = true
+  }
+}
+
+const loadMore = async () => {
+  if (!hasMore.value || isLoadingMore.value) return
+  isLoadingMore.value = true
+  try {
+    await loadTeams({ reset: false, page: page.value + 1 })
+  } finally {
+    isLoadingMore.value = false
+  }
+}
+
 const removeTeam = async (id) => {
   if (!isAdmin.value) return
   const confirmed = window.confirm('Remove this team from your library?')
@@ -199,17 +304,32 @@ const preview = (card) => {
   selectionStore.focusChampion(card)
 }
 
+watch(
+  () => searchTerm.value,
+  () => {
+    if (!hasMounted.value) return
+    if (searchTimeoutId) {
+      clearTimeout(searchTimeoutId)
+    }
+    searchTimeoutId = setTimeout(async () => {
+      loading.value = true
+      try {
+        await loadTeams({ reset: true, page: 1 })
+      } finally {
+        loading.value = false
+      }
+    }, debounceDelay)
+  }
+)
+
+onBeforeUnmount(() => {
+  if (searchTimeoutId) {
+    clearTimeout(searchTimeoutId)
+  }
+})
+
 onMounted(async () => {
-  const hadData = teamStore.list.length > 0
-  if (!hadData) {
-    loading.value = true
-  }
-  try {
-    const data = await fetchTeamComps({ limit: 500 })
-    teamStore.setTeams(data)
-  } finally {
-    loading.value = false
-  }
+  await loadInitial()
 })
 </script>
 
@@ -316,7 +436,3 @@ onMounted(async () => {
   color: #212529;
 }
 </style>
-
-
-
-

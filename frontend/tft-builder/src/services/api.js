@@ -93,11 +93,26 @@ export async function fetchRecommendations(includeCards) {
 export async function fetchTeamComps(params = {}) {
   const searchParams = new URLSearchParams()
   if (params.limit) searchParams.set('limit', params.limit)
+  if (params.per) searchParams.set('per', params.per)
+  if (params.page) searchParams.set('page', params.page)
+  if (params.search) searchParams.set('search', params.search)
   if (params.include_cards === false) searchParams.set('include_cards', 'false')
 
   const path = `/team_comps${searchParams.toString() ? `?${searchParams.toString()}` : ''}`
   const { data } = await http.get(path)
-  return data.map(normalizeTeam)
+
+  if (Array.isArray(data)) {
+    return {
+      teams: data.map(normalizeTeam),
+      meta: {},
+    }
+  }
+
+  const teams = Array.isArray(data?.teams) ? data.teams : []
+  return {
+    teams: teams.map(normalizeTeam),
+    meta: data?.meta || {},
+  }
 }
 
 export async function fetchTeamComp(id) {

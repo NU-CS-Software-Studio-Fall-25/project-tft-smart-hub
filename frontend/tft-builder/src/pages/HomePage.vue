@@ -128,8 +128,8 @@ onMounted(async () => {
     selectionStore.setAllCards(cards)
   }
   if (!teamStore.list.length) {
-    const teams = await fetchTeamComps({ limit: 6 })
-    teamStore.setTeams(teams)
+    const { teams, meta } = await fetchTeamComps({ limit: 6 })
+    teamStore.setTeams(teams, meta)
   }
 })
 </script>

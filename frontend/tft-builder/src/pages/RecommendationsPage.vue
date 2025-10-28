@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="page-white">
     <div class="container py-5">
       <div class="d-flex justify-content-between align-items-center mb-4">
@@ -97,14 +97,15 @@
                     class="recommendation-card-tile"
                     @contextmenu.prevent="preview(card)"
                   >
-                    <SpriteImage
-                      :sprite="card.sprite"
-                      :image-url="card.imageUrl"
-                      :alt="card.name"
-                      :size="72"
-                      class-name="tft-card-img"
-                    />
-                    <div class="tft-card-name text-dark">{{ card.name }}</div>
+                    <div class="recommendation-card-img">
+                      <SpriteImage
+                        :sprite="card.sprite"
+                        :image-url="card.imageUrl"
+                        :alt="card.name"
+                        :size="72"
+                      />
+                    </div>
+                    <div class="recommendation-card-name">{{ card.name }}</div>
                   </div>
                 </div>
 
@@ -229,3 +230,4 @@ onMounted(async () => {
   }
 })
 </script>
+
