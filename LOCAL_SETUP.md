@@ -312,9 +312,11 @@ kill -9 <PID>
 
 ### **问题 3: 数据库连接错误**
 
-**错误信息**: `could not connect to server: Connection refused`
+**错误信息**: `could not connect to server: Connection refused` 或 `Peer authentication failed`
 
 **解决方案**:
+
+**情况 1: PostgreSQL 服务未启动**
 ```bash
 # 启动 PostgreSQL 服务
 # Ubuntu/Debian
@@ -325,6 +327,32 @@ brew services start postgresql
 
 # Windows
 # 从服务管理器启动 PostgreSQL 服务
+```
+
+**情况 2: 数据库配置错误（Peer authentication failed）**
+
+如果看到 `Peer authentication failed for user "myr"` 或类似错误，说明 `database.yml` 配置不正确。
+
+检查 `ruby_backend/tft_team_builder/config/database.yml` 文件：
+
+```yaml
+# 正确的本地开发配置（不需要用户名和密码）
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development:
+  <<: *default
+  database: tft_team_builder_development
+```
+
+**不要在 development 环境中添加 `username` 和 `password` 字段**，PostgreSQL 在本地使用 peer 认证。
+
+修复后重启服务：
+```bash
+./stop-dev.sh
+./start-dev.sh
 ```
 
 ---
