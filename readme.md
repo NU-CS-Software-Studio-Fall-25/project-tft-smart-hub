@@ -2,29 +2,48 @@
 
 A modern web platform for analyzing and visualizing TFT team compositions, inspired by [tftactics.gg](https://tftactics.gg) and [tactics.tools](https://tactics.tools).
 
-The key feature that different from the above webs it that this website higight the composition recommendation function: user input their current, incompelete composition, and click the search/recommend button. And then the web recommend some compositions that have the following features:
-1. high win-rate (so that user can win the game)
-2. relevent to user's current composition (have overlap units or same trait so that the user can achieve that ultimate high win-rate composition easily and do not need to start from scratch. The give of units each refresh is random so that recommend based on the user's current hava units is better than recomment a composition that all the units the user do not have)
-3. is achievable (some compositions is high win-rate but it is very expensive or require some essmble or hard rquirement that the user can not meet in each round. The recommened high win-rate compositions should be achievable)
-4. personal (sometimes the user meet some toguh reqirement e.g. have some essmble, or have some strong item or have some strong hexs. At this time the recommendation should be able to not waste the user's currrent advantage)
+Unlike existing tools, TFT Smart Hub focuses on personalized team composition recommendations — helping players find optimal builds based on their current incomplete board and game state.
 
-There are two types of composition. One is provided by the website, it is obtained by the statistics of the real-world match data, and ontains statistics like win-rate or so. Another type is created by users, it may contains the comment, the 前中后期过度. These two types should be splited. 
+## Smart Composition Recommendation
 
-## Layout
-The webs should have the follwoing navitagtion tabs or buttons or so
-1. Recommendation (core function): a tab
-descriptions: 
+Users input their current (incomplete) composition, then click "Recommend" to receive a list of possible compositions that are:
 
-2. Chanpion list (may support some sort or filter) a tab
+1. High win-rate
+Derived from real match data; these comps statistically perform well across many games.
 
-3. Item list (may support some sort or filter) a tab
+2. Relevant to the user’s current team
+Shares units or traits with the current board, making it easy to pivot toward strong comps without starting from scratch.
+(This matters because unit rolls are random, so overlapping units increase achievability.)
 
-4. User related: 
-after log in, the user can:
-    - Save the recommended comps (type 1)
-    - Create their own comps (type 2)
-    - View the saved comps (both type 1 and type 2, but splited)
+Achievable
+3. Avoids recommending unrealistic builds (too expensive, too item-dependent, or requiring rare augments).
+Focuses on comps the player can actually reach in the current stage of the game.
 
-4. (future) Composisions library (list all compositions, both type 1 and type 2 , and user can leave comments or like or save the compositions, also , the two types should be splited show(buton to swith between two views maybe) )
+4. Personalized (future)
+Considers unique player advantages such as specific items, augments (hexes), or emblems, to avoid wasting current strengths.
+
+## Composition Types
+
+There are two distinct sources of team compositions:
+1. Statistical: Curated by the website using aggregated real match data. Includes metrics such as win rate, average placement, and popularity.
+
+2. User-Created: Submitted by community members. Can include descriptions, notes, and early/mid/late game transitions.
+
+
+Section	Description
+1. Recommendation (Core)	Central feature. Users input their current team, and the system recommends best achievable compositions.
+
+2. Champion List	Displays all champions with filters and sorting (e.g., by cost, trait, tier).
+
+3. Item List	Shows all items and combinations; supports filtering and sorting by type, tier, or usage rate.
+
+4. User Section	After logging in, users can:
+• Save recommended (Type 1) compositions
+• Create their own (Type 2) compositions
+• View and manage saved comps (separated by type).
+
+5. (Future) Composition Library	A global gallery of all comps (both Type 1 & 2).
+Users can browse, like, comment, and save.
+Includes a toggle between "Official" and "User-Created" comps.
 
 
