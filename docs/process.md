@@ -14,3 +14,4 @@
     pnpm create next-app tft-smart-hub \ --ts --eslint --tailwind --app --src-dir --use-pnpm --import-alias "@/*"
     ```
 
+4. Learn React turotial
