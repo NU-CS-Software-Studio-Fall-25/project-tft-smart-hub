@@ -56,3 +56,7 @@ curl https://tft-smartcomp-b3f1e37435eb.herokuapp.com/500.html
 https://tft-smartcomp-b3f1e37435eb.herokuapp.com/500.html
 
 
+### PWA
+done
+
+
