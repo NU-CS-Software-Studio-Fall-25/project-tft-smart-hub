@@ -9,25 +9,27 @@ module Api
     def index
       scope = team_comp_scope.order(win_rate: :desc, created_at: :desc)
 
-      per_page = params.fetch(:per, params.fetch(:limit, 50)).to_i.clamp(1, 200)
-      page = params.fetch(:page, 1).to_i
-      page = 1 if page < 1
+      # Use Pagy for pagination (default 10 items per page from initializer)
+      # Allow override with per/limit param, clamped to 1-200
+      items_per_page = params.fetch(:per, params.fetch(:limit, 10)).to_i.clamp(1, 200)
+      pagy, comps = pagy(scope, limit: items_per_page)
 
-      total_count = scope.count
-      total_pages = (total_count / per_page.to_f).ceil
-      offset = (page - 1) * per_page
+      # Preload all champions for this set to avoid N+1 queries
+      preload_champions_for_set(comps) if include_cards?
 
-      comps = scope.offset(offset).limit(per_page)
       payload = comps.map { |comp| serialize(comp, include_cards: include_cards?) }
+
+      # Set cache headers (5 minutes for team list)
+      expires_in 5.minutes, public: true
 
       render json: {
         teams: payload,
         meta: {
-          page:,
-          per: per_page,
-          total: total_count,
-          totalPages: total_pages,
-          hasMore: page < total_pages,
+          page: pagy.page,
+          per: pagy.limit,
+          total: pagy.count,
+          totalPages: pagy.pages,
+          hasMore: pagy.page < pagy.pages,
           search: search_query.presence,
           set: requested_set.presence
         }.compact
@@ -172,6 +174,27 @@ module Api
 
     def search_query
       params[:search]&.to_s&.strip
+    end
+
+    def preload_champions_for_set(comps)
+      return if comps.empty?
+
+      # Collect all unique champion names from all team comps
+      all_champion_names = comps.flat_map(&:champion_names).uniq
+      return if all_champion_names.empty?
+
+      # Single query to fetch all champions
+      set = comps.first.set_identifier
+      champions_hash = Champion.for_set(set)
+                              .where(name: all_champion_names)
+                              .index_by(&:name)
+
+      # Cache champions in each team_comp instance
+      comps.each do |comp|
+        comp.instance_variable_set(:@champion_records_cache, 
+          comp.champion_names.map { |name| champions_hash[name] }.compact
+        )
+      end
     end
   end
 end

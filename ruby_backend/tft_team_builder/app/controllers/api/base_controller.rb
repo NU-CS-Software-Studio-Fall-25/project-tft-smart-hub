@@ -3,6 +3,7 @@ require "uri"
 module Api
   class BaseController < ActionController::API
     include ActionController::MimeResponds
+    include Pagy::Backend
 
     attr_reader :current_user
 

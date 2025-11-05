@@ -184,7 +184,7 @@ const loading = ref(false)
 const isLoadingMore = ref(false)
 const searchTerm = ref('')
 const page = ref(1)
-const perPage = 60
+const perPage = 10  // Changed from 60 to 10 for Pagy pagination
 const hasMore = ref(true)
 const debounceDelay = 350
 let searchTimeoutId

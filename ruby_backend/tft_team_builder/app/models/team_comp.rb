@@ -14,6 +14,9 @@ class TeamComp < ApplicationRecord
   end
 
   def champion_records
+    # Use cached records if available (set by controller preloading)
+    return @champion_records_cache if defined?(@champion_records_cache)
+
     names = champion_names
     return [] if names.empty?
 
