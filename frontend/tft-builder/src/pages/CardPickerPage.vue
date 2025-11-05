@@ -1,7 +1,9 @@
 <template>
   <div class="page-dark-hero d-flex flex-column">
-    <div class="container py-4 flex-grow-1 d-flex flex-column">
-      <div class="row align-items-center g-3 mb-3">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <main id="main-content" class="container py-4 flex-grow-1 d-flex flex-column">
+      <header class="row align-items-center g-3 mb-3">
         <div class="col-lg-8">
           <h1 class="text-light fw-bold mb-0">Champion Synergy Search</h1>
         </div>
@@ -10,18 +12,19 @@
             class="btn btn-outline-light btn-sm"
             :disabled="selectedCount === 0"
             @click="clearSelection"
+            aria-label="Clear all selected champions"
           >
-            <i class="bi bi-eraser me-1"></i>
+            <i class="bi bi-eraser me-1" aria-hidden="true"></i>
             Clear selection
           </button>
         </div>
-      </div>
+      </header>
 
-      <div class="glass-search mb-3">
+      <section aria-labelledby="selected-champions-heading" class="glass-search mb-3">
         <div class="d-flex align-items-center justify-content-between mb-2">
-          <label class="form-label text-uppercase small text-secondary fw-semibold mb-0">
+          <h2 id="selected-champions-heading" class="form-label text-uppercase small text-secondary fw-semibold mb-0">
             Selected champions
-          </label>
+          </h2>
           <div class="d-flex gap-2">
             <span class="badge bg-secondary-subtle text-secondary-emphasis small">
               {{ selectedCount }} / {{ cards.length }}
@@ -68,13 +71,13 @@
             </button>
           </div>
         </div>
-      </div>
+      </section>
 
       <div class="row g-4 flex-grow-1 overflow-hidden">
-        <div class="col-lg-3 d-flex flex-column">
+        <aside class="col-lg-3 d-flex flex-column" aria-labelledby="filter-heading">
           <div class="card shadow-sm bg-light border-0 filter-sidebar">
             <div class="card-body">
-              <h2 class="h6 text-uppercase text-dark fw-semibold mb-3">
+              <h2 id="filter-heading" class="h6 text-uppercase text-dark fw-semibold mb-3">
                 Filter champions
               </h2>
               <div class="mb-3">
@@ -100,9 +103,9 @@
               </div>
             </div>
           </div>
-        </div>
-        <div class="col-lg-9 d-flex flex-column overflow-hidden">
-          <div class="section-title mb-3 text-uppercase">Champion roster</div>
+        </aside>
+        <section class="col-lg-9 d-flex flex-column overflow-hidden" aria-labelledby="roster-heading">
+          <h2 id="roster-heading" class="section-title mb-3 text-uppercase">Champion roster</h2>
           <div class="champion-grid-container">
             <div class="d-flex flex-wrap gap-3" style="padding: 0.5rem;">
               <CardTile
@@ -118,14 +121,14 @@
               No champions match the current filters. Try adjusting the tier or search query.
             </div>
           </div>
-        </div>
+        </section>
       </div>
 
-      <div v-if="error" class="alert alert-danger mt-4 mb-0">
-        <i class="bi bi-exclamation-triangle me-2"></i>
+      <div v-if="error" class="alert alert-danger mt-4 mb-0" role="alert">
+        <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
         {{ error }}
       </div>
-    </div>
+    </main>
   </div>
 </template>
 
@@ -215,6 +218,22 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #000;
+  color: #fff;
+  padding: 8px 16px;
+  text-decoration: none;
+  z-index: 9999;
+  border-radius: 0 0 4px 0;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
 .glass-search {
   background: rgba(12, 16, 30, 0.6);
   border-radius: 18px;

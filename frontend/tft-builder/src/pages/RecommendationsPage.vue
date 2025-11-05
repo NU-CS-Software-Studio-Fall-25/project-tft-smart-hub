@@ -1,25 +1,25 @@
 <template>
   <div class="page-white">
     <div class="container py-4">
-      <div class="d-flex justify-content-between align-items-center mb-3">
+      <header class="d-flex justify-content-between align-items-center mb-3">
         <div>
           <h1 class="h4 fw-bold mb-1">Recommended team compositions</h1>
           <p class="text-body-secondary mb-0">
             Based on your selected champions, we found {{ teams.length }} curated team comp suggestions.
           </p>
         </div>
-        <RouterLink class="btn btn-outline-secondary" :to="{ name: 'builder' }">
-          <i class="bi bi-chevron-left me-1"></i>
+        <RouterLink class="btn btn-outline-secondary" :to="{ name: 'builder' }" aria-label="Return to champion search">
+          <i class="bi bi-chevron-left me-1" aria-hidden="true"></i>
           Back to search
         </RouterLink>
-      </div>
+      </header>
 
       <div class="row g-4">
-        <div class="col-lg-4">
+        <aside class="col-lg-4" aria-labelledby="selected-champions-heading">
           <div class="card shadow-sm border-0 sticky-sidebar">
-            <div class="card-header bg-dark text-light fw-semibold">
+            <h2 id="selected-champions-heading" class="card-header bg-dark text-light fw-semibold">
               Selected champions
-            </div>
+            </h2>
             <div class="card-body">
               <div v-if="selectedCards.length === 0" class="text-body-secondary small">
                 No champions selected. Go back and choose at least one champion to receive recommendations.
@@ -54,50 +54,55 @@
               </button>
             </div>
           </div>
-        </div>
+        </aside>
 
-        <div class="col-lg-8">
-          <div v-if="loading" class="py-5 text-center">
+        <main class="col-lg-8">
+          <div v-if="loading" class="py-5 text-center" role="status">
             <div class="spinner-border"></div>
             <div class="mt-3 text-body-secondary">Fetching updated recommendations...</div>
           </div>
 
           <div v-else>
-            <div v-if="teams.length === 0" class="alert alert-info">
+            <div v-if="teams.length === 0" class="alert alert-info" role="alert">
               We do not have a curated comp that matches the selected champions yet. Try removing a champion or explore
               the <RouterLink to="/teams">team library</RouterLink> instead.
             </div>
 
             <div v-else>
-              <div class="d-flex justify-content-between align-items-center mb-3">
+              <div class="d-flex justify-content-between align-items-center mb-3" role="status" aria-live="polite">
                 <div class="text-body-secondary small">
                   Showing {{ paginatedTeams.length }} of {{ teams.length }} team comps
                 </div>
               </div>
 
-              <div
+              <article
                 v-for="team in paginatedTeams"
                 :key="team.id"
                 class="card mb-3 shadow-sm border-0 recommendation-card"
+                :aria-labelledby="`team-${team.id}-name`"
               >
-                <div class="card-header d-flex align-items-center justify-content-between bg-body-secondary py-2">
+                <header class="card-header d-flex align-items-center justify-content-between bg-body-secondary py-2">
                   <div>
-                    <div class="fw-bold">{{ team.name }}</div>
-                    <div class="small text-body-secondary">{{ team.description }}</div>
+                    <h2 :id="`team-${team.id}-name`" class="fw-bold h5 mb-1">{{ team.name }}</h2>
+                    <p class="small text-body-secondary mb-0">{{ team.description }}</p>
                   </div>
                   <div class="text-end small text-body-secondary">
                     <div>
-                      <i class="bi bi-trophy text-warning me-1"></i>
+                      <i class="bi bi-trophy text-warning me-1" aria-hidden="true"></i>
                       Win {{ percentage(team.winRate) }}
                     </div>
                     <div v-if="team.playRate">
-                      <i class="bi bi-people text-primary me-1"></i>
+                      <i class="bi bi-people text-primary me-1" aria-hidden="true"></i>
                       Pick {{ percentage(team.playRate) }}
                     </div>
                   </div>
-                </div>
+                </header>
                 <div class="card-body py-3">
-                  <div class="d-flex flex-wrap gap-2 recommendation-champions">
+                  <section :aria-labelledby="`team-${team.id}-champions`">
+                    <h3 :id="`team-${team.id}-champions`" class="visually-hidden">
+                      Champions in {{ team.name }}
+                    </h3>
+                    <div class="d-flex flex-wrap gap-2 recommendation-champions">
                     <div
                       v-for="card in team.cards"
                       :key="`${team.id}-${card.id}`"
@@ -115,6 +120,7 @@
                       <div class="recommendation-card-name">{{ card.name }}</div>
                     </div>
                   </div>
+                  </section>
 
                   <div class="row mt-2 small text-body-secondary">
                     <div class="col-sm-6">
@@ -138,8 +144,8 @@
                   </div>
                 </div>
                 <div class="card-footer bg-white d-flex justify-content-between align-items-center py-2">
-                  <RouterLink class="btn btn-sm btn-outline-primary" :to="{ name: 'team-detail', params: { id: team.id } }">
-                    <i class="bi bi-box-arrow-up-right me-1"></i>
+                  <RouterLink class="btn btn-sm btn-outline-primary" :to="{ name: 'team-detail', params: { id: team.id } }" :aria-label="`View details for ${team.name}`">
+                    <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>
                     View details
                   </RouterLink>
                   <button
@@ -147,12 +153,13 @@
                     @click="saveToLibrary(team)"
                     :disabled="!isAuthenticated"
                     :title="!isAuthenticated ? 'Sign in to save teams to your library' : ''"
+                    :aria-label="`Save ${team.name} to library`"
                   >
-                    <i class="bi bi-journal-plus me-1"></i>
+                    <i class="bi bi-journal-plus me-1" aria-hidden="true"></i>
                     Save in library
                   </button>
                 </div>
-              </div>
+              </article>
 
               <Pagination
                 :current-page="currentPage"
@@ -162,7 +169,7 @@
               />
             </div>
           </div>
-        </div>
+        </main>
       </div>
     </div>
   </div>
