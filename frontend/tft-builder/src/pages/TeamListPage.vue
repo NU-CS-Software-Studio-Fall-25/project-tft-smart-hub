@@ -173,7 +173,7 @@ import { extractDescriptionSegments } from '../utils/descriptionUtils'
 const loading = ref(false)
 const searchTerm = ref('')
 const currentPage = ref(1)
-const itemsPerPage = 5
+const itemsPerPage = 6
 const hasMounted = ref(false)
 
 const allTeams = computed(() => teamStore.list)
@@ -297,6 +297,10 @@ onMounted(async () => {
 .team-card {
   min-height: 360px;
   padding-bottom: 1.5rem;
+}
+
+.team-card-header {
+  min-height: 140px;
 }
 
 .team-card-strip {
