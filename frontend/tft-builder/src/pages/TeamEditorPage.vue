@@ -138,15 +138,17 @@
                 </button>
               </div>
 
-              <div class="d-flex flex-wrap gap-3">
-                <CardTile
-                  v-for="card in filteredCards"
-                  :key="card.id"
-                  :card="card"
-                  :selected="selectedIds.has(card.id)"
-                  @toggle="toggle(card.id)"
-                  @remove="toggle(card.id)"
-                />
+              <div class="champion-grid-container">
+                <div class="d-flex flex-wrap gap-3 pb-3">
+                  <CardTile
+                    v-for="card in filteredCards"
+                    :key="card.id"
+                    :card="card"
+                    :selected="selectedIds.has(card.id)"
+                    @toggle="toggle(card.id)"
+                    @remove="toggle(card.id)"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -354,5 +356,40 @@ watch(
 )
 </script>
 
+<style scoped>
+.champion-grid-container {
+  max-height: 500px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0.5rem 0.25rem;
+  margin: -0.5rem -0.25rem 0;
+}
 
+.champion-grid-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.champion-grid-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
+.champion-grid-container::-webkit-scrollbar-thumb {
+  background: #ffc107;
+  border-radius: 4px;
+}
+
+.champion-grid-container::-webkit-scrollbar-thumb:hover {
+  background: #ffb300;
+}
+
+/* Remove box background from champion names */
+.champion-grid-container :deep(.tft-card-name) {
+  background: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  color: #1f2638 !important;
+  font-size: 0.85rem !important;
+}
+</style>
 
