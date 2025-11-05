@@ -299,12 +299,19 @@ onMounted(async () => {
   padding-bottom: 1.5rem;
 }
 
+.team-card .card-body {
+  display: flex;
+  flex-direction: column;
+}
+
 .team-card-header {
-  min-height: 140px;
+  height: 180px;
+  overflow: hidden;
 }
 
 .team-card-strip {
   min-height: 110px;
+  flex-shrink: 0;
 }
 
 .mini-card {
