@@ -1,181 +1,45 @@
-<!DOCTYPE html><!DOCTYPE html>
-
-<html lang="en"><html lang="en">
-
-<head><head>
-
-  <meta charset="UTF-8">  <meta charset="UTF-8">
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>422 - Invalid Request | TFT Team Lab</title>  <title>422 - Invalid Request | TFT Team Lab</title>
-
-  <style>  <style>
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {    body {
-
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-
-      color: #e0e0e0;      color: #e0e0e0;
-
-      min-height: 100vh;      min-height: 100vh;
-
-      display: flex;      display: flex;
-
-      align-items: center;      align-items: center;
-
-      justify-content: center;      justify-content: center;
-
-      padding: 20px;      padding: 20px;
-
-    }    }
-
-    .container {    .container {
-
-      text-align: center;      text-align: center;
-
-      max-width: 600px;      max-width: 600px;
-
-    }    }
-
-    .gem-icon {    .gem-icon {
-
-      width: 120px;      width: 120px;
-
-      height: 120px;      height: 120px;
-
-      margin: 0 auto 30px;      margin: 0 auto 30px;
-
-      opacity: 0.9;      opacity: 0.9;
-
-    }    }
-
-    h1 {    h1 {
-
-      font-size: 72px;      font-size: 72px;
-
-      font-weight: 700;      font-weight: 700;
-
-      color: #ff9800;      color: #ff9800;
-
-      margin-bottom: 20px;      margin-bottom: 20px;
-
-      text-shadow: 0 0 20px rgba(255, 152, 0, 0.3);      text-shadow: 0 0 20px rgba(255, 152, 0, 0.3);
-
-    }    }
-
-    h2 {    h2 {
-
-      font-size: 28px;      font-size: 28px;
-
-      margin-bottom: 20px;      margin-bottom: 20px;
-
-      color: #fff;      color: #fff;
-
-    }    }
-
-    p {    p {
-
-      font-size: 18px;      font-size: 18px;
-
-      line-height: 1.6;      line-height: 1.6;
-
-      margin-bottom: 30px;      margin-bottom: 30px;
-
-      color: #b0b0b0;      color: #b0b0b0;
-
-    }    }
-
-    .btn {    .btn {
-
-      display: inline-block;      display: inline-block;
-
-      padding: 14px 32px;      padding: 14px 32px;
-
-      background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);      background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
-
-      color: #fff;      color: #fff;
-
-      text-decoration: none;      text-decoration: none;
-
-      border-radius: 8px;      border-radius: 8px;
-
-      font-weight: 600;      font-weight: 600;
-
-      font-size: 16px;      font-size: 16px;
-
-      transition: transform 0.2s, box-shadow 0.2s;      transition: transform 0.2s, box-shadow 0.2s;
-
-      box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);      box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
-
-      border: none;      border: none;
-
-      cursor: pointer;      cursor: pointer;
-
-    }    }
-
-    .btn:hover {    .btn:hover {
-
-      transform: translateY(-2px);      transform: translateY(-2px);
-
-      box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);      box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
-
-    }    }
-
-  </style>  </style>
-
-</head></head>
-
-<body><body>
-
-  <div class="container">  <div class="container">
-
-    <svg class="gem-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">    <svg class="gem-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-
-      <defs>      <defs>
-
-        <linearGradient id="gem422" x1="0%" y1="0%" x2="100%" y2="100%">        <linearGradient id="gem422" x1="0%" y1="0%" x2="100%" y2="100%">
-
-          <stop offset="0%" style="stop-color:#ff9800;stop-opacity:1" />          <stop offset="0%" style="stop-color:#ff9800;stop-opacity:1" />
-
-          <stop offset="100%" style="stop-color:#f57c00;stop-opacity:1" />          <stop offset="100%" style="stop-color:#f57c00;stop-opacity:1" />
-
-        </linearGradient>        </linearGradient>
-
-      </defs>      </defs>
-
-      <path d="M 50 10 L 80 35 L 50 90 L 20 35 Z" fill="url(#gem422)" stroke="#e65100" stroke-width="2"/>      <path d="M 50 10 L 80 35 L 50 90 L 20 35 Z" fill="url(#gem422)" stroke="#e65100" stroke-width="2"/>
-
-      <text x="50" y="60" font-size="40" text-anchor="middle" fill="#fff" font-weight="bold">?</text>      <text x="50" y="60" font-size="40" text-anchor="middle" fill="#fff" font-weight="bold">?</text>
-
-    </svg>    </svg>
-
-        
-
-    <h1>422</h1>    <h1>422</h1>
-
-    <h2>Invalid Request</h2>    <h2>Invalid Request</h2>
-
-    <p>    <p>
-
-      The team composition data you submitted couldn't be processed. Please check your input and try again.      The team composition data you submitted couldn't be processed. Please check your input and try again.
-
-    </p>    </p>
-
-        
-
-    <button onclick="history.back()" class="btn">Go Back</button>    <button onclick="history.back()" class="btn">Go Back</button>
-
-  </div>  </div>
-
-</body></body>
-
-</html></html>
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>422 - Invalid Request | TFT Team Lab</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #e0e0e0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container { text-align: center; max-width: 600px; }
+    .gem-icon { width: 120px; height: 120px; margin: 0 auto 30px; opacity: 0.9; }
+    h1 { font-size: 72px; font-weight: 700; color: #ff9800; margin-bottom: 20px; }
+    h2 { font-size: 28px; margin-bottom: 20px; color: #fff; }
+    p { font-size: 18px; margin-bottom: 30px; color: #b0b0b0; }
+    .btn { display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%); color: #fff; text-decoration: none; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <svg class="gem-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+      <defs>
+        <linearGradient id="gem422" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#ff9800;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#f57c00;stop-opacity:1" />
+        </linearGradient>
+      </defs>
+      <path d="M 50 10 L 80 35 L 50 90 L 20 35 Z" fill="url(#gem422)" stroke="#e65100" stroke-width="2"/>
+      <text x="50" y="60" font-size="40" text-anchor="middle" fill="#fff" font-weight="bold">?</text>
+    </svg>
+    <h1>422</h1>
+    <h2>Invalid Request</h2>
+    <p>The data you submitted couldn't be processed.</p>
+    <button onclick="history.back()" class="btn">Go Back</button>
   </div>
 </body>
 </html>

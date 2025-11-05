@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tft-team-lab-v1';
+const CACHE_NAME = 'tft-team-lab-v2'; // Increment version for updates
 const urlsToCache = [
   '/',
   '/index.html',
@@ -20,6 +20,7 @@ self.addEventListener('install', (event) => {
         console.log('Cache installation failed:', error);
       })
   );
+  // Force the waiting service worker to become the active service worker
   self.skipWaiting();
 });
 
@@ -37,43 +38,59 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
+  // Take control of all pages immediately
   self.clients.claim();
 });
 
-// Fetch event - serve from cache, fallback to network
+// Fetch event - Network first for HTML, cache first for others
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Cache hit - return response
-        if (response) {
+  const { request } = event;
+  const url = new URL(request.url);
+  
+  // Network first strategy for HTML files and API calls
+  if (request.headers.get('accept').includes('text/html') || url.pathname.includes('/api/')) {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          // Clone and cache the response
+          if (response && response.status === 200) {
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(request, responseToCache);
+            });
+          }
           return response;
-        }
-
-        return fetch(event.request).then((response) => {
-          // Check if we received a valid response
-          if (!response || response.status !== 200 || response.type !== 'basic') {
+        })
+        .catch(() => {
+          // Fallback to cache if network fails
+          return caches.match(request);
+        })
+    );
+  } else {
+    // Cache first strategy for assets (CSS, JS, images)
+    event.respondWith(
+      caches.match(request)
+        .then((response) => {
+          if (response) {
             return response;
           }
-
-          // Clone the response
-          const responseToCache = response.clone();
-
-          // Don't cache API calls
-          if (!event.request.url.includes('/api/')) {
-            caches.open(CACHE_NAME)
-              .then((cache) => {
-                cache.put(event.request, responseToCache);
-              });
-          }
-
-          return response;
-        }).catch(() => {
-          // Return a custom offline page if available
-          return caches.match('/index.html');
-        });
-      })
-  );
+          
+          return fetch(request).then((response) => {
+            // Don't cache if not a valid response
+            if (!response || response.status !== 200 || response.type !== 'basic') {
+              return response;
+            }
+            
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(request, responseToCache);
+            });
+            
+            return response;
+          });
+        })
+    );
+  }
 });
 
 // Handle push notifications (optional)

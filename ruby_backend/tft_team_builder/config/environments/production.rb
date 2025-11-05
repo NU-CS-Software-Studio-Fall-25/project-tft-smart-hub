@@ -15,8 +15,21 @@ Rails.application.configure do
   # Turn on fragment caching in view templates.
   config.action_controller.perform_caching = true
 
-  # Cache assets for far-future expiry since they are all digest stamped.
-  config.public_file_server.headers = { "cache-control" => "public, max-age=#{1.year.to_i}" }
+  # Cache assets with hash fingerprints for far-future expiry
+  # But HTML files should have shorter cache to detect updates
+  config.public_file_server.enabled = true
+  config.public_file_server.headers = {
+    'Cache-Control' => 'public, max-age=31536000, immutable', # 1 year for assets
+    'X-Content-Type-Options' => 'nosniff'
+  }
+  
+  # Serve HTML files with no-cache to always check for updates
+  config.middleware.insert_before 0, Rack::Static,
+    urls: ['/'], root: 'public',
+    header_rules: [
+      [:all, { 'Cache-Control' => 'public, max-age=31536000, immutable' }],
+      [%w[html], { 'Cache-Control' => 'no-cache, no-store, must-revalidate' }]
+    ]
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"
