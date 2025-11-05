@@ -7,6 +7,7 @@ import TeamDetailPage from '../pages/TeamDetailPage.vue'
 import TeamEditorPage from '../pages/TeamEditorPage.vue'
 import LoginPage from '../pages/LoginPage.vue'
 import ProfilePage from '../pages/ProfilePage.vue'
+import NotFoundPage from '../pages/NotFoundPage.vue'
 import { authStore } from '../stores/authStore'
 
 const router = createRouter({
@@ -24,7 +25,7 @@ const router = createRouter({
     { path: '/teams/:id/edit', name: 'team-edit', component: TeamEditorPage, props: true, meta: { requiresAdmin: true } },
     { path: '/profile', name: 'profile', component: ProfilePage, meta: { requiresAuth: true } },
     { path: '/login', name: 'login', component: LoginPage },
-    { path: '/:pathMatch(.*)*', redirect: '/' },
+    { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFoundPage },
   ],
 })
 
