@@ -1,8 +1,8 @@
 ﻿<template>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-primary sticky-top shadow-sm">
     <div class="container">
-      <RouterLink class="navbar-brand fw-bold" to="/">
-        <i class="bi bi-gem me-2 text-warning"></i>
+      <RouterLink class="navbar-brand fw-bold d-flex align-items-center" to="/">
+        <img src="/logo.svg" alt="TFT Team Lab Logo" width="32" height="32" class="me-2">
         TFT Team Lab
       </RouterLink>
 

@@ -1,10 +1,13 @@
 <template>
   <footer class="bg-dark border-top border-secondary mt-auto text-white-50">
     <div class="container py-4 d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
-      <div>
-        <strong class="text-light">TFT Team Lab</strong>
-        <div class="small">
-          Built with Vue 3 + Rails API. Data powered by the TFT community datasets.
+      <div class="d-flex align-items-center gap-3">
+        <img src="/logo.svg" alt="TFT Team Lab Logo" width="28" height="28">
+        <div>
+          <strong class="text-light">TFT Team Lab</strong>
+          <div class="small">
+            Built with Vue 3 + Rails API. Data powered by the TFT community datasets.
+          </div>
         </div>
       </div>
       <div class="d-flex gap-3 small">
