@@ -50,8 +50,8 @@
         </div>
 
         <template v-else>
-          <div class="row g-4 row-cols-1 row-cols-lg-2">
-            <div v-for="team in teams" :key="team.id" class="col">
+          <div class="row g-4 row-cols-1 row-cols-lg-2 mb-4">
+            <div v-for="team in paginatedTeams" :key="team.id" class="col">
               <div class="team-card card h-100 shadow-sm border-0">
                 <div class="card-body d-flex flex-column">
                   <div class="team-card-header d-flex justify-content-between align-items-start mb-3">
@@ -147,23 +147,12 @@
             </div>
           </div>
 
-          <div class="text-center mt-4">
-            <button
-              v-if="hasMore"
-              class="btn btn-outline-primary"
-              :disabled="isLoadingMore"
-              @click="loadMore"
-            >
-              <span v-if="!isLoadingMore">Load more</span>
-              <span v-else class="d-flex align-items-center justify-content-center gap-2">
-                <span class="spinner-border spinner-border-sm"></span>
-                Loading
-              </span>
-            </button>
-            <div v-else class="text-body-secondary small">
-              Showing all {{ totalCount }} team compositions.
-            </div>
-          </div>
+          <Pagination
+            :current-page="currentPage"
+            :total-items="teams.length"
+            :items-per-page="itemsPerPage"
+            @page-changed="handlePageChange"
+          />
         </template>
       </div>
     </div>
@@ -171,9 +160,10 @@
 </template>
 
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import SpriteImage from '../components/SpriteImage.vue'
+import Pagination from '../components/Pagination.vue'
 import { authStore } from '../stores/authStore'
 import { store as selectionStore } from '../stores/selectionStore'
 import { fetchTeamComps, deleteTeamComp } from '../services/api'
@@ -181,24 +171,47 @@ import { teamStore } from '../stores/teamStore'
 import { extractDescriptionSegments } from '../utils/descriptionUtils'
 
 const loading = ref(false)
-const isLoadingMore = ref(false)
 const searchTerm = ref('')
-const page = ref(1)
-const perPage = 10  // Changed from 60 to 10 for Pagy pagination
-const hasMore = ref(true)
-const debounceDelay = 350
-let searchTimeoutId
+const currentPage = ref(1)
+const itemsPerPage = 5
 const hasMounted = ref(false)
 
-const teams = computed(() => teamStore.list)
-const totalCount = computed(() => teamStore.meta?.total ?? teamStore.list.length)
-const displayedCount = computed(() => teams.value.length)
+const allTeams = computed(() => teamStore.list)
+
+const filteredTeams = computed(() => {
+  if (!searchTerm.value.trim()) {
+    return allTeams.value
+  }
+  const query = searchTerm.value.trim().toLowerCase()
+  return allTeams.value.filter((team) => {
+    const matchesName = team.name?.toLowerCase().includes(query)
+    const matchesDescription = team.description?.toLowerCase().includes(query)
+    const matchesChampions = team.championNames?.some((name) => name.toLowerCase().includes(query))
+    return matchesName || matchesDescription || matchesChampions
+  })
+})
+
+const teams = computed(() => filteredTeams.value)
+
+const paginatedTeams = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage
+  const end = start + itemsPerPage
+  return teams.value.slice(start, end)
+})
+
+const totalCount = computed(() => teams.value.length)
+const displayedCount = computed(() => paginatedTeams.value.length)
 const isAuthenticated = computed(() => authStore.isAuthenticated())
 const isAdmin = computed(() => authStore.isAdmin())
 const createRoute = computed(() => (
   isAuthenticated.value ? { name: 'team-create' } : { name: 'login', query: { redirect: '/teams/new' } }
 ))
 const searchActive = computed(() => searchTerm.value.trim().length > 0)
+
+const handlePageChange = (page) => {
+  currentPage.value = page
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
 
 const numberFormatter = new Intl.NumberFormat()
 
@@ -242,53 +255,16 @@ const descriptionSegments = (team) => {
   return extractDescriptionSegments(team.description).slice(0, 2)
 }
 
-const buildParams = (targetPage) => {
-  const params = {
-    page: targetPage,
-    per: perPage,
-  }
-  const query = searchTerm.value.trim()
-  if (query) {
-    params.search = query
-  }
-  return params
-}
-
-const loadTeams = async ({ reset = false, page: targetPage } = {}) => {
-  const requestedPage = targetPage || (reset ? 1 : page.value)
-  const params = buildParams(requestedPage)
-  const { teams: newTeams, meta } = await fetchTeamComps(params)
-
-  if (reset) {
-    teamStore.setTeams(newTeams, meta)
-  } else {
-    teamStore.appendTeams(newTeams, meta)
-  }
-
-  page.value = meta?.page || requestedPage
-  const per = meta?.per || perPage
-  const total = meta?.total ?? totalCount.value
-  const totalPages = meta?.totalPages || Math.max(1, Math.ceil(total / per))
-  hasMore.value = typeof meta?.hasMore === 'boolean' ? meta.hasMore : page.value < totalPages
-}
-
 const loadInitial = async () => {
   loading.value = true
   try {
-    await loadTeams({ reset: true, page: 1 })
+    const { teams: newTeams, meta } = await fetchTeamComps({ page: 1, per: 100 })
+    teamStore.setTeams(newTeams, meta)
+  } catch (error) {
+    console.error('Failed to load teams:', error)
   } finally {
     loading.value = false
     hasMounted.value = true
-  }
-}
-
-const loadMore = async () => {
-  if (!hasMore.value || isLoadingMore.value) return
-  isLoadingMore.value = true
-  try {
-    await loadTeams({ reset: false, page: page.value + 1 })
-  } finally {
-    isLoadingMore.value = false
   }
 }
 
@@ -308,25 +284,9 @@ watch(
   () => searchTerm.value,
   () => {
     if (!hasMounted.value) return
-    if (searchTimeoutId) {
-      clearTimeout(searchTimeoutId)
-    }
-    searchTimeoutId = setTimeout(async () => {
-      loading.value = true
-      try {
-        await loadTeams({ reset: true, page: 1 })
-      } finally {
-        loading.value = false
-      }
-    }, debounceDelay)
+    currentPage.value = 1
   }
 )
-
-onBeforeUnmount(() => {
-  if (searchTimeoutId) {
-    clearTimeout(searchTimeoutId)
-  }
-})
 
 onMounted(async () => {
   await loadInitial()

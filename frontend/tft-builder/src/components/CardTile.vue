@@ -5,6 +5,9 @@
     @click="onToggle"
     @contextmenu.prevent="onPreview"
   >
+    <div v-if="selected" class="selected-indicator">
+      <i class="bi bi-check-circle-fill"></i>
+    </div>
     <SpriteImage
       :sprite="card.sprite"
       :image-url="card.imageUrl"
@@ -13,15 +16,6 @@
       class-name="tft-card-img"
     />
     <div v-if="showName" class="tft-card-name">{{ card.name }}</div>
-
-    <button
-      v-if="selected && !hideRemove"
-      class="tft-x-badge"
-      title="移除"
-      @click.stop="onRemove"
-    >
-      ×
-    </button>
   </div>
 </template>
 

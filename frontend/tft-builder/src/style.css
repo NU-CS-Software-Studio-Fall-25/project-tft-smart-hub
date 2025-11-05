@@ -46,17 +46,22 @@ body {
   width: 92px;
   flex: 0 0 92px;
   cursor: pointer;
-  transition: transform 0.15s ease;
+  transition: all 0.2s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.6rem;
   padding-bottom: 1rem;
   min-height: 148px;
+  position: relative;
 }
 
 .tft-card-tile:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+}
+
+.tft-card-tile.selected {
+  transform: translateY(-4px);
 }
 
 .tft-card-img {
@@ -67,11 +72,59 @@ body {
   border: 2px solid rgba(186, 155, 94, 0.75);
   box-shadow: 0 6px 18px rgba(12, 15, 27, 0.45);
   background: linear-gradient(145deg, rgba(16, 21, 33, 0.85), rgba(9, 12, 22, 0.65));
+  transition: all 0.2s ease;
 }
 
 .tft-card-tile.selected .tft-card-img {
-  border-color: #7aa9ff;
-  box-shadow: 0 0 14px rgba(98, 162, 255, 0.65);
+  border-color: #ffc107;
+  border-width: 3px;
+  box-shadow: 
+    0 0 0 3px rgba(255, 193, 7, 0.3),
+    0 0 20px rgba(255, 193, 7, 0.6),
+    0 8px 24px rgba(12, 15, 27, 0.5);
+  transform: scale(1.05);
+}
+
+.selected-indicator {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1a1a2e;
+  font-size: 1rem;
+  box-shadow: 
+    0 2px 8px rgba(255, 193, 7, 0.5),
+    0 0 0 3px rgba(12, 15, 27, 0.8);
+  z-index: 10;
+  animation: popIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.tft-card-tile.selected .tft-card-name {
+  color: #ffc107;
+  font-weight: 700;
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.8),
+    0 0 16px rgba(255, 193, 7, 0.6);
 }
 
 .tft-card-name {
