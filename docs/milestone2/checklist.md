@@ -33,3 +33,26 @@ Transfer/sec:      1.60MB
 ```
 
 ### 2. Pagination is implemented
+Pagy 10 items each time on Team Library
+
+### 3. Uses header/footer, custom error pages,  site icon, other images (https://www.rgbstock.com/images/Links to an external site., https://pixabay.com/Links to an external site., https://unsplash.com/Links to an external site. - share yours), and a catchy product name and logo (use AI if you're stuck).
+- design a new logo
+- -Add favicon
+- Add custom error pages
+
+# 404
+curl https://tft-smartcomp-b3f1e37435eb.herokuapp.com/test-404
+
+https://tft-smartcomp-b3f1e37435eb.herokuapp.com/asdfasdf
+
+# 422
+curl https://tft-smartcomp-b3f1e37435eb.herokuapp.com/422.html
+
+https://tft-smartcomp-b3f1e37435eb.herokuapp.com/422.html
+
+# 500
+curl https://tft-smartcomp-b3f1e37435eb.herokuapp.com/500.html
+
+https://tft-smartcomp-b3f1e37435eb.herokuapp.com/500.html
+
+
