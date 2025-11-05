@@ -183,20 +183,20 @@ body {
 }
 
 .recommendation-card-tile {
-  width: 92px;
-  flex: 0 0 92px;
+  width: 80px;
+  flex: 0 0 80px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.6rem;
-  min-height: 150px;
+  gap: 0.5rem;
+  min-height: 120px;
 }
 
 .recommendation-card-img {
-  width: 72px;
-  height: 72px;
-  border-radius: 18px;
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
   border: 2px solid rgba(186, 155, 94, 0.7);
   overflow: hidden;
   box-shadow: 0 6px 16px rgba(25, 32, 48, 0.35);
@@ -207,11 +207,11 @@ body {
 
 .recommendation-card-name {
   text-align: center;
-  font-size: 0.82rem;
+  font-size: 0.75rem;
   color: #1f2638;
   font-weight: 600;
   letter-spacing: 0.01em;
-  padding: 0.2rem 0.55rem;
+  padding: 0.15rem 0.45rem;
   border-radius: 999px;
   background: linear-gradient(180deg, rgba(125, 155, 255, 0.25), rgba(102, 136, 247, 0.15));
   box-shadow:

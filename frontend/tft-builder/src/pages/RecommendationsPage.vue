@@ -1,9 +1,9 @@
 <template>
   <div class="page-white">
-    <div class="container py-5">
-      <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="container py-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
-          <h1 class="h3 fw-bold mb-1">Recommended team compositions</h1>
+          <h1 class="h4 fw-bold mb-1">Recommended team compositions</h1>
           <p class="text-body-secondary mb-0">
             Based on your selected champions, we found {{ teams.length }} curated team comp suggestions.
           </p>
@@ -78,9 +78,9 @@
               <div
                 v-for="team in paginatedTeams"
                 :key="team.id"
-                class="card mb-4 shadow-sm border-0 recommendation-card"
+                class="card mb-3 shadow-sm border-0 recommendation-card"
               >
-                <div class="card-header d-flex align-items-center justify-content-between bg-body-secondary">
+                <div class="card-header d-flex align-items-center justify-content-between bg-body-secondary py-2">
                   <div>
                     <div class="fw-bold">{{ team.name }}</div>
                     <div class="small text-body-secondary">{{ team.description }}</div>
@@ -96,8 +96,8 @@
                     </div>
                   </div>
                 </div>
-                <div class="card-body">
-                  <div class="d-flex flex-wrap gap-3 recommendation-champions">
+                <div class="card-body py-3">
+                  <div class="d-flex flex-wrap gap-2 recommendation-champions">
                     <div
                       v-for="card in team.cards"
                       :key="`${team.id}-${card.id}`"
@@ -109,14 +109,14 @@
                           :sprite="card.sprite"
                           :image-url="card.imageUrl"
                           :alt="card.name"
-                          :size="72"
+                          :size="64"
                         />
                       </div>
                       <div class="recommendation-card-name">{{ card.name }}</div>
                     </div>
                   </div>
 
-                  <div class="row mt-3 small text-body-secondary">
+                  <div class="row mt-2 small text-body-secondary">
                     <div class="col-sm-6">
                       <span class="badge bg-success-subtle text-success-emphasis me-2">
                         Matches {{ team.meta?.matchCount || 0 }}
@@ -133,11 +133,11 @@
                     </div>
                   </div>
 
-                  <div v-if="team.notes" class="alert alert-secondary mt-3 mb-0 small">
+                  <div v-if="team.notes" class="alert alert-secondary mt-2 mb-0 small py-2">
                     {{ team.notes }}
                   </div>
                 </div>
-                <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+                <div class="card-footer bg-white d-flex justify-content-between align-items-center py-2">
                   <RouterLink class="btn btn-sm btn-outline-primary" :to="{ name: 'team-detail', params: { id: team.id } }">
                     <i class="bi bi-box-arrow-up-right me-1"></i>
                     View details
