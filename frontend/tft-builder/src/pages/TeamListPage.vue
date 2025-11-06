@@ -399,7 +399,7 @@ onMounted(async () => {
   font-size: 0.65rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #9aa3b8;
+  color: #6c7585; /* Changed from #9aa3b8 for better contrast (5.0:1) */
 }
 
 .meta-value {
