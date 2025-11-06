@@ -77,7 +77,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { authStore } from '../stores/authStore'
 
@@ -103,27 +103,30 @@ const isActive = (link) => {
 
 // Close navbar when clicking on links (mobile)
 const closeNavbar = () => {
-  if (navbarCollapse.value && window.innerWidth < 992) {
-    // Use Bootstrap's Collapse API
-    const bsCollapse = window.bootstrap?.Collapse?.getInstance(navbarCollapse.value)
-    if (bsCollapse) {
-      bsCollapse.hide()
-    } else {
-      // Fallback: manually remove show class
-      navbarCollapse.value.classList.remove('show')
-    }
+  // Only close on mobile/tablet screens
+  if (window.innerWidth >= 992) {
+    return // Don't close on desktop
+  }
+  
+  if (!navbarCollapse.value) {
+    return
+  }
+  
+  // Check if navbar is currently expanded
+  const isExpanded = navbarCollapse.value.classList.contains('show')
+  
+  if (isExpanded && navbarToggler.value) {
+    // Simulate click on toggle button to trigger Bootstrap's collapse
+    navbarToggler.value.click()
   }
 }
 
 const handleLogout = () => {
   closeNavbar()
-  authStore.logout()
-  router.push({ name: 'home' })
-}
-
-const logout = () => {
-  authStore.logout()
-  router.push({ name: 'home' })
+  setTimeout(() => {
+    authStore.logout()
+    router.push({ name: 'home' })
+  }, 150) // Small delay for collapse animation
 }
 
 onMounted(() => {
