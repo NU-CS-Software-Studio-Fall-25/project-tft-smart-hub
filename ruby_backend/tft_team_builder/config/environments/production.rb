@@ -18,15 +18,36 @@ Rails.application.configure do
   # Enable serving of static files from public directory
   config.public_file_server.enabled = true
   
-  # Differentiated caching strategy
-  # Assets with hash fingerprints get long cache
-  # HTML files get no-cache to always check for updates
-  config.middleware.use Rack::Static,
-    urls: ['/assets', '/sprites', '/manifest.json', '/service-worker.js', '/favicon.svg', '/logo.svg'],
+  # Differentiated caching strategy:
+  # 1. Assets with hash fingerprints (JS/CSS/images) get long cache (1 year)
+  # 2. HTML files get no-cache to always check for updates
+  # 3. Other static assets get moderate cache
+  config.middleware.insert_before 0, Rack::Static,
+    urls: ['/assets'],
     root: 'public',
     header_rules: [
-      [:all, { 'Cache-Control' => 'public, max-age=31536000, immutable' }]
+      # Long cache for hashed assets (Vite generates [hash] in filenames)
+      [/assets\/.*-[a-f0-9]{8,}\.(js|css|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$/i, 
+       { 'Cache-Control' => 'public, max-age=31536000, immutable' }],
+      
+      # Moderate cache for sprites (1 day)
+      [/sprites\//i, { 'Cache-Control' => 'public, max-age=86400' }],
+      
+      # Short cache for manifest and service worker (1 hour)
+      [/(manifest\.json|service-worker\.js|favicon\.svg|logo\.svg)$/i, 
+       { 'Cache-Control' => 'public, max-age=3600' }],
+      
+      # No cache for HTML files - CRITICAL for updates
+      [/\.html$/i, 
+       { 'Cache-Control' => 'no-cache, no-store, must-revalidate', 
+         'Pragma' => 'no-cache', 
+         'Expires' => '0' }]
     ]
+  
+  # Default headers for public file server (applies to files not matched above)
+  config.public_file_server.headers = {
+    'Cache-Control' => 'public, max-age=3600'  # 1 hour default
+  }
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"
