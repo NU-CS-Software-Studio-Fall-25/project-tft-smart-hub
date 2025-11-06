@@ -73,7 +73,8 @@ h1: Recommended team compositions
 </main>
 ```
 
-2. Enabled keyboard access for champion thumbnails in the saved-team strip, ensuring the preview modal works without a mouse.  
+2. Enabled keyboard access for champion thumbnails in the saved-team strip, ensuring the preview modal works without a mouse.
+
 **Before:**
 ```vue
 <div
