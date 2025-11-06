@@ -60,3 +60,26 @@ https://tft-smartcomp-b3f1e37435eb.herokuapp.com/500.html
 done
 
 
+
+### Accessibility
+1. Proper heading hierarchy has been implemented across all pages to help screen reader users navigate and understand page structure.
+
+**CardPickerPage.vue  Heading Structure:**
+```
+h1: Champion Synergy Search
+├── h2: Selected champions
+├── h2: Filter champions (in aside)
+└── h2: Champion roster
+```
+
+**RecommendationsPage.vue Heading Structure:**
+```
+h1: Recommended team compositions
+├── h2: Selected champions (sidebar)
+└── For each team:
+    ├── h2: [Team Name]
+    └── h3: Champions in [Team Name] (visually hidden)
+```
+
+
+2. 

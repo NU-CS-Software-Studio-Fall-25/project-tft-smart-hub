@@ -9,6 +9,86 @@ This document outlines the accessibility improvements made to the TFT Smart Hub 
 
 Proper heading hierarchy has been implemented across all pages to help screen reader users navigate and understand page structure.
 
+### 2. Image Accessibility
+
+All champion images and portraits now have proper alternative text for screen readers.
+
+#### SpriteImage.vue Component
+**Changes:**
+- Added `role="img"` to sprite-based images (CSS background-image)
+- Added `aria-label` with descriptive text for sprite images
+- Added fallback alt text: "Champion portrait" when no specific alt provided
+- Marked decorative inner div with `aria-hidden="true"`
+- Ensured regular `<img>` elements always have alt text
+
+**Before:**
+```vue
+<div class="sprite-wrapper">
+  <div class="sprite-inner"></div>
+</div>
+```
+
+**After:**
+```vue
+<div 
+  role="img"
+  aria-label="Ahri champion portrait"
+  class="sprite-wrapper"
+>
+  <div class="sprite-inner" aria-hidden="true"></div>
+</div>
+```
+
+#### CardTile.vue Component
+**Changes:**
+- Added `role="button"` to indicate interactivity
+- Added `tabindex="0"` for keyboard navigation
+- Added comprehensive `aria-label` with champion info and selection state
+- Added `aria-pressed` to indicate selection state
+- Implemented keyboard support (Enter and Space keys)
+- Enhanced alt text for images: `"${card.name} champion portrait"`
+- Marked decorative elements with `aria-hidden="true"`
+- Added `:focus-visible` styles for keyboard users
+
+**ARIA Label Example:**
+```
+"Ahri, Tier 3, selected. Press Enter or Space to toggle selection."
+```
+
+**Keyboard Support:**
+- `Tab` - Navigate to card
+- `Enter` or `Space` - Toggle selection
+- Clear focus indicator with gold outline
+
+#### ChampionModal.vue Component
+**Changes:**
+- Changed `role="presentation"` to `role="dialog"`
+- Added `aria-modal="true"` to indicate modal state
+- Added `aria-labelledby` linking to modal title
+- Enhanced image alt text: `"${champion.name} champion portrait"`
+- Added `aria-label="Close champion details"` to close button
+- Added `@keydown.esc="close"` for keyboard escape
+- Marked decorative icons with `aria-hidden="true"`
+- Added unique ID to modal title for aria-labelledby reference
+
+#### Focus Indicators (style.css)
+**Changes:**
+- Added `:focus-visible` styles to card tiles
+- Gold outline (3px) with 4px offset for clear visibility
+- Enhanced shadow on focused cards
+- Removed default outline, added custom focus ring
+- Focus styles only appear for keyboard navigation (not mouse clicks)
+
+```css
+.tft-card-tile:focus-visible {
+  outline: 3px solid #ffc107;
+  outline-offset: 4px;
+  border-radius: 18px;
+}
+```
+
+### 3. Semantic Headings Structure (Previous Section)
+
 #### CardPickerPage.vue
 **Changes:**
 - Added `<main>` landmark with `id="main-content"` for skip link navigation
@@ -61,6 +141,8 @@ h1: Recommended team compositions
 - Decorative icons marked with `aria-hidden="true"`
 - Interactive sections associated with headings via `aria-labelledby`
 - Team articles identified with `aria-labelledby` pointing to team name
+- Card tiles have descriptive `aria-label` including name, tier, and selection state
+- Modal dialogs properly identified with `role="dialog"` and `aria-modal="true"`
 
 #### Live Regions
 - Results counter has `role="status"` and `aria-live="polite"` for dynamic updates
@@ -125,9 +207,18 @@ Use these tools to verify improvements:
 Test all pages with keyboard only:
 - Press `Tab` to move forward through interactive elements
 - Press `Shift+Tab` to move backward
-- Press `Enter` or `Space` on buttons
-- Verify focus indicators are visible
+- Press `Enter` or `Space` on buttons and card tiles
+- Press `Esc` to close modal dialogs
+- Verify focus indicators are visible (gold outline)
 - Check that skip link appears on first `Tab` press
+- Ensure all cards can be selected via keyboard
+
+**Card Selection Test:**
+1. Tab to a champion card
+2. Verify gold focus outline appears
+3. Press Enter or Space
+4. Verify card selection state changes
+5. Screen reader should announce: "[Name], [Tier], [selected/not selected]"
 
 #### Screen Reader Testing
 Test with screen readers:
@@ -168,10 +259,21 @@ Install HeadingsMap to visualize heading structure:
 
 ### Satisfied Criteria
 
+✅ **1.1.1 Non-text Content (Level A)**
+- All images have alternative text
+- Decorative images marked with `aria-hidden="true"`
+- Sprite-based images use `role="img"` with `aria-label`
+
 ✅ **1.3.1 Info and Relationships (Level A)**
 - Proper heading hierarchy
 - Semantic HTML landmarks
 - ARIA labels and relationships
+
+✅ **2.1.1 Keyboard (Level A)**
+- Card tiles navigable with Tab key
+- Enter and Space keys activate card selection
+- Escape key closes modal dialogs
+- All interactive elements keyboard accessible
 
 ✅ **2.4.1 Bypass Blocks (Level A)**
 - Skip link implemented on CardPickerPage
@@ -184,6 +286,12 @@ Install HeadingsMap to visualize heading structure:
 - Descriptive headings
 - Clear labels for form controls
 - ARIA labels for icon buttons
+
+✅ **2.4.7 Focus Visible (Level AA)**
+- Clear focus indicators on all interactive elements
+- Gold outline (#ffc107) with 4px offset
+- :focus-visible ensures indicators only show for keyboard users
+- Enhanced visual feedback for focused cards
 
 ✅ **4.1.2 Name, Role, Value (Level A)**
 - Proper ARIA attributes

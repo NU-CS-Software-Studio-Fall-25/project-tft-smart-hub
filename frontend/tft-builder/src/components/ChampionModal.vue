@@ -3,8 +3,11 @@
     <div
       v-if="champion"
       class="champion-modal-backdrop"
-      role="presentation"
+      role="dialog"
+      aria-modal="true"
+      :aria-labelledby="`champion-modal-title-${champion.id}`"
       @click.self="close"
+      @keydown.esc="close"
     >
       <div class="champion-modal card shadow-lg">
         <div class="card-body p-4">
@@ -13,12 +16,12 @@
               <SpriteImage
                 :sprite="champion.sprite"
                 :image-url="champion.imageUrl"
-                :alt="champion.name"
+                :alt="`${champion.name} champion portrait`"
                 :size="120"
                 class-name="modal-card-img"
               />
               <div>
-                <h2 class="h4 fw-bold mb-1">{{ champion.name }}</h2>
+                <h2 :id="`champion-modal-title-${champion.id}`" class="h4 fw-bold mb-1">{{ champion.name }}</h2>
                 <div class="d-flex flex-wrap gap-2 align-items-center">
                   <span class="badge bg-warning text-dark fw-semibold">
                     Tier {{ champion.tier ?? '—' }}
@@ -33,8 +36,12 @@
                 </div>
               </div>
             </div>
-            <button class="btn btn-link text-muted p-0" @click="close">
-              <i class="bi bi-x-lg fs-4"></i>
+            <button 
+              class="btn btn-link text-muted p-0" 
+              @click="close"
+              aria-label="Close champion details"
+            >
+              <i class="bi bi-x-lg fs-4" aria-hidden="true"></i>
             </button>
           </div>
 

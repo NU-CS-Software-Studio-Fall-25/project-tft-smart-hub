@@ -3,13 +3,15 @@
     v-if="useSprite"
     :class="wrapperClass"
     :style="wrapperStyle"
+    role="img"
+    :aria-label="alt || 'Champion portrait'"
   >
-    <div class="sprite-inner" :style="spriteStyle"></div>
+    <div class="sprite-inner" :style="spriteStyle" aria-hidden="true"></div>
   </div>
   <img
     v-else
     :src="imageUrl || fallback"
-    :alt="alt"
+    :alt="alt || 'Champion portrait'"
     :class="imgClass"
     @error="onError"
   />
