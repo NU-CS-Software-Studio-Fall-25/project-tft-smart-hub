@@ -1,5 +1,5 @@
-### Accessibility
-1. Proper heading hierarchy has been implemented across all pages to help screen reader users navigate and understand page structure.
+### Accessibility (RTZ)
+1. Proper heading hierarchy has been implemented across all pages to help screen reader users navigate and understand page structure. 
 
 **CardPickerPage.vue  Heading Structure:**
 ```
@@ -56,3 +56,47 @@ h1: Recommended team compositions
 4. Team List Page
 - Team title #212529 on white #ffffff = 15:1 
 - Trait count #6c7385 on white = 5.1:1 
+
+### Additional Accessibility Improvements (YRM)
+1. Promoted the team library wrapper to a semantic `<main>` landmark so assistive tech can jump straight to the core content.  
+
+**Before:**
+```vue
+<div class="page-white">
+  ...
+</div>
+```
+**After:**
+```vue
+<main class="page-white" aria-labelledby="team-library-heading">
+  ...
+</main>
+```
+
+2. Enabled keyboard access for champion thumbnails in the saved-team strip, ensuring the preview modal works without a mouse.  
+**Before:**
+```vue
+<div
+  v-for="card in team.cards"
+  :key="`${team.id}-${card.id}`"
+  class="mini-card"
+  :title="card.name"
+  @contextmenu.prevent="preview(card)"
+>
+```
+**After:**
+```vue
+<div
+  v-for="card in team.cards"
+  :key="`${team.id}-${card.id}`"
+  class="mini-card"
+  :title="card.name"
+  role="button"
+  tabindex="0"
+  :aria-label="`Preview ${card.name}`"
+  @click="preview(card)"
+  @keydown.enter.prevent="preview(card)"
+  @keydown.space.prevent="preview(card)"
+  @contextmenu.prevent="preview(card)"
+>
+```

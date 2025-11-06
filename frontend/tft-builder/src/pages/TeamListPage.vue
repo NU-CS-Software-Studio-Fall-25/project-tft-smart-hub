@@ -1,9 +1,9 @@
 ﻿<template>
-  <div class="page-white">
+  <main class="page-white" aria-labelledby="team-library-heading">
     <div class="container py-5">
       <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
         <div>
-          <h1 class="h3 fw-bold mb-1">Team composition library</h1>
+          <h1 id="team-library-heading" class="h3 fw-bold mb-1">Team composition library</h1>
           <p class="mb-0 text-body-secondary">
             Review curated comps, compare win rates, and jump straight into the details.
           </p>
@@ -85,6 +85,12 @@
                       :key="`${team.id}-${card.id}`"
                       class="mini-card"
                       :title="card.name"
+                      role="button"
+                      tabindex="0"
+                      :aria-label="`Preview ${card.name}`"
+                      @click="preview(card)"
+                      @keydown.enter.prevent="preview(card)"
+                      @keydown.space.prevent="preview(card)"
                       @contextmenu.prevent="preview(card)"
                     >
                       <SpriteImage
@@ -156,7 +162,7 @@
         </template>
       </div>
     </div>
-  </div>
+  </main>
 </template>
 
 <script setup>
