@@ -1,7 +1,7 @@
 ﻿<template>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-primary sticky-top shadow-sm">
     <div class="container">
-      <RouterLink class="navbar-brand fw-bold d-flex align-items-center" to="/" @click="closeNavbar">
+      <RouterLink class="navbar-brand fw-bold d-flex align-items-center" to="/" @click="handleNavClick">
         <img src="/logo.svg" alt="TFT Team Lab Logo" width="32" height="32" class="me-2">
         TFT Team Lab
       </RouterLink>
@@ -10,11 +10,10 @@
         ref="navbarToggler"
         class="navbar-toggler"
         type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#primaryNav"
         aria-controls="primaryNav"
         aria-expanded="false"
         aria-label="Toggle navigation"
+        @click="toggleNavbar"
       >
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -26,7 +25,7 @@
               class="nav-link"
               :class="{ active: isActive(link) }"
               :to="link.to"
-              @click="closeNavbar"
+              @click="handleNavClick"
             >
               <i :class="`bi ${link.icon} me-2`"></i>
               {{ link.label }}
@@ -35,7 +34,7 @@
         </ul>
 
         <div class="d-flex align-items-center gap-2">
-          <RouterLink class="btn btn-warning text-dark fw-semibold" :to="createTeamDestination" @click="closeNavbar">
+          <RouterLink class="btn btn-warning text-dark fw-semibold" :to="createTeamDestination" @click="handleNavClick">
             <i class="bi bi-plus-circle me-1"></i>
             Create Team
           </RouterLink>
@@ -44,7 +43,7 @@
             <RouterLink
               class="btn btn-outline-light"
               to="/profile"
-              @click="closeNavbar"
+              @click="handleNavClick"
             >
               <i class="bi bi-person-circle me-1"></i>
               {{ authStore.user.displayName || authStore.user.email }}
@@ -64,7 +63,7 @@
             <RouterLink
               class="btn btn-outline-light"
               :to="{ name: 'login' }"
-              @click="closeNavbar"
+              @click="handleNavClick"
             >
               <i class="bi bi-box-arrow-in-right me-1"></i>
               Sign in
@@ -101,38 +100,58 @@ const isActive = (link) => {
   return route.path.startsWith(link.match || link.to)
 }
 
-// Close navbar when clicking on links (mobile)
-const closeNavbar = () => {
-  // Only close on mobile/tablet screens
-  if (window.innerWidth >= 992) {
-    return // Don't close on desktop
-  }
+// Toggle navbar collapse manually
+const toggleNavbar = () => {
+  if (!navbarCollapse.value) return
   
-  if (!navbarCollapse.value) {
-    return
-  }
-  
-  // Check if navbar is currently expanded
   const isExpanded = navbarCollapse.value.classList.contains('show')
   
-  if (isExpanded && navbarToggler.value) {
-    // Simulate click on toggle button to trigger Bootstrap's collapse
-    navbarToggler.value.click()
+  if (isExpanded) {
+    // Close the navbar
+    navbarCollapse.value.classList.remove('show')
+    if (navbarToggler.value) {
+      navbarToggler.value.setAttribute('aria-expanded', 'false')
+    }
+  } else {
+    // Open the navbar
+    navbarCollapse.value.classList.add('show')
+    if (navbarToggler.value) {
+      navbarToggler.value.setAttribute('aria-expanded', 'true')
+    }
+  }
+  
+  console.debug('[AppNavbar] Toggled navbar, now:', isExpanded ? 'closed' : 'open')
+}
+
+// Handle navigation link clicks - close menu on mobile
+const handleNavClick = () => {
+  // Only on mobile/tablet (< 992px bootstrap lg breakpoint)
+  if (window.innerWidth < 992 && navbarCollapse.value) {
+    // Check if menu is open
+    if (navbarCollapse.value.classList.contains('show')) {
+      toggleNavbar()
+    }
   }
 }
 
 const handleLogout = () => {
-  closeNavbar()
+  handleNavClick()
   setTimeout(() => {
     authStore.logout()
     router.push({ name: 'home' })
-  }, 150) // Small delay for collapse animation
+  }, 150)
+}
+
+const logout = () => {
+  authStore.logout()
+  router.push({ name: 'home' })
 }
 
 onMounted(() => {
   console.debug('[AppNavbar] Mounted, auth state:', {
     token: !!authStore.token,
-    user: !!authStore.user
+    user: !!authStore.user,
+    bootstrapAvailable: !!window.bootstrap
   })
 })
 </script>
