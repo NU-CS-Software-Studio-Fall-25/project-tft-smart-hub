@@ -37,8 +37,8 @@ echo ""
 echo "📋 Step 2: Copying frontend assets to Rails..."
 cd "${PROJECT_ROOT}"
 
-# Clean old assets (keep tft-champion and tft-trait folders)
-find ruby_backend/tft_team_builder/public -maxdepth 1 -type f -delete
+# Clean old assets (keep tft-champion, tft-trait folders and error pages)
+find ruby_backend/tft_team_builder/public -maxdepth 1 -type f ! -name '404.html' ! -name '422.html' ! -name '500.html' ! -name 'robots.txt' -delete
 rm -rf ruby_backend/tft_team_builder/public/assets
 
 # Copy new build
