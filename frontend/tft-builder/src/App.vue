@@ -3,7 +3,7 @@
     <PWAInstallPrompt />
     <AppNavbar />
     <main class="flex-grow-1">
-      <RouterView />
+      <router-view />
     </main>
     <AppFooter />
     <ChampionModal />
@@ -12,7 +12,6 @@
 
 <script setup>
 import { onMounted } from 'vue'
-import { RouterView } from 'vue-router'
 import AppNavbar from './components/AppNavbar.vue'
 import AppFooter from './components/AppFooter.vue'
 import ChampionModal from './components/ChampionModal.vue'

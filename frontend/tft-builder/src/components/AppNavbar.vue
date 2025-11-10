@@ -96,6 +96,7 @@ const createTeamDestination = computed(() => (
 ))
 
 const isActive = (link) => {
+  if (!route || !route.path) return false
   if (link.to === '/') return route.path === '/'
   return route.path.startsWith(link.match || link.to)
 }
