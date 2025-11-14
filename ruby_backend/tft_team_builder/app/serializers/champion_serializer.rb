@@ -35,11 +35,23 @@ class ChampionSerializer
     uri = URI.parse(path)
     return path if uri.scheme.present?
 
-    public_path = Rails.root.join("public", path.delete_prefix("/"))
-    return unless File.exist?(public_path)
+    normalized = path.delete_prefix("/")
+    public_path = Rails.root.join("public", normalized)
+    return "#{request.base_url}/#{normalized}" if File.exist?(public_path)
 
-    "#{request.base_url}/#{path.delete_prefix('/')}"
+    compiled_asset = resolve_asset_path(path)
+    if compiled_asset.present?
+      compiled_uri = URI.parse(compiled_asset)
+      return compiled_asset if compiled_uri.scheme.present?
+      return "#{request.base_url}#{compiled_asset}"
+    end
   rescue URI::InvalidURIError
+    nil
+  end
+
+  def resolve_asset_path(path)
+    ActionController::Base.helpers.asset_path(path)
+  rescue Sprockets::Rails::Helper::AssetNotFound, NameError
     nil
   end
 

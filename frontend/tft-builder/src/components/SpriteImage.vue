@@ -1,16 +1,16 @@
-﻿<template>
-  <div
+<template>
+  <canvas
     v-if="useSprite"
+    ref="canvasRef"
+    :width="size"
+    :height="size"
     :class="wrapperClass"
-    :style="wrapperStyle"
     role="img"
     :aria-label="alt || 'Champion portrait'"
-  >
-    <div class="sprite-inner" :style="spriteStyle" aria-hidden="true"></div>
-  </div>
+  />
   <img
     v-else
-    :src="imageUrl || fallback"
+    :src="normalizedImageUrl || fallback"
     :alt="alt || 'Champion portrait'"
     :class="imgClass"
     @error="onError"
@@ -18,7 +18,7 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 
 const props = defineProps({
   sprite: {
@@ -48,12 +48,18 @@ const props = defineProps({
 })
 
 const broken = ref(false)
-const isAbsoluteUrl = computed(() =>
-  typeof props.imageUrl === 'string' && /^https?:\/\//i.test(props.imageUrl)
-)
+const canvasRef = ref(null)
+const imageCache = new Map()
 
-const hasExternalImage = computed(() => isAbsoluteUrl.value && !broken.value)
-const useSprite = computed(() => !hasExternalImage.value && !!props.sprite?.sheet)
+const normalizedImageUrl = computed(() => {
+  if (!props.imageUrl) return ''
+  if (/^https?:\/\//i.test(props.imageUrl)) return props.imageUrl
+  const trimmed = props.imageUrl.replace(/^\/+/, '')
+  return `/${trimmed}`
+})
+
+const hasImageAsset = computed(() => !!normalizedImageUrl.value && !broken.value)
+const useSprite = computed(() => !hasImageAsset.value && !!props.sprite?.sheet)
 
 watch(
   () => props.imageUrl,
@@ -67,49 +73,82 @@ const sheetPath = computed(() => {
   return `/sprites/${props.sprite.sheet}`
 })
 
-const scale = computed(() => {
-  if (!props.sprite?.h) return 1
-  return props.size / props.sprite.h
-})
-
-const wrapperClass = computed(() => ['sprite-wrapper', props.className].filter(Boolean))
-
-const wrapperStyle = computed(() => ({
-  width: `${props.size}px`,
-  height: `${props.size}px`,
-}))
-
-const spriteStyle = computed(() => {
-  if (!props.sprite) return {}
-  const { x = 0, y = 0, w = props.size, h = props.size } = props.sprite
-  return {
-    width: `${w}px`,
-    height: `${h}px`,
-    backgroundImage: `url(${sheetPath.value})`,
-    backgroundRepeat: 'no-repeat',
-    backgroundPosition: `${-x}px ${-y}px`,
-    transform: `scale(${scale.value})`,
-    transformOrigin: 'top left',
-    imageRendering: 'pixelated',
-  }
-})
-
+const wrapperClass = computed(() => ['sprite-wrapper', 'sprite-canvas', props.className].filter(Boolean))
 const imgClass = computed(() => ['sprite-fallback', props.className].filter(Boolean))
 
 const onError = () => {
   broken.value = true
 }
+
+const loadImage = (path) => {
+  if (!path) return Promise.reject(new Error('Missing sprite sheet path'))
+  if (imageCache.has(path)) {
+    const cached = imageCache.get(path)
+    if (cached instanceof Promise) {
+      return cached
+    }
+    return Promise.resolve(cached)
+  }
+
+  const promise = new Promise((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => {
+      imageCache.set(path, img)
+      resolve(img)
+    }
+    img.onerror = reject
+    img.src = path
+  })
+
+  imageCache.set(path, promise)
+  return promise
+}
+
+const renderSprite = async () => {
+  if (!useSprite.value || !props.sprite) return
+  const canvas = canvasRef.value
+  if (!canvas) return
+  const ctx = canvas.getContext('2d')
+  if (!ctx) return
+
+  const path = sheetPath.value
+  if (!path) return
+
+  try {
+    const image = await loadImage(path)
+    const { x = 0, y = 0, w = props.sprite.w || props.size, h = props.sprite.h || props.size } = props.sprite
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.imageSmoothingEnabled = false
+    ctx.drawImage(image, x, y, w, h, 0, 0, props.size, props.size)
+  } catch (error) {
+    console.error('[sprite] failed to render sprite', error)
+  }
+}
+
+watch([useSprite, () => props.sprite, () => props.size, sheetPath], () => {
+  if (useSprite.value) {
+    renderSprite()
+  }
+})
+
+onMounted(() => {
+  if (useSprite.value) {
+    renderSprite()
+  }
+})
 </script>
 
 <style scoped>
 .sprite-wrapper {
-  position: relative;
+  width: 100%;
+  height: 100%;
   border-radius: 12px;
   overflow: hidden;
+  display: block;
 }
 
-.sprite-inner {
-  border-radius: 12px;
+.sprite-canvas {
+  background: transparent;
 }
 
 .sprite-fallback {
@@ -117,6 +156,6 @@ const onError = () => {
   object-fit: cover;
   width: 100%;
   height: 100%;
+  display: block;
 }
 </style>
-

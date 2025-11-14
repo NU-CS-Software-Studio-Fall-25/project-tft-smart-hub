@@ -30,10 +30,12 @@ threads_count = ENV.fetch("RAILS_MAX_THREADS", 5)
 threads threads_count, threads_count
 
 # Enable workers for better concurrency (Heroku will set WEB_CONCURRENCY via dyno type)
-workers ENV.fetch("WEB_CONCURRENCY", 2)
+# Windows 注释掉这行
+# workers ENV.fetch("WEB_CONCURRENCY", 2)
 
 # Use the `preload_app!` method when specifying workers to preload app before forking
-preload_app!
+# Windows 注释掉这行
+# preload_app!
 
 # Specifies the `port` that Puma will listen on to receive requests; default is 3000.
 port ENV.fetch("PORT", 3000)
