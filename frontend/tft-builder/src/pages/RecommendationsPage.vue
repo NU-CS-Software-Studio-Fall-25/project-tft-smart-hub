@@ -30,6 +30,7 @@
                   :key="card.id"
                   :card="card"
                   :selected="true"
+                  name-variant="pill"
                   @remove="remove(card.id)"
                 />
               </div>

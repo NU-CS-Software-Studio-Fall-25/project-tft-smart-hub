@@ -97,6 +97,7 @@
                           :image-url="card.imageUrl"
                           :alt="card.name"
                           :size="60"
+                          class-name="champion-icon-img"
                         />
                         <span v-else class="champion-icon-text-small">{{ card.name.charAt(0) }}</span>
                         <span class="champion-icon-remove-small">
@@ -191,12 +192,13 @@
                         :class="{ 'highlight': selectedSet.has(card.id) }"
                         :title="card.name"
                       >
-                        <SpriteImage
-                          :sprite="card.sprite"
-                          :image-url="card.imageUrl"
-                          :alt="card.name"
-                          :size="44"
-                        />
+                      <SpriteImage
+                        :sprite="card.sprite"
+                        :image-url="card.imageUrl"
+                        :alt="card.name"
+                        :size="56"
+                        class-name="team-champion-img"
+                      />
                       </div>
                     </div>
                   </div>
@@ -482,8 +484,9 @@ onMounted(async () => {
 
 .champion-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-  gap: 0.4rem;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: 0.6rem;
+  grid-auto-rows: minmax(118px, auto);
 }
 
 .empty-state {
@@ -532,6 +535,13 @@ onMounted(async () => {
   cursor: pointer;
   transition: all 0.2s;
   flex-shrink: 0;
+}
+
+.champion-icon-badge-small :deep(.champion-icon-img) {
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+  display: block;
 }
 
 .champion-icon-badge-small:hover {
@@ -589,13 +599,20 @@ onMounted(async () => {
 
 .team-champion-tile-compact {
   position: relative;
-  width: 44px;
-  height: 44px;
+  width: 56px;
+  height: 56px;
   border-radius: 6px;
   overflow: hidden;
   border: 2px solid #dee2e6;
   transition: all 0.2s;
   flex-shrink: 0;
+}
+
+.team-champion-tile-compact :deep(.team-champion-img) {
+  border-radius: 6px;
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .team-champion-tile-compact.highlight {
@@ -614,15 +631,17 @@ onMounted(async () => {
   }
   
   .champion-grid {
-    grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
-    gap: 0.3rem;
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    gap: 0.45rem;
+    grid-auto-rows: minmax(110px, auto);
   }
 }
 
 @media (max-width: 575.98px) {
   .champion-grid {
-    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
-    gap: 0.2rem;
+    grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
+    gap: 0.3rem;
+    grid-auto-rows: minmax(100px, auto);
   }
   
   .champion-icon-badge-small {
@@ -631,8 +650,8 @@ onMounted(async () => {
   }
   
   .team-champion-tile-compact {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
   }
   
   .result-region {
@@ -648,5 +667,7 @@ onMounted(async () => {
   color: #1f2638 !important;
   font-size: 0.75rem !important;
   margin-top: 0.25rem;
+  min-height: 1.3rem;
+  display: block;
 }
 </style>

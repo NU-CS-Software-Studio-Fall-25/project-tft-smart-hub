@@ -2,6 +2,7 @@
   <div
     class="tft-card-tile position-relative"
     :class="{ selected }"
+    :style="tileStyles"
     @click="onToggle"
     @contextmenu.prevent="onPreview"
     role="button"
@@ -21,7 +22,7 @@
       :size="size"
       class-name="tft-card-img"
     />
-    <div v-if="showName" class="tft-card-name">{{ card.name }}</div>
+    <div v-if="showName" :class="nameClasses">{{ card.name }}</div>
   </div>
 </template>
 
@@ -51,6 +52,11 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  nameVariant: {
+    type: String,
+    default: 'default',
+    validator: (value) => ['default', 'pill'].includes(value),
+  },
 })
 
 const emits = defineEmits(['toggle', 'remove'])
@@ -77,4 +83,16 @@ const onPreview = () => {
   if (!props.card) return
   selectionStore.focusChampion(props.card)
 }
+
+const nameClasses = computed(() => {
+  return ['tft-card-name', props.nameVariant === 'pill' ? 'tft-card-name-pill' : null].filter(Boolean)
+})
+
+const tileStyles = computed(() => {
+  const size = Number(props.size) || 92
+  const clamped = size > 0 ? size : 92
+  return {
+    '--tile-size': `${clamped}px`,
+  }
+})
 </script>

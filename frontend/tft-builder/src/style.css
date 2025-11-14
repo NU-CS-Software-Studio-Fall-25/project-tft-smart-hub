@@ -43,14 +43,14 @@ body {
 }
 
 .tft-card-tile {
-  width: 92px;
-  flex: 0 0 92px;
+  width: var(--tile-size, 92px);
+  flex: 0 0 var(--tile-size, 92px);
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0rem;
+  gap: 0.3rem;
   padding-bottom: 0.4rem;
   min-height: 0px;
   position: relative;
@@ -81,8 +81,8 @@ body {
 }
 
 .tft-card-img {
-  width: 92px;
-  height: 92px;
+  width: var(--tile-size, 92px);
+  height: var(--tile-size, 92px);
   object-fit: cover;
   border-radius: 18px;
   border: 2px solid rgba(186, 155, 94, 0.75);
@@ -249,4 +249,25 @@ body {
     0 4px 12px rgba(81, 113, 221, 0.12);
   margin: 0 auto;
   max-width: 100%;
+}
+
+.tft-card-name-pill {
+  color: #1f2638;
+  text-shadow: none;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  padding: 0.15rem 0.45rem;
+  background: linear-gradient(180deg, rgba(125, 155, 255, 0.25), rgba(102, 136, 247, 0.15));
+  box-shadow:
+    inset 0 0 0 1px rgba(95, 125, 230, 0.35),
+    0 4px 14px rgba(81, 113, 221, 0.18);
+  border-radius: 999px;
+  margin: 0.3rem auto 0;
+  max-width: 100%;
+  white-space: nowrap;
+}
+
+.tft-card-tile.selected .tft-card-name-pill {
+  color: #1f2638;
+  text-shadow: none;
 }
