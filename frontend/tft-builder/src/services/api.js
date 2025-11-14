@@ -19,6 +19,15 @@ http.interceptors.request.use((config) => {
   } else if (config.headers?.Authorization) {
     delete config.headers.Authorization
   }
+  
+  // Force cache busting in development
+  if (import.meta.env.DEV) {
+    config.params = config.params || {}
+    config.params._t = Date.now()
+    config.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    config.headers['Pragma'] = 'no-cache'
+  }
+  
   return config
 })
 
@@ -40,6 +49,16 @@ export function setAuthToken(token) {
 
 export async function registerUser(payload) {
   const { data } = await http.post('/auth/register', { user: payload })
+  return data
+}
+
+export async function verifyEmailUser(payload) {
+  const { data } = await http.post('/auth/verify_email', { user: payload })
+  return data
+}
+
+export async function resendVerificationUser(payload) {
+  const { data } = await http.post('/auth/resend_verification', { user: payload })
   return data
 }
 
@@ -97,6 +116,7 @@ export async function fetchTeamComps(params = {}) {
   if (params.page) searchParams.set('page', params.page)
   if (params.search) searchParams.set('search', params.search)
   if (params.include_cards === false) searchParams.set('include_cards', 'false')
+  if (params.type) searchParams.set('type', params.type)
 
   const path = `/team_comps${searchParams.toString() ? `?${searchParams.toString()}` : ''}`
   const { data } = await http.get(path)
@@ -136,6 +156,58 @@ export async function updateTeamComp(id, payload) {
 
 export async function deleteTeamComp(id) {
   await http.delete(`/team_comps/${id}`)
+}
+
+// Likes
+export async function likeTeam(id) {
+  const { data } = await http.post(`/team_comps/${id}/like`)
+  return data
+}
+
+export async function unlikeTeam(id) {
+  const { data } = await http.delete(`/team_comps/${id}/like`)
+  return data
+}
+
+export async function checkLikeStatus(id) {
+  const { data } = await http.get(`/team_comps/${id}/like`)
+  return data
+}
+
+// Favorites
+export async function favoriteTeam(id) {
+  const { data } = await http.post(`/team_comps/${id}/favorite`)
+  return data
+}
+
+export async function unfavoriteTeam(id) {
+  const { data } = await http.delete(`/team_comps/${id}/favorite`)
+  return data
+}
+
+export async function checkFavoriteStatus(id) {
+  const { data } = await http.get(`/team_comps/${id}/favorite`)
+  return data
+}
+
+export async function fetchFavorites() {
+  const { data } = await http.get('/favorites')
+  return data
+}
+
+// Comments
+export async function fetchComments(teamId) {
+  const { data } = await http.get(`/team_comps/${teamId}/comments`)
+  return data
+}
+
+export async function createComment(teamId, content) {
+  const { data } = await http.post(`/team_comps/${teamId}/comments`, { content })
+  return data
+}
+
+export async function deleteComment(teamId, commentId) {
+  await http.delete(`/team_comps/${teamId}/comments/${commentId}`)
 }
 
 export function extractErrorMessage(error) {

@@ -124,6 +124,7 @@ module Services
           top2_rate: comp_data["top2_rate"],
           top3_rate: comp_data["top3_rate"],
           top4_rate: comp_data["top4_rate"],
+          team_type: 'system',
           raw_data: comp_data
         )
 

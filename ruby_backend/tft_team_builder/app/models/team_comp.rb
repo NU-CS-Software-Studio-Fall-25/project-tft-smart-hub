@@ -1,11 +1,20 @@
 class TeamComp < ApplicationRecord
   DEFAULT_SET_IDENTIFIER = ENV.fetch("DEFAULT_TFT_SET", "TFT15")
 
+  belongs_to :user, optional: true
+  has_many :likes, dependent: :destroy
+  has_many :favorites, dependent: :destroy
+  has_many :comments, dependent: :destroy
+
   scope :for_set, ->(set_identifier) { set_identifier.present? ? where(set_identifier:) : all }
+  scope :system_teams, -> { where(team_type: 'system') }
+  scope :user_teams, -> { where(team_type: 'user') }
 
   before_validation :apply_default_set_identifier
 
-  validates :name, presence: true
+  validates :name, presence: true, length: { maximum: 50 }
+  validates :description, length: { maximum: 200 }, allow_blank: true
+  validates :notes, length: { maximum: 100 }, allow_blank: true
   validates :champions, presence: true
   validates :set_identifier, presence: true
 

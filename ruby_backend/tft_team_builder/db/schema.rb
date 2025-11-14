@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_05_200251) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_13_235425) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -31,6 +31,37 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_05_200251) do
     t.string "set_identifier"
     t.index ["set_identifier", "api_id"], name: "index_champions_on_set_identifier_and_api_id", unique: true
     t.index ["set_identifier"], name: "index_champions_on_set_identifier"
+  end
+
+  create_table "comments", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "team_comp_id", null: false
+    t.text "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_comments_on_created_at"
+    t.index ["team_comp_id"], name: "index_comments_on_team_comp_id"
+    t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "favorites", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "team_comp_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["team_comp_id"], name: "index_favorites_on_team_comp_id"
+    t.index ["user_id", "team_comp_id"], name: "index_favorites_on_user_id_and_team_comp_id", unique: true
+    t.index ["user_id"], name: "index_favorites_on_user_id"
+  end
+
+  create_table "likes", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "team_comp_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["team_comp_id"], name: "index_likes_on_team_comp_id"
+    t.index ["user_id", "team_comp_id"], name: "index_likes_on_user_id_and_team_comp_id", unique: true
+    t.index ["user_id"], name: "index_likes_on_user_id"
   end
 
   create_table "team_comps", force: :cascade do |t|
@@ -56,6 +87,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_05_200251) do
     t.decimal "top3_rate", precision: 5, scale: 4
     t.decimal "top4_rate", precision: 5, scale: 4
     t.jsonb "raw_data", default: {}, null: false
+    t.integer "user_id"
+    t.string "team_type", default: "user"
+    t.integer "likes_count", default: 0, null: false
+    t.integer "favorites_count", default: 0, null: false
+    t.integer "comments_count", default: 0, null: false
     t.index "lower((name)::text)", name: "index_team_comps_on_lower_name"
     t.index ["composition_hash"], name: "index_team_comps_on_composition_hash", unique: true
     t.index ["composition_key"], name: "index_team_comps_on_composition_key"
@@ -91,7 +127,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_05_200251) do
     t.string "avatar_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "email_verification_token"
+    t.datetime "email_verification_sent_at"
+    t.datetime "email_verified_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["role"], name: "index_users_on_role"
   end
+
+  add_foreign_key "comments", "team_comps"
+  add_foreign_key "comments", "users"
+  add_foreign_key "favorites", "team_comps"
+  add_foreign_key "favorites", "users"
+  add_foreign_key "likes", "team_comps"
+  add_foreign_key "likes", "users"
 end

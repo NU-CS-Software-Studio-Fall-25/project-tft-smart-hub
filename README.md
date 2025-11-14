@@ -1,4 +1,46 @@
-# TFT Team Builder & Smart Compare
+# TFT Smart Hub
+
+## Development Cache Issues
+
+If you experience caching issues during development where browser shows old content after code changes:
+
+### Quick Solutions
+
+1. **Hard Refresh**: Press `Ctrl+Shift+R` (Linux/Windows) or `Cmd+Shift+R` (Mac) to do a hard refresh
+2. **Clear Browser Cache**: Open DevTools (F12) → Network tab → check "Disable cache"
+3. **Console Command**: Open browser console and run `clearTFTCache()` to clear app cache and reload
+4. **Incognito Mode**: Use incognito/private browsing mode for development
+
+### Complete Cache Clearing
+
+For a complete cache reset, run the cache clearing script:
+
+```bash
+./clear-cache.sh
+```
+
+This script will:
+- Stop all development servers
+- Clear Rails cache and temp files
+- Clear Vite development cache
+- Clear npm cache
+- Reinstall frontend dependencies
+- Clear system temp files
+
+### Automatic Cache Busting
+
+The app includes automatic cache busting in development mode:
+- Vite server headers prevent aggressive caching
+- Version checking clears old cached data
+- Local storage is automatically managed
+
+### Manual Cache Clearing
+
+If issues persist, you can manually clear the cache by:
+1. Opening browser DevTools (F12)
+2. Going to Console tab
+3. Running: `clearTFTCache()`
+4. The page will automatically reload with fresh cache
 
 # Temporary Link: <https://tft-smartcomp-b3f1e37435eb.herokuapp.com/>
 

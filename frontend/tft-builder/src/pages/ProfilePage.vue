@@ -38,15 +38,25 @@
               <div class="col-12">
                 <hr />
                 <h2 class="h6 fw-semibold">Update password</h2>
-                <p class="text-body-secondary small">Leave blank to keep the current password.</p>
+                <p class="text-body-secondary small">Enter your current password and choose a new secure password.</p>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Current password <span class="text-danger">*</span></label>
+                <input v-model="form.currentPassword" type="password" class="form-control" autocomplete="current-password" required />
+                <div class="form-text">Required to confirm your identity</div>
+              </div>
+              <div class="col-md-6">
+                <!-- Spacer for alignment -->
               </div>
 
               <div class="col-md-6">
                 <label class="form-label">New password</label>
                 <input v-model="form.password" type="password" class="form-control" minlength="8" autocomplete="new-password" />
+                <div class="form-text">Min 8 chars, must include uppercase, lowercase, number & special character</div>
               </div>
               <div class="col-md-6">
-                <label class="form-label">Confirm password</label>
+                <label class="form-label">Confirm new password</label>
                 <input v-model="form.passwordConfirmation" type="password" class="form-control" minlength="8" autocomplete="new-password" />
               </div>
             </div>
@@ -85,6 +95,7 @@ const form = reactive({
   bio: authStore.user?.bio || '',
   location: authStore.user?.location || '',
   avatarUrl: authStore.user?.avatarUrl || '',
+  currentPassword: '',
   password: '',
   passwordConfirmation: '',
 })
@@ -104,6 +115,7 @@ function resetForm() {
   form.bio = authStore.user?.bio || ''
   form.location = authStore.user?.location || ''
   form.avatarUrl = authStore.user?.avatarUrl || ''
+  form.currentPassword = ''
   form.password = ''
   form.passwordConfirmation = ''
   authStore.error = null
@@ -118,12 +130,18 @@ async function onSubmit() {
   }
 
   if (form.password) {
+    if (!form.currentPassword) {
+      authStore.error = "Current password is required to change your password"
+      return
+    }
+    payload.current_password = form.currentPassword
     payload.password = form.password
     payload.password_confirmation = form.passwordConfirmation
   }
 
   try {
     await authStore.updateProfile(payload)
+    form.currentPassword = ''
     form.password = ''
     form.passwordConfirmation = ''
     authStore.error = null

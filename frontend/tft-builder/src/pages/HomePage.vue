@@ -1,20 +1,13 @@
 <template>
   <div>
-    <section class="home-hero text-light">
-      <div class="container py-5">
+    <section class="home-hero text-light py-5 pb-0">
+      <div class="container py-5 pt-3">
         <div class="row align-items-center g-5">
-          <div class="col-lg-6">
-            <div class="badge bg-warning text-dark mb-3 px-3 py-2 fw-semibold">
-              <i class="bi bi-lightning-charge me-2"></i>
-              TFT Team Builder &amp; Library
-            </div>
+          <div class="col-12 text-center">
             <h1 class="display-5 fw-bold mb-3">
               Plan your next top 4 with curated comps and live synergy search.
             </h1>
-            <p class="lead text-white-50 mb-4">
-              Browse the champion pool, build synergy-driven comps, and keep your own drafts inside a single polished workspace.
-            </p>
-            <div class="d-flex flex-wrap gap-3">
+            <div class="d-flex flex-wrap gap-3 justify-content-center">
               <RouterLink class="btn btn-warning text-dark fw-semibold btn-lg" to="/builder">
                 Start Searching
               </RouterLink>
@@ -23,43 +16,12 @@
               </RouterLink>
             </div>
           </div>
-          <div class="col-lg-6">
-            <div class="glass-panel mx-auto">
-              <div class="panel-header text-uppercase text-secondary small fw-semibold">
-                Recently highlighted comps
-              </div>
-              <div class="panel-body">
-                <div v-if="featuredTeams.length === 0" class="text-white-50 small">
-                  Loading popular team comps...
-                </div>
-                <div
-                  v-for="team in featuredTeams"
-                  :key="team.id"
-                  class="d-flex align-items-center justify-content-between py-2 border-bottom border-secondary-subtle"
-                >
-                  <div class="me-3">
-                    <div class="fw-semibold text-light">{{ team.name }}</div>
-                    <div class="small text-white-50">{{ team.description }}</div>
-                  </div>
-                  <div class="text-end">
-                    <div class="badge bg-success-subtle text-success-emphasis mb-1">
-                      Win {{ percentage(team.winRate) }}
-                    </div>
-                    <div class="small text-white-50">
-                      {{ (team.meta?.matchCount || 0) }} synergies matched
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </section>
 
-    <section class="py-5 bg-body-secondary">
+    <section class="py-5 bg-body-secondary mt-10">
       <div class="container">
-        <h2 class="h3 fw-bold mb-4 section-heading">Why use TFT Team Lab?</h2>
         <div class="row g-4">
           <div v-for="feature in features" :key="feature.title" class="col-md-4">
             <div class="card h-100 shadow-sm border-0">

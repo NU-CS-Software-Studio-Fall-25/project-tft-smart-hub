@@ -26,8 +26,9 @@
           <div class="card shadow-sm border-0 mb-4">
             <div class="card-body">
               <div class="mb-3">
-                <label class="form-label fw-semibold">Team name</label>
-                <input v-model.trim="form.name" type="text" class="form-control" placeholder="e.g. Void Artillery" required />
+                <label class="form-label fw-semibold">Team name <span class="text-danger">*</span></label>
+                <input v-model.trim="form.name" type="text" class="form-control" placeholder="e.g. Void Artillery" maxlength="20" required />
+                <div class="form-text">{{ form.name.length }}/20 characters</div>
               </div>
 
               <div class="mb-3">
@@ -37,45 +38,9 @@
                   class="form-control"
                   rows="3"
                   placeholder="What makes this comp work? Core carries, frontline, etc."
-                  required
+                  maxlength="100"
                 ></textarea>
-              </div>
-
-              <div class="row g-3">
-                <div class="col-sm-6">
-                  <label class="form-label fw-semibold">Win rate (%)</label>
-                  <input
-                    v-model.number="form.winRate"
-                    type="number"
-                    min="0"
-                    max="100"
-                    step="0.1"
-                    class="form-control"
-                    placeholder="58.5"
-                  />
-                </div>
-                <div class="col-sm-6">
-                  <label class="form-label fw-semibold">Pick rate (%)</label>
-                  <input
-                    v-model.number="form.playRate"
-                    type="number"
-                    min="0"
-                    max="100"
-                    step="0.1"
-                    class="form-control"
-                    placeholder="12.1"
-                  />
-                </div>
-              </div>
-
-              <div class="mb-3 mt-3">
-                <label class="form-label fw-semibold">Source / patch</label>
-                <input
-                  v-model.trim="form.source"
-                  type="text"
-                  class="form-control"
-                  placeholder="e.g. Patch 14.1, TFT Meta Snapshot"
-                />
+                <div class="form-text">{{ form.description.length }}/100 characters</div>
               </div>
 
               <div class="mb-3">
@@ -85,7 +50,9 @@
                   class="form-control"
                   rows="4"
                   placeholder="Recommended items, positioning, augments, or pivot options."
+                  maxlength="100"
                 ></textarea>
+                <div class="form-text">{{ form.notes.length }}/100 characters</div>
               </div>
             </div>
           </div>
@@ -97,14 +64,6 @@
                 <li>
                   <i class="bi bi-people me-2"></i>
                   {{ selectedCards.length }} champions selected
-                </li>
-                <li v-if="form.winRate">
-                  <i class="bi bi-trophy me-2"></i>
-                  Win rate {{ form.winRate }}%
-                </li>
-                <li v-if="form.playRate">
-                  <i class="bi bi-graph-up me-2"></i>
-                  Pick rate {{ form.playRate }}%
                 </li>
               </ul>
             </div>
@@ -203,9 +162,6 @@ const form = reactive({
   name: '',
   description: '',
   notes: '',
-  source: '',
-  winRate: null,
-  playRate: null,
 })
 
 const filter = ref('')
@@ -249,7 +205,7 @@ const selectedCards = computed(() =>
 const canSubmit = computed(() => {
   if (!authStore.isAuthenticated()) return false
   if (isEdit.value && !authStore.isAdmin()) return false
-  return Boolean(form.name && form.description && selectedIds.value.size > 0)
+  return Boolean(form.name && selectedIds.value.size > 0)
 })
 
 const toggle = (championId) => {
@@ -270,9 +226,6 @@ const resetForm = () => {
     form.name = ''
     form.description = ''
     form.notes = ''
-    form.source = ''
-    form.winRate = null
-    form.playRate = null
     clearSelection()
   }
 }
@@ -282,26 +235,28 @@ const hydrate = (team) => {
   form.name = team.name || ''
   form.description = team.description || ''
   form.notes = team.notes || ''
-  form.source = team.source || ''
-  form.winRate = team.winRate ? Number((team.winRate * 100).toFixed(1)) : null
-  form.playRate = team.playRate ? Number((team.playRate * 100).toFixed(1)) : null
   selectedIds.value = new Set(team.cards?.map((card) => card.id))
 }
 
 const submit = async () => {
+  console.log('[TeamEditorPage] Submit triggered, isEdit:', isEdit.value)
+  
   if (!authStore.isAuthenticated()) {
     error.value = "Please sign in to continue."
+    console.warn('[TeamEditorPage] User not authenticated')
     router.push({ name: "login", query: { redirect: route.fullPath } })
     return
   }
 
   if (isEdit.value && !authStore.isAdmin()) {
     error.value = "Administrator privileges are required to modify existing team compositions."
+    console.warn('[TeamEditorPage] User not admin')
     return
   }
 
   if (!canSubmit.value) {
-    error.value = "Please complete all required fields and select at least one champion."
+    error.value = "Please provide a team name and select at least one champion."
+    console.warn('[TeamEditorPage] Form validation failed')
     return
   }
 
@@ -311,15 +266,27 @@ const submit = async () => {
     ...form,
     championIds: Array.from(selectedIds.value),
   }
+  console.log('[TeamEditorPage] Submitting payload:', payload)
+  
   try {
     const data = isEdit.value
       ? await updateTeamComp(id.value, payload)
       : await createTeamComp(payload)
+    console.log('[TeamEditorPage] Team saved successfully:', data)
     teamStore.upsert(data)
-    router.push({ name: "team-detail", params: { id: data.id } })
+    console.log('[TeamEditorPage] Team store updated')
+    
+    // 创建成功后跳转到user teams列表页，编辑后跳转到详情页
+    if (isEdit.value) {
+      console.log('[TeamEditorPage] Navigating to team detail page')
+      router.push({ name: "team-detail", params: { id: data.id } })
+    } else {
+      console.log('[TeamEditorPage] Navigating to user teams list')
+      router.push({ name: "teams", query: { type: 'user' } })
+    }
   } catch (err) {
     error.value = extractErrorMessage(err)
-    console.error(err)
+    console.error('[TeamEditorPage] Failed to save team:', err)
   } finally {
     saving.value = false
   }

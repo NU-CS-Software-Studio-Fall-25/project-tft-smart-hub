@@ -3,6 +3,8 @@ import {
   setAuthToken,
   loginUser,
   registerUser,
+  verifyEmailUser,
+  resendVerificationUser,
   fetchCurrentUser,
   updateProfileRequest,
   extractErrorMessage,
@@ -60,9 +62,39 @@ export const authStore = reactive({
     this.loading = true
     this.error = null
     try {
-      const { token, user } = await registerUser(payload)
+      const result = await registerUser(payload)
+      // Registration now returns a message, not token/user
+      // User needs to verify email first
+      return result
+    } catch (error) {
+      this.error = extractErrorMessage(error)
+      throw error
+    } finally {
+      this.loading = false
+    }
+  },
+
+  async verifyEmail(credentials) {
+    this.loading = true
+    this.error = null
+    try {
+      const { token, user } = await verifyEmailUser(credentials)
       this.setSession(token, user)
       return user
+    } catch (error) {
+      this.error = extractErrorMessage(error)
+      throw error
+    } finally {
+      this.loading = false
+    }
+  },
+
+  async resendVerification(payload) {
+    this.loading = true
+    this.error = null
+    try {
+      const result = await resendVerificationUser(payload)
+      return result
     } catch (error) {
       this.error = extractErrorMessage(error)
       throw error

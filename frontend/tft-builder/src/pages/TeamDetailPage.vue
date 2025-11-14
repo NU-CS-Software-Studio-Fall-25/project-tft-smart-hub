@@ -37,11 +37,11 @@
               <p v-else class="lead text-body-secondary mb-0">{{ team.description }}</p>
             </div>
             <div class="d-flex flex-wrap gap-3">
-              <div class="stat-pill bg-success-subtle text-success-emphasis">
+              <div class="stat-pill bg-success-subtle text-success-emphasis" v-if="team.winRate">
                 <span class="label">Win rate</span>
                 <span class="value">{{ percentage(team.winRate) }}</span>
               </div>
-              <div class="stat-pill bg-primary-subtle text-primary-emphasis">
+              <div class="stat-pill bg-primary-subtle text-primary-emphasis" v-if="team.playRate">
                 <span class="label">Play rate</span>
                 <span class="value">{{ percentage(team.playRate) }}</span>
               </div>

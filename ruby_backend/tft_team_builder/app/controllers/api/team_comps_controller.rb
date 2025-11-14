@@ -4,10 +4,18 @@ module Api
   class TeamCompsController < BaseController
     before_action :set_team_comp, only: %i[show update destroy]
     before_action :authenticate_user!, only: %i[create update destroy]
-    before_action :require_admin!, only: %i[update destroy]
+    before_action :authorize_team_modification!, only: %i[update destroy]
 
     def index
       scope = team_comp_scope.order(win_rate: :desc, created_at: :desc)
+
+      # Filter by team type
+      case params[:type]
+      when 'system'
+        scope = scope.system_teams
+      when 'user'
+        scope = scope.user_teams
+      end
 
       # Use Pagy for pagination (default 10 items per page from initializer)
       # Allow override with per/limit param, clamped to 1-200
@@ -42,6 +50,7 @@ module Api
 
     def create
       team_comp = TeamComp.new(team_comp_attributes)
+      team_comp.user = current_user
 
       if team_comp.save
         render json: serialize(team_comp), status: :created
@@ -112,12 +121,19 @@ module Api
 
     private
 
+    def authorize_team_modification!
+      return if current_user.admin?
+      return if @team_comp.user_id == current_user.id
+
+      render json: { error: 'You are not authorized to modify this team' }, status: :forbidden
+    end
+
     def include_cards?
       ActiveModel::Type::Boolean.new.cast(params.fetch(:include_cards, true))
     end
 
     def serialize(team_comp, include_cards: true, meta: {})
-      TeamCompSerializer.new(team_comp, request: request, include_cards:, meta:).as_json
+      TeamCompSerializer.new(team_comp, request: request, include_cards:, meta:, current_user: current_user).as_json
     end
 
     def set_team_comp

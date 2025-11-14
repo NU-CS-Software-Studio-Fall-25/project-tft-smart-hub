@@ -42,6 +42,15 @@
           <template v-if="authStore.token && authStore.user">
             <RouterLink
               class="btn btn-outline-light"
+              to="/favorites"
+              @click="handleNavClick"
+            >
+              <i class="bi bi-star me-1"></i>
+              Favorites
+            </RouterLink>
+            
+            <RouterLink
+              class="btn btn-outline-light"
               to="/profile"
               @click="handleNavClick"
             >

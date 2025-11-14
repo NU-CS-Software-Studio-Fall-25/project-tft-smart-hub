@@ -3,6 +3,8 @@
 Rails.application.routes.draw do
   namespace :api do
     post "auth/register", to: "auth#register"
+    post "auth/verify_email", to: "auth#verify_email"
+    post "auth/resend_verification", to: "auth#resend_verification"
     post "auth/login", to: "auth#login"
     get "auth/me", to: "auth#me"
 
@@ -13,7 +15,19 @@ Rails.application.routes.draw do
       collection do
         post :recommendations
       end
+      member do
+        post :like, to: "likes#create"
+        delete :like, to: "likes#destroy"
+        get :like, to: "likes#check"
+        
+        post :favorite, to: "favorites#create"
+        delete :favorite, to: "favorites#destroy"
+        get :favorite, to: "favorites#check"
+      end
+      resources :comments, only: %i[index create destroy]
     end
+    
+    resources :favorites, only: %i[index]
   end
 
   get "up" => "rails/health#show", as: :rails_health_check

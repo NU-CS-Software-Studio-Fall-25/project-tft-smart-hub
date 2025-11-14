@@ -1,0 +1,20 @@
+TFT Smart Hub - Verify Your Account
+
+Hi <%= @user.display_name || @user.email %>!
+
+Thank you for registering with TFT Smart Hub. To complete your account setup and start building amazing team compositions, please verify your email address.
+
+Your verification code is: <%= @verification_token.first(6).upcase %>
+
+Enter this code in the verification form to activate your account.
+
+This code will expire in 24 hours for security reasons.
+
+If you didn't create an account with TFT Smart Hub, please ignore this email.
+
+Happy team building!
+The TFT Smart Hub Team
+
+---
+This email was sent to <%= @user.email %>
+© 2025 TFT Smart Hub. All rights reserved.
