@@ -5,6 +5,8 @@ Rails.application.routes.draw do
     post "auth/register", to: "auth#register"
     post "auth/verify_email", to: "auth#verify_email"
     post "auth/resend_verification", to: "auth#resend_verification"
+    post "auth/forgot_password", to: "auth#forgot_password"
+    post "auth/reset_password", to: "auth#reset_password"
     post "auth/login", to: "auth#login"
     get "auth/me", to: "auth#me"
 

@@ -5,6 +5,8 @@ import {
   registerUser,
   verifyEmailUser,
   resendVerificationUser,
+  requestPasswordReset,
+  resetPasswordRequest,
   fetchCurrentUser,
   updateProfileRequest,
   extractErrorMessage,
@@ -94,6 +96,34 @@ export const authStore = reactive({
     this.error = null
     try {
       const result = await resendVerificationUser(payload)
+      return result
+    } catch (error) {
+      this.error = extractErrorMessage(error)
+      throw error
+    } finally {
+      this.loading = false
+    }
+  },
+
+  async requestPasswordReset(payload) {
+    this.loading = true
+    this.error = null
+    try {
+      const result = await requestPasswordReset(payload)
+      return result
+    } catch (error) {
+      this.error = extractErrorMessage(error)
+      throw error
+    } finally {
+      this.loading = false
+    }
+  },
+
+  async resetPassword(payload) {
+    this.loading = true
+    this.error = null
+    try {
+      const result = await resetPasswordRequest(payload)
       return result
     } catch (error) {
       this.error = extractErrorMessage(error)

@@ -1,5 +1,21 @@
-<h1>User#verification_email</h1>
+<h1>Confirm your TFT Smart Hub account</h1>
+
+<p>Hello <%= @user.display_name.presence || @user.email %>,</p>
+
+<p>Thanks for signing up for TFT Smart Hub! Use the verification code below to confirm your email address:</p>
+
+<p style="font-size: 24px; font-weight: bold; letter-spacing: 6px; margin: 16px 0;">
+  <%= @verification_token %>
+</p>
+
+<p>You can also click the button below to open the verification screen with your code prefilled:</p>
 
 <p>
-  <%= @greeting %>, find me in app/views/user_mailer/verification_email.html.erb
+  <a href="<%= @verification_url %>" style="display: inline-block; padding: 12px 20px; background-color: #4361ee; color: #ffffff; border-radius: 6px; text-decoration: none;">
+    Verify my email
+  </a>
 </p>
+
+<p>The code will expire in 2 hours. If you didn’t create an account, you can safely ignore this email.</p>
+
+<p>— The TFT Smart Hub team</p>

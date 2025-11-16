@@ -4,6 +4,8 @@ class User < ApplicationRecord
   has_secure_password
 
   ROLES = %w[user admin].freeze
+  EMAIL_VERIFICATION_TOKEN_TTL = 2.hours
+  PASSWORD_RESET_TOKEN_TTL = 2.hours
 
   has_many :likes, dependent: :destroy
   has_many :favorites, dependent: :destroy
@@ -30,26 +32,48 @@ class User < ApplicationRecord
   end
 
   def generate_email_verification_token
-    self.email_verification_token = SecureRandom.hex(32)
+    self.email_verification_token = SecureRandom.alphanumeric(6).upcase
+  end
+
+  def deliver_verification_email!
     self.email_verification_sent_at = Time.current
+    save!(validate: false) if changed?
+    UserMailer.with(user: self).verification_email.deliver_later
   end
 
   def verify_email(token)
-    return false if email_verification_token.blank?
-    return false if token.blank?
-    
-    if email_verification_token == token
-      update(email_verified_at: Time.current, email_verification_token: nil)
-      true
-    else
-      false
-    end
+    return false unless verification_token_valid?(token)
+
+    update(email_verified_at: Time.current, email_verification_token: nil)
   end
 
   def resend_verification_email
     generate_email_verification_token
-    save
-    # TODO: Send email here
+    deliver_verification_email!
+  end
+
+  def verification_token_valid?(token)
+    return false if email_verification_token.blank? || token.blank?
+    return false if email_verification_sent_at.blank? || email_verification_sent_at < EMAIL_VERIFICATION_TOKEN_TTL.ago
+
+    ActiveSupport::SecurityUtils.secure_compare(email_verification_token, token)
+  end
+
+  def send_password_reset_instructions
+    generate_reset_password_token
+    save!(validate: false)
+    UserMailer.with(user: self).password_reset_email.deliver_later
+  end
+
+  def valid_reset_password_token?(token)
+    return false if reset_password_token.blank? || token.blank?
+    return false if reset_password_sent_at.blank? || reset_password_sent_at < PASSWORD_RESET_TOKEN_TTL.ago
+
+    ActiveSupport::SecurityUtils.secure_compare(reset_password_token, token)
+  end
+
+  def clear_reset_password_token!
+    update(reset_password_token: nil, reset_password_sent_at: nil)
   end
 
   # Verify current password before allowing password change
@@ -125,5 +149,10 @@ class User < ApplicationRecord
       errors.add(:email, "must be a valid email address (domain must contain a dot)")
       return
     end
+  end
+
+  def generate_reset_password_token
+    self.reset_password_token = SecureRandom.urlsafe_base64(48)
+    self.reset_password_sent_at = Time.current
   end
 end

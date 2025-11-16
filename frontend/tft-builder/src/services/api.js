@@ -62,6 +62,16 @@ export async function resendVerificationUser(payload) {
   return data
 }
 
+export async function requestPasswordReset(payload) {
+  const { data } = await http.post('/auth/forgot_password', { user: payload })
+  return data
+}
+
+export async function resetPasswordRequest(payload) {
+  const { data } = await http.post('/auth/reset_password', { user: payload })
+  return data
+}
+
 export async function loginUser(payload) {
   const { data } = await http.post('/auth/login', { user: payload })
   return data

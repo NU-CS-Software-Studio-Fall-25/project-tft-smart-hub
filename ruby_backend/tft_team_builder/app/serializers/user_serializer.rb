@@ -9,6 +9,7 @@ class UserSerializer
     {
       id: user.id,
       email: user.email,
+      emailVerified: user.email_verified?,
       role: user.role,
       displayName: user.display_name,
       bio: user.bio,
