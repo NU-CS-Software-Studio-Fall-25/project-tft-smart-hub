@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  namespace :api do
+  namespace :api, defaults: { format: :json } do
     post "auth/register", to: "auth#register"
     post "auth/verify_email", to: "auth#verify_email"
     post "auth/resend_verification", to: "auth#resend_verification"
@@ -37,6 +37,6 @@ Rails.application.routes.draw do
   # Serve Vue SPA - catch all routes and serve index.html
   # This must be the last route
   get "*path", to: "application#fallback_index_html", constraints: ->(request) do
-    !request.xhr? && request.format.html?
+    !request.xhr? && request.format.html? && !request.path.start_with?("/api")
   end
 end
