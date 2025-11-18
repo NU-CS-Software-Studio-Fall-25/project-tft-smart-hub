@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_15_000000) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_18_223348) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -62,6 +62,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_15_000000) do
     t.index ["team_comp_id"], name: "index_likes_on_team_comp_id"
     t.index ["user_id", "team_comp_id"], name: "index_likes_on_user_id_and_team_comp_id", unique: true
     t.index ["user_id"], name: "index_likes_on_user_id"
+  end
+
+  create_table "pending_registrations", force: :cascade do |t|
+    t.string "email", null: false
+    t.string "password_digest", null: false
+    t.string "display_name"
+    t.string "verification_code", null: false
+    t.datetime "code_sent_at", null: false
+    t.datetime "expires_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_pending_registrations_on_email", unique: true
+    t.index ["expires_at"], name: "index_pending_registrations_on_expires_at"
+    t.index ["verification_code"], name: "index_pending_registrations_on_verification_code"
   end
 
   create_table "team_comps", force: :cascade do |t|

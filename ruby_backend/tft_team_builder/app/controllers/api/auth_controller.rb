@@ -4,38 +4,79 @@ module Api
   class AuthController < BaseController
 
     def register
-      user = User.new(register_params)
+      # 检查邮箱是否已被注册
+      if User.exists?(email: register_params[:email].to_s.downcase.strip)
+        return render json: { errors: ["Email has already been taken"] }, status: :unprocessable_entity
+      end
+      
+      # 删除该邮箱的旧待验证记录
+      PendingRegistration.where(email: register_params[:email].to_s.downcase.strip).destroy_all
+      
+      # 创建待验证的注册记录（不是真正的用户账户）
+      pending = PendingRegistration.new(
+        email: register_params[:email],
+        password: register_params[:password],
+        password_confirmation: register_params[:password_confirmation],
+        display_name: register_params[:display_name]
+      )
 
-      if user.save
-        user.deliver_verification_email!
+      if pending.save
+        # 发送验证码邮件
+        begin
+          PendingRegistrationMailer.with(pending: pending).verification_email.deliver_now
+        rescue StandardError => e
+          Rails.logger.error("Failed to send verification email: #{e.message}")
+        end
 
         render json: { 
-          message: "Registration successful! Please check your email for verification code.",
-          user: serialize_user(user).merge(email_verified: false)
+          message: "Verification code sent! Please check your email and enter the code to complete registration.",
+          email: pending.email
         }, status: :created
       else
-        render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
+        render json: { errors: pending.errors.full_messages }, status: :unprocessable_entity
       end
     end
 
     def verify_email
-      user = User.find_by(email: verify_email_params[:email].to_s.downcase.strip)
+      email = verify_email_params[:email].to_s.downcase.strip
+      code = verify_email_params[:token]
       
-      if user&.verify_email(verify_email_params[:token])
-        render json: auth_payload(user)
+      pending = PendingRegistration.valid_codes.find_by(email: email)
+      
+      if pending.nil?
+        return render json: { errors: ["No pending registration found or code expired"] }, status: :unprocessable_entity
+      end
+      
+      if pending.verify_code(code)
+        begin
+          # 验证成功，创建真正的用户账户
+          user = pending.create_user!
+          render json: auth_payload(user)
+        rescue ActiveRecord::RecordInvalid => e
+          render json: { errors: [e.message] }, status: :unprocessable_entity
+        end
       else
-        render json: { errors: ["Invalid verification token"] }, status: :unprocessable_entity
+        render json: { errors: ["Invalid verification code"] }, status: :unprocessable_entity
       end
     end
 
     def resend_verification
-      user = User.find_by(email: resend_params[:email].to_s.downcase.strip)
+      email = resend_params[:email].to_s.downcase.strip
       
-      if user && !user.email_verified?
-        user.resend_verification_email
-        render json: { message: "Verification email sent successfully" }
+      pending = PendingRegistration.valid_codes.find_by(email: email)
+      
+      if pending
+        pending.resend_code!
+        
+        begin
+          PendingRegistrationMailer.with(pending: pending).verification_email.deliver_now
+        rescue StandardError => e
+          Rails.logger.error("Failed to resend verification email: #{e.message}")
+        end
+        
+        render json: { message: "Verification code sent successfully" }
       else
-        render json: { errors: ["User not found or already verified"] }, status: :not_found
+        render json: { errors: ["No pending registration found or registration expired"] }, status: :not_found
       end
     end
 
@@ -43,6 +84,13 @@ module Api
       user = User.find_by(email: login_params[:email].to_s.downcase.strip)
 
       if user&.authenticate(login_params[:password])
+        unless user.email_verified?
+          return render json: { 
+            errors: ["Please verify your email before logging in. Check your inbox for the verification code."],
+            email_not_verified: true,
+            email: user.email
+          }, status: :unauthorized
+        end
         render json: auth_payload(user)
       else
         render_unauthorized("Invalid email or password")

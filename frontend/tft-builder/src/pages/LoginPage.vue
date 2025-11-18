@@ -240,11 +240,22 @@ async function onSubmit() {
   try {
     let redirectAfter = false
     if (mode.value === 'login') {
-      await authStore.login({
-        email: form.email,
-        password: form.password,
-      })
-      redirectAfter = true
+      try {
+        await authStore.login({
+          email: form.email,
+          password: form.password,
+        })
+        redirectAfter = true
+      } catch (error) {
+        // Check if error is due to unverified email
+        if (error?.response?.data?.email_not_verified) {
+          successMessage.value = 'Your email is not verified yet. Please enter the verification code sent to your inbox.'
+          switchMode('verify', { preserveEmail: true, preserveSuccess: true })
+          form.verificationCode = ''
+          return
+        }
+        throw error
+      }
     } else if (mode.value === 'verify') {
       await authStore.verifyEmail({
         email: form.email,

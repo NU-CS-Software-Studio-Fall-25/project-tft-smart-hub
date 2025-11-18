@@ -80,24 +80,25 @@ Rails.application.configure do
   # Replace the default in-process memory cache store with a durable alternative.
   config.cache_store = :solid_cache_store
 
-  # Replace the default in-process and non-durable queuing backend for Active Job.
-  config.active_job.queue_adapter = :solid_queue
-  config.solid_queue.connects_to = { database: { writing: :queue } }
+  # Use inline job processing - no background queue needed for simple email sending
+  # This avoids the complexity of solid_queue setup on Heroku
+  config.active_job.queue_adapter = :inline
 
-  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.raise_delivery_errors = false  # Don't crash on email failures
+  config.action_mailer.perform_deliveries = true      # Actually send emails
   config.action_mailer.default_url_options = {
-    host: ENV.fetch("MAILER_HOST") { ENV.fetch("APP_HOST", "example.com") },
+    host: ENV.fetch("MAILER_HOST") { ENV.fetch("APP_HOST", "tft-smartcomp-b3f1e37435eb.herokuapp.com") },
     protocol: ENV.fetch("MAILER_PROTOCOL", "https")
   }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    address: ENV.fetch("SMTP_ADDRESS"),
-    port: ENV.fetch("SMTP_PORT", 587).to_i,
-    user_name: ENV["SMTP_USERNAME"],
-    password: ENV["SMTP_PASSWORD"],
-    authentication: ENV.fetch("SMTP_AUTH", "plain").to_sym,
-    enable_starttls_auto: ENV.fetch("SMTP_ENABLE_STARTTLS_AUTO", "true") == "true"
-  }.compact
+    address: ENV.fetch("SMTP_ADDRESS", "smtp.gmail.com"),
+    port: ENV.fetch("SMTP_PORT", "587").to_i,
+    user_name: ENV.fetch("SMTP_USERNAME", ""),
+    password: ENV.fetch("SMTP_PASSWORD", ""),
+    authentication: :plain,
+    enable_starttls_auto: true
+  }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).

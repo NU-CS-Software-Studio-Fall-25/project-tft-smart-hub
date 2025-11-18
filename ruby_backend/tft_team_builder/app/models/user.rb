@@ -38,7 +38,11 @@ class User < ApplicationRecord
   def deliver_verification_email!
     self.email_verification_sent_at = Time.current
     save!(validate: false) if changed?
-    UserMailer.with(user: self).verification_email.deliver_later
+    # Use deliver_now for immediate synchronous delivery (no background job needed)
+    UserMailer.with(user: self).verification_email.deliver_now
+  rescue StandardError => e
+    Rails.logger.error("Failed to send verification email: #{e.message}")
+    # Continue even if email fails - user can resend
   end
 
   def verify_email(token)
@@ -62,7 +66,11 @@ class User < ApplicationRecord
   def send_password_reset_instructions
     generate_reset_password_token
     save!(validate: false)
-    UserMailer.with(user: self).password_reset_email.deliver_later
+    # Use deliver_now for immediate synchronous delivery (no background job needed)
+    UserMailer.with(user: self).password_reset_email.deliver_now
+  rescue StandardError => e
+    Rails.logger.error("Failed to send password reset email: #{e.message}")
+    # Continue even if email fails
   end
 
   def valid_reset_password_token?(token)
