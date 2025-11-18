@@ -26,14 +26,17 @@ class PendingRegistration < ApplicationRecord
   def create_user!
     return nil if expired?
     
-    user = User.create!(
+    # 创建用户，直接复制加密后的密码（避免重复加密）
+    user = User.new(
       email: email,
-      password: password,
-      password_confirmation: password,
       display_name: display_name,
       role: 'user',
       email_verified_at: Time.current  # 验证成功后直接标记为已验证
     )
+    
+    # 直接复制已加密的密码摘要
+    user.password_digest = self.password_digest
+    user.save!(validate: false)  # 跳过密码验证，因为我们直接设置了 password_digest
     
     # 创建用户成功后删除临时记录
     destroy
