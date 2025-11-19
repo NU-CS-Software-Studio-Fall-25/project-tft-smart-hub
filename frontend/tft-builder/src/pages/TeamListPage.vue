@@ -133,10 +133,14 @@
                         <i class="bi" :class="team.isFavorited ? 'bi-star-fill' : 'bi-star'"></i>
                         {{ team.favoritesCount || 0 }}
                       </button>
-                      <span class="btn btn-sm btn-outline-secondary disabled">
+                      <RouterLink
+                        class="btn btn-sm btn-outline-secondary"
+                        :to="{ name: 'team-detail', params: { id: team.id } }"
+                        title="View comments"
+                      >
                         <i class="bi bi-chat"></i>
                         {{ team.commentsCount || 0 }}
-                      </span>
+                      </RouterLink>
                     </div>
                     <div class="d-flex gap-2 ms-auto">
                       <RouterLink
@@ -214,6 +218,14 @@
                           <i class="bi" :class="team.isFavorited ? 'bi-star-fill' : 'bi-star'"></i>
                           {{ team.favoritesCount || 0 }}
                         </button>
+                        <RouterLink
+                          class="btn btn-sm btn-outline-secondary"
+                          :to="{ name: 'team-detail', params: { id: team.id } }"
+                          title="View comments"
+                        >
+                          <i class="bi bi-chat"></i>
+                          {{ team.commentsCount || 0 }}
+                        </RouterLink>
                       </div>
                       <div class="d-flex flex-column gap-2">
                         <RouterLink

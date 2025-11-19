@@ -148,6 +148,13 @@
               </div>
             </div>
           </div>
+
+          <!-- Comments Section -->
+          <div class="row mt-4">
+            <div class="col-12">
+              <CommentsSection :team-comp-id="id" />
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -158,6 +165,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import SpriteImage from '../components/SpriteImage.vue'
+import CommentsSection from '../components/CommentsSection.vue'
 import { fetchTeamComp, deleteTeamComp } from '../services/api'
 import { store as selectionStore } from '../stores/selectionStore'
 import { teamStore } from '../stores/teamStore'

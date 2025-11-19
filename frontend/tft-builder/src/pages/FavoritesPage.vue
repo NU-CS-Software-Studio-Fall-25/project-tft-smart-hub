@@ -93,10 +93,14 @@
                   <i class="bi" :class="team.isLiked ? 'bi-heart-fill' : 'bi-heart'"></i>
                   {{ team.likesCount || 0 }}
                 </button>
-                <span class="btn btn-sm btn-outline-secondary disabled">
+                <RouterLink
+                  class="btn btn-sm btn-outline-secondary"
+                  :to="{ name: 'team-detail', params: { id: team.id } }"
+                  title="View comments"
+                >
                   <i class="bi bi-chat"></i>
                   {{ team.commentsCount || 0 }}
-                </span>
+                </RouterLink>
                 <RouterLink
                   class="btn btn-sm btn-primary ms-auto"
                   :to="{ name: 'team-detail', params: { id: team.id } }"

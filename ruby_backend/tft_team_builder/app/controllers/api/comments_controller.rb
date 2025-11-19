@@ -4,7 +4,7 @@ module Api
     before_action :set_team_comp
 
     def index
-      comments = @team_comp.comments.includes(:user)
+      comments = @team_comp.comments.includes(:user).order(created_at: :desc)
 
       serialized_comments = comments.map do |comment|
         {
@@ -31,7 +31,7 @@ module Api
     def create
       comment = current_user.comments.build(
         team_comp: @team_comp,
-        content: params[:content]
+        content: comment_params[:content]
       )
 
       if comment.save
@@ -55,18 +55,24 @@ module Api
       comment = Comment.find(params[:id])
       
       unless current_user.id == comment.user_id || current_user.admin?
-        render json: { error: '无权删除此评论' }, status: :forbidden
+        render json: { error: 'Not authorized to delete this comment' }, status: :forbidden
         return
       end
 
       comment.destroy
-      render json: { message: '评论已删除' }
+      render json: { message: 'Comment deleted successfully' }
     end
 
     private
 
     def set_team_comp
       @team_comp = TeamComp.find(params[:team_comp_id])
+    rescue ActiveRecord::RecordNotFound
+      render json: { error: 'Team composition not found' }, status: :not_found
+    end
+
+    def comment_params
+      params.require(:comment).permit(:content)
     end
   end
 end
