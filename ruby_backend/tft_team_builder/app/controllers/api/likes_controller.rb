@@ -4,6 +4,18 @@ module Api
     before_action :set_team_comp
 
     def create
+      # Check if already liked
+      existing_like = current_user.likes.find_by(team_comp: @team_comp)
+      
+      if existing_like
+        # Already liked, return success status with fresh count
+        render json: { 
+          liked: true, 
+          likesCount: @team_comp.reload.likes_count 
+        }, status: :ok
+        return
+      end
+
       like = current_user.likes.build(team_comp: @team_comp)
 
       if like.save

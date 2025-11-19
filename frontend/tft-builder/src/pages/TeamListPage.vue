@@ -457,7 +457,22 @@ const toggleLike = async (team) => {
     }
   } catch (error) {
     console.error('[TeamListPage] Failed to toggle like:', error)
-    alert('Failed to update like status')
+    
+    // Handle 422 error (already liked)
+    if (error.response?.status === 422) {
+      // If we get 422, it means the like already exists
+      // Update the UI to reflect the actual state
+      team.isLiked = true
+      // Optionally reload the team to get the correct count
+      try {
+        const updatedTeam = await fetchTeamComp(team.id)
+        team.likesCount = updatedTeam.likesCount
+      } catch (e) {
+        console.error('[TeamListPage] Failed to reload team:', e)
+      }
+    } else {
+      alert('Failed to update like status: ' + (error.response?.data?.error || error.message))
+    }
   }
 }
 
