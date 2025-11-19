@@ -20,6 +20,18 @@ module Api
     end
 
     def create
+      # Check if already favorited
+      existing_favorite = current_user.favorites.find_by(team_comp: @team_comp)
+      
+      if existing_favorite
+        # Already favorited, return success status
+        render json: { 
+          favorited: true, 
+          favoritesCount: @team_comp.favorites_count 
+        }, status: :ok
+        return
+      end
+
       favorite = current_user.favorites.build(team_comp: @team_comp)
 
       if favorite.save

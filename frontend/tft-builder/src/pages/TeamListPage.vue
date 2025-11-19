@@ -256,7 +256,7 @@ import SpriteImage from '../components/SpriteImage.vue'
 import Pagination from '../components/Pagination.vue'
 import { authStore } from '../stores/authStore'
 import { store as selectionStore } from '../stores/selectionStore'
-import { fetchTeamComps, deleteTeamComp, likeTeam, unlikeTeam, favoriteTeam, unfavoriteTeam } from '../services/api'
+import { fetchTeamComps, fetchTeamComp, deleteTeamComp, likeTeam, unlikeTeam, favoriteTeam, unfavoriteTeam } from '../services/api'
 import { teamStore } from '../stores/teamStore'
 import { extractDescriptionSegments } from '../utils/descriptionUtils'
 
@@ -480,7 +480,22 @@ const toggleFavorite = async (team) => {
     }
   } catch (error) {
     console.error('[TeamListPage] Failed to toggle favorite:', error)
-    alert('Failed to update favorite status')
+    
+    // Handle 422 error (already favorited)
+    if (error.response?.status === 422) {
+      // If we get 422, it means the favorite already exists
+      // Update the UI to reflect the actual state
+      team.isFavorited = true
+      // Optionally reload the team to get the correct count
+      try {
+        const updatedTeam = await fetchTeamComp(team.id)
+        team.favoritesCount = updatedTeam.favoritesCount
+      } catch (e) {
+        console.error('[TeamListPage] Failed to reload team:', e)
+      }
+    } else {
+      alert('Failed to update favorite status: ' + (error.response?.data?.error || error.message))
+    }
   }
 }
 
