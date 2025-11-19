@@ -21,6 +21,7 @@ gem "bcrypt", "~> 3.1.18"
 gem "jwt", "~> 2.9"
 gem "pagy", "~> 9.2"
 gem "resend", "~> 0.10.0"
+gem "sendgrid-ruby"
 gem "googleauth", "~> 1.11"
 gem "google-id-token", "~> 1.4"
 

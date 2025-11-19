@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Google OAuth Test</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+    <h1>Google OAuth 测试页面</h1>
+    
+    <div id="status">
+        <p>状态: <span id="statusText">初始化中...</span></p>
+        <p>Client ID: <span id="clientId">-</span></p>
+    </div>
+    
+    <div id="buttonDiv"></div>
+    
+    <div id="result" style="margin-top: 20px; padding: 10px; border: 1px solid #ccc;">
+        <h3>结果：</h3>
+        <pre id="resultText">等待登录...</pre>
+    </div>
+
+    <script>
+        const CLIENT_ID = '1041776439724-hu5qnhvlq27kmg11ugmfttsuj6t2ntt0.apps.googleusercontent.com';
+        
+        document.getElementById('clientId').textContent = CLIENT_ID;
+        
+        function handleCredentialResponse(response) {
+            console.log("Encoded JWT ID token: " + response.credential);
+            document.getElementById('resultText').textContent = 
+                "✅ Google 登录成功！\n\n" +
+                "Token: " + response.credential.substring(0, 50) + "...\n\n" +
+                "现在可以发送到后端 /api/auth/google";
+            
+            // 测试发送到后端
+            testBackend(response.credential);
+        }
+        
+        async function testBackend(credential) {
+            try {
+                const response = await fetch('http://localhost:3000/api/auth/google', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ credential })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('resultText').textContent += 
+                        "\n\n✅ 后端验证成功！\n\n" +
+                        "用户数据: " + JSON.stringify(data, null, 2);
+                } else {
+                    document.getElementById('resultText').textContent += 
+                        "\n\n❌ 后端验证失败：\n\n" +
+                        JSON.stringify(data, null, 2);
+                }
+            } catch (error) {
+                document.getElementById('resultText').textContent += 
+                    "\n\n❌ 请求后端时出错：\n\n" + error.message;
+            }
+        }
+        
+        window.onload = function () {
+            try {
+                if (typeof google === 'undefined') {
+                    document.getElementById('statusText').textContent = '❌ Google Identity Services 未加载';
+                    document.getElementById('resultText').textContent = 
+                        '错误：Google Identity Services 脚本未加载。\n' +
+                        '请检查网络连接。';
+                    return;
+                }
+                
+                document.getElementById('statusText').textContent = '✅ Google Identity Services 已加载';
+                
+                google.accounts.id.initialize({
+                    client_id: CLIENT_ID,
+                    callback: handleCredentialResponse
+                });
+                
+                google.accounts.id.renderButton(
+                    document.getElementById("buttonDiv"),
+                    { 
+                        theme: "outline", 
+                        size: "large",
+                        text: "signin_with"
+                    }
+                );
+                
+                document.getElementById('statusText').textContent = '✅ 初始化完成';
+            } catch (error) {
+                document.getElementById('statusText').textContent = '❌ 初始化失败';
+                document.getElementById('resultText').textContent = 
+                    '错误: ' + error.message + '\n\n' +
+                    '堆栈: ' + error.stack;
+                console.error('Initialization error:', error);
+            }
+        }
+    </script>
+</body>
+</html>

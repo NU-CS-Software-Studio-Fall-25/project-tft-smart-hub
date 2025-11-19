@@ -353,7 +353,6 @@ function initializeGoogleSignIn() {
       {
         theme: 'outline',
         size: 'large',
-        width: '100%',
         text: mode.value === 'register' ? 'signup_with' : 'signin_with',
       }
     )
