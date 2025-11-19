@@ -24,10 +24,10 @@ module Api
       existing_favorite = current_user.favorites.find_by(team_comp: @team_comp)
       
       if existing_favorite
-        # Already favorited, return success status
+        # Already favorited, return success status with fresh count
         render json: { 
           favorited: true, 
-          favoritesCount: @team_comp.favorites_count 
+          favoritesCount: @team_comp.reload.favorites_count 
         }, status: :ok
         return
       end

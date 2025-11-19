@@ -27,8 +27,13 @@ module Api
 
       payload = comps.map { |comp| serialize(comp, include_cards: include_cards?) }
 
-      # Set cache headers (5 minutes for team list)
-      expires_in 5.minutes, public: true
+      # Set cache headers - only cache for non-authenticated users
+      # Authenticated users need fresh data to see their like/favorite status
+      if current_user
+        expires_in 0, public: false, must_revalidate: true
+      else
+        expires_in 2.minutes, public: true
+      end
 
       render json: {
         teams: payload,
