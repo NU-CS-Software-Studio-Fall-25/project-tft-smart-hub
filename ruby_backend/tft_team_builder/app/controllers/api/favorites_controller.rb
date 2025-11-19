@@ -8,7 +8,7 @@ module Api
       team_comps = favorites.map(&:team_comp)
       
       serialized_teams = team_comps.map do |team|
-        TeamCompSerializer.new(team, current_user: current_user).as_json
+        TeamCompSerializer.new(team, request: request, current_user: current_user).as_json
       end
 
       render json: { 
