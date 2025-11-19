@@ -281,6 +281,7 @@ const currentPage = ref(1)
 const hasMounted = ref(false)
 const teamType = ref('system')
 const deletingTeamId = ref(null)
+const lastRefreshToken = ref(null)
 
 const itemsPerPage = computed(() => teamType.value === 'system' ? 6 : 10)
 
@@ -557,7 +558,15 @@ onMounted(async () => {
 // 当页面重新激活时（从创建页面返回）刷新数据
 onActivated(async () => {
   console.log('[TeamListPage] Component activated (returned from another page)')
-  await loadInitial()
+  // 检查是否有refresh参数，如果有且与上次不同，则刷新
+  const refreshToken = route.query.refresh
+  if (refreshToken && refreshToken !== lastRefreshToken.value) {
+    console.log('[TeamListPage] Refresh token detected:', refreshToken, '(was:', lastRefreshToken.value, ')')
+    lastRefreshToken.value = refreshToken
+    await loadInitial()
+  } else {
+    console.log('[TeamListPage] No refresh needed, token unchanged')
+  }
 })
 
 // 监听路由查询参数变化，自动切换团队类型
@@ -571,6 +580,18 @@ watch(
     }
   },
   { immediate: true }
+)
+
+// 监听refresh参数变化，强制刷新列表
+watch(
+  () => route.query.refresh,
+  (newToken) => {
+    if (newToken && newToken !== lastRefreshToken.value) {
+      console.log('[TeamListPage] Refresh query parameter changed to:', newToken)
+      lastRefreshToken.value = newToken
+      loadInitial()
+    }
+  }
 )
 </script>
 

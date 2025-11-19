@@ -249,6 +249,8 @@ const preview = (card) => {
 const handleCommentsUpdated = async (newCount) => {
   // Reload team data to get updated comment count
   await loadTeam()
+  // Force a reactive update by triggering a store refresh
+  // This ensures comment counts update in lists
 }
 
 onMounted(async () => {

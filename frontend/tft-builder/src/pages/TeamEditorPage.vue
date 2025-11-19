@@ -273,16 +273,19 @@ const submit = async () => {
       ? await updateTeamComp(id.value, payload)
       : await createTeamComp(payload)
     console.log('[TeamEditorPage] Team saved successfully:', data)
-    teamStore.upsert(data)
-    console.log('[TeamEditorPage] Team store updated')
     
-    // 创建成功后跳转到user teams列表页，编辑后跳转到详情页
     if (isEdit.value) {
+      // 编辑时只更新单个队伍
+      teamStore.upsert(data)
+      console.log('[TeamEditorPage] Team store updated')
       console.log('[TeamEditorPage] Navigating to team detail page')
       router.push({ name: "team-detail", params: { id: data.id } })
     } else {
+      // 创建时清空store，强制列表页重新加载
+      console.log('[TeamEditorPage] Clearing team store to force refresh')
+      teamStore.setTeams([], {})
       console.log('[TeamEditorPage] Navigating to user teams list')
-      router.push({ name: "teams", query: { type: 'user' } })
+      router.push({ name: "teams", query: { type: 'user', refresh: Date.now() } })
     }
   } catch (err) {
     error.value = extractErrorMessage(err)
