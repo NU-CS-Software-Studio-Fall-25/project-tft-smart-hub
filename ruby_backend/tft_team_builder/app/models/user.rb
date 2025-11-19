@@ -35,16 +35,32 @@ class User < ApplicationRecord
     email = payload['email']
     uid = payload['sub']
     
-    # 查找或创建用户
-    user = find_or_initialize_by(provider: 'google', uid: uid)
+    # 首先尝试通过 provider + uid 查找
+    user = find_by(provider: 'google', uid: uid)
     
-    if user.new_record?
-      user.email = email
-      user.display_name = payload['name'] || email.split('@').first
-      user.role = 'user'
-      user.email_verified_at = Time.current  # Google 已验证邮箱
-      user.password_digest = ''  # OAuth 用户不需要密码
-      user.save!(validate: false)
+    # 如果没找到,通过邮箱查找现有用户
+    if user.nil?
+      user = find_by(email: email)
+      
+      if user
+        # 用户已存在(可能是通过密码注册的),更新为 OAuth 用户
+        user.update!(
+          provider: 'google',
+          uid: uid,
+          email_verified_at: Time.current  # Google 已验证邮箱
+        )
+      else
+        # 创建新用户
+        user = create!(
+          email: email,
+          provider: 'google',
+          uid: uid,
+          display_name: payload['name'] || email.split('@').first,
+          role: 'user',
+          email_verified_at: Time.current,
+          password_digest: ''  # OAuth 用户不需要密码
+        )
+      end
     end
     
     user
