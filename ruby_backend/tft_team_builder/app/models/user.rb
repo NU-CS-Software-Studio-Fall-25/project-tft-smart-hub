@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-  has_secure_password
+  has_secure_password validations: false  # 关闭自动验证，因为 OAuth 用户可能没有密码
 
   ROLES = %w[user admin].freeze
   EMAIL_VERIFICATION_TOKEN_TTL = 2.hours
@@ -16,14 +16,38 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: { case_sensitive: false }
   validate :email_format, if: -> { email.present? }
   validates :role, inclusion: { in: ROLES }
-  validates :password, length: { minimum: 8 }, allow_nil: true
-  validate :password_complexity, if: -> { password.present? }
+  validates :password, length: { minimum: 8 }, allow_nil: true, if: :password_required?
+  validate :password_complexity, if: -> { password.present? && password_required? }
 
   before_validation :normalize_role, :normalize_email
-  before_create :generate_email_verification_token
+  before_create :generate_email_verification_token, unless: :oauth_user?
 
   def admin?
     role == "admin"
+  end
+
+  # OAuth methods
+  def oauth_user?
+    provider.present? && uid.present?
+  end
+
+  def self.from_google_oauth(payload)
+    email = payload['email']
+    uid = payload['sub']
+    
+    # 查找或创建用户
+    user = find_or_initialize_by(provider: 'google', uid: uid)
+    
+    if user.new_record?
+      user.email = email
+      user.display_name = payload['name'] || email.split('@').first
+      user.role = 'user'
+      user.email_verified_at = Time.current  # Google 已验证邮箱
+      user.password_digest = ''  # OAuth 用户不需要密码
+      user.save!(validate: false)
+    end
+    
+    user
   end
 
   # Email verification methods
@@ -162,5 +186,9 @@ class User < ApplicationRecord
   def generate_reset_password_token
     self.reset_password_token = SecureRandom.urlsafe_base64(48)
     self.reset_password_sent_at = Time.current
+  end
+
+  def password_required?
+    !oauth_user?
   end
 end

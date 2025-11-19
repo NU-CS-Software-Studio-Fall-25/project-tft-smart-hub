@@ -93,6 +93,17 @@
             </button>
           </form>
 
+          <!-- Google Sign In Button (only show on login and register modes) -->
+          <div v-if="mode === 'login' || mode === 'register'" class="text-center my-3">
+            <div class="position-relative">
+              <hr class="my-3" />
+              <span class="position-absolute top-50 start-50 translate-middle bg-white px-2 text-muted small">
+                OR
+              </span>
+            </div>
+            <div id="google-signin-button" class="d-flex justify-content-center mt-3"></div>
+          </div>
+
           <div class="text-center mt-4 small">
             <div v-if="mode === 'verify'">
               <p>Didn't receive the code?</p>
@@ -309,4 +320,66 @@ async function resendVerification() {
     console.warn('[login] resend verification failed', error)
   }
 }
+
+function initializeGoogleSignIn() {
+  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
+  if (!clientId) {
+    console.warn('[Google Sign-In] VITE_GOOGLE_CLIENT_ID not configured')
+    return
+  }
+
+  if (typeof google === 'undefined') {
+    console.warn('[Google Sign-In] Google Identity Services not loaded')
+    return
+  }
+
+  // Only show on login and register modes
+  if (mode.value !== 'login' && mode.value !== 'register') {
+    return
+  }
+
+  // Wait for next tick to ensure DOM is ready
+  setTimeout(() => {
+    const buttonContainer = document.getElementById('google-signin-button')
+    if (!buttonContainer) return
+
+    google.accounts.id.initialize({
+      client_id: clientId,
+      callback: handleGoogleCallback,
+    })
+
+    google.accounts.id.renderButton(
+      buttonContainer,
+      {
+        theme: 'outline',
+        size: 'large',
+        width: '100%',
+        text: mode.value === 'register' ? 'signup_with' : 'signin_with',
+      }
+    )
+  }, 100)
+}
+
+async function handleGoogleCallback(response) {
+  try {
+    authStore.loading = true
+    authStore.error = null
+    await authStore.googleLogin(response.credential)
+    const redirectTo = route.query.redirect || '/'
+    router.replace(redirectTo)
+  } catch (error) {
+    console.error('[Google Sign-In] Authentication failed', error)
+    authStore.error = 'Google sign-in failed. Please try again.'
+  } finally {
+    authStore.loading = false
+  }
+}
+
+watch(mode, () => {
+  initializeGoogleSignIn()
+})
+
+onMounted(() => {
+  initializeGoogleSignIn()
+})
 </script>

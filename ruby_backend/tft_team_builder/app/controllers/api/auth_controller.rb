@@ -97,6 +97,34 @@ module Api
       end
     end
 
+    def google_auth
+      token = google_auth_params[:credential]
+      
+      begin
+        # Verify the Google ID token
+        validator = GoogleIDToken::Validator.new
+        payload = validator.check(token, ENV['GOOGLE_CLIENT_ID'])
+        
+        unless payload
+          return render json: { errors: ["Invalid Google token"] }, status: :unauthorized
+        end
+        
+        # Create or find user from Google OAuth
+        user = User.from_google_oauth(payload)
+        
+        if user.persisted?
+          render json: auth_payload(user)
+        else
+          render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
+        end
+      rescue GoogleIDToken::ValidationError => e
+        render json: { errors: ["Google authentication failed: #{e.message}"] }, status: :unauthorized
+      rescue StandardError => e
+        Rails.logger.error("Google OAuth error: #{e.message}")
+        render json: { errors: ["Authentication failed"] }, status: :internal_server_error
+      end
+    end
+
     def me
       return render_unauthorized unless current_user
 
@@ -164,6 +192,10 @@ module Api
 
     def reset_password_params
       params.require(:user).permit(:email, :token, :password, :password_confirmation)
+    end
+
+    def google_auth_params
+      params.permit(:credential)
     end
   end
 end

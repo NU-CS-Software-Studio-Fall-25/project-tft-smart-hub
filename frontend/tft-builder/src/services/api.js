@@ -80,6 +80,16 @@ export async function loginUser(payload) {
   return data
 }
 
+export async function loginWithGoogle(credential) {
+  const { data } = await http.post('/auth/google', { credential })
+  return data
+}
+
+export async function loginWithGoogle(credential) {
+  const { data } = await http.post('/auth/google', { credential })
+  return data
+}
+
 export async function fetchCurrentUser() {
   const { data } = await http.get('/auth/me')
   return data.user

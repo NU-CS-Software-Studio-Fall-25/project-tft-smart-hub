@@ -2,6 +2,7 @@
 import {
   setAuthToken,
   loginUser,
+  loginWithGoogle,
   registerUser,
   verifyEmailUser,
   resendVerificationUser,
@@ -50,6 +51,21 @@ export const authStore = reactive({
     this.error = null
     try {
       const { token, user } = await loginUser(credentials)
+      this.setSession(token, user)
+      return user
+    } catch (error) {
+      this.error = extractErrorMessage(error)
+      throw error
+    } finally {
+      this.loading = false
+    }
+  },
+
+  async googleLogin(credential) {
+    this.loading = true
+    this.error = null
+    try {
+      const { token, user } = await loginWithGoogle(credential)
       this.setSession(token, user)
       return user
     } catch (error) {
