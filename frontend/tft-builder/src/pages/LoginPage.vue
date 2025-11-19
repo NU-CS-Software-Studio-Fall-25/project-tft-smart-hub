@@ -18,44 +18,32 @@
               <input v-model.trim="form.email" type="email" class="form-control form-control-lg" required autocomplete="email" />
             </div>
 
-            <div v-if="mode === 'reset'" class="mb-3">
-              <label class="form-label">Reset token</label>
-              <input
-                v-model.trim="form.resetToken"
-                type="text"
-                class="form-control form-control-lg"
-                required
-                placeholder="Paste the token from your email or use the reset link"
-              />
-              <div class="form-text">The token is automatically filled when you open the email link.</div>
-            </div>
-
             <div v-if="mode === 'login'" class="mb-3">
               <label class="form-label">Password</label>
               <input v-model="form.password" type="password" class="form-control form-control-lg" required autocomplete="current-password" />
             </div>
 
-            <div v-else-if="mode === 'register' || mode === 'reset'" class="mb-3">
-              <label class="form-label">{{ mode === 'reset' ? 'New password' : 'Password' }}</label>
+            <div v-else-if="mode === 'register'" class="mb-3">
+              <label class="form-label">Password</label>
               <input
                 v-model="form.password"
                 type="password"
                 class="form-control form-control-lg"
                 required
                 minlength="8"
-                :autocomplete="mode === 'reset' ? 'new-password' : 'new-password'"
+                autocomplete="new-password"
               />
             </div>
 
-            <div v-if="mode === 'register' || mode === 'reset'" class="mb-3">
-              <label class="form-label">{{ mode === 'reset' ? 'Confirm new password' : 'Confirm password' }}</label>
+            <div v-if="mode === 'register'" class="mb-3">
+              <label class="form-label">Confirm password</label>
               <input
                 v-model="form.passwordConfirmation"
                 type="password"
                 class="form-control form-control-lg"
                 required
                 minlength="8"
-                :autocomplete="mode === 'reset' ? 'new-password' : 'new-password'"
+                autocomplete="new-password"
               />
             </div>
 
@@ -87,21 +75,8 @@
 
           <div class="text-center mt-4 small">
             <div v-if="mode === 'login'">
-              <div>
-                Need an account?
-                <a href="#" @click.prevent="switchMode('register')">Register now</a>
-              </div>
-              <div class="mt-2">
-                Forgot your password?
-                <a href="#" @click.prevent="switchMode('forgot')">Reset it</a>
-              </div>
-            </div>
-            <div v-else-if="mode === 'forgot'">
-              Remembered your password?
-              <a href="#" @click.prevent="switchMode('login')">Back to sign in</a>
-            </div>
-            <div v-else-if="mode === 'reset'">
-              <a href="#" @click.prevent="switchMode('login')">Back to sign in</a>
+              Need an account?
+              <a href="#" @click.prevent="switchMode('register')">Register now</a>
             </div>
             <div v-else>
               Already have an account?
@@ -133,16 +108,12 @@ const form = reactive({
   resetToken: '',
 })
 
-const supportedModes = ['login', 'register', 'verify', 'forgot', 'reset']
+const supportedModes = ['login', 'register', 'verify']
 
 const modeTitle = computed(() => {
   switch (mode.value) {
     case 'register':
       return 'Create Account'
-    case 'forgot':
-      return 'Forgot Password'
-    case 'reset':
-      return 'Set a New Password'
     default:
       return 'Sign In'
   }
@@ -152,10 +123,6 @@ const modeDescription = computed(() => {
   switch (mode.value) {
     case 'register':
       return 'Create your account and start building team compositions.'
-    case 'forgot':
-      return 'Enter your email and we will send you password reset instructions.'
-    case 'reset':
-      return 'Choose a new password. You can paste the token from your email or open the secure link.'
     default:
       return 'Access your account to build or manage team compositions.'
   }
@@ -165,10 +132,6 @@ const submitButtonLabel = computed(() => {
   switch (mode.value) {
     case 'register':
       return 'Create account'
-    case 'forgot':
-      return 'Send reset email'
-    case 'reset':
-      return 'Update password'
     default:
       return 'Sign in'
   }
@@ -187,10 +150,7 @@ function switchMode(nextMode, options = {}) {
   if (nextMode !== 'verify') {
     form.verificationCode = ''
   }
-  if (nextMode !== 'reset') {
-    form.resetToken = ''
-  }
-  if (!['login', 'register', 'reset'].includes(nextMode)) {
+  if (!['login', 'register'].includes(nextMode)) {
     form.password = ''
     form.passwordConfirmation = ''
   }
@@ -207,8 +167,6 @@ function applyRouteState() {
   if (typeof route.query.token === 'string' && route.query.token.length) {
     if (mode.value === 'verify') {
       form.verificationCode = route.query.token.toUpperCase().slice(0, 6)
-    } else if (mode.value === 'reset') {
-      form.resetToken = route.query.token
     }
   }
 }
@@ -234,19 +192,6 @@ async function onSubmit() {
       })
       // 注册成功后直接跳转
       redirectAfter = true
-    } else if (mode.value === 'forgot') {
-      await authStore.requestPasswordReset({ email: form.email })
-      successMessage.value = 'If the email exists in our system, you will receive password reset instructions shortly.'
-    } else if (mode.value === 'reset') {
-      await authStore.resetPassword({
-        email: form.email,
-        token: form.resetToken,
-        password: form.password,
-        password_confirmation: form.passwordConfirmation,
-      })
-      successMessage.value = 'Password updated! You can now sign in with your new password.'
-      switchMode('login', { preserveEmail: true, preserveSuccess: true })
-      return
     }
 
     if (redirectAfter) {
