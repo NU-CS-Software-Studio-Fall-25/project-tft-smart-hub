@@ -152,7 +152,7 @@
           <!-- Comments Section -->
           <div class="row mt-4">
             <div class="col-12">
-              <CommentsSection :team-comp-id="id" />
+              <CommentsSection :team-comp-id="id" @comments-updated="handleCommentsUpdated" />
             </div>
           </div>
         </div>
@@ -244,6 +244,11 @@ const removeTeam = async () => {
 
 const preview = (card) => {
   selectionStore.focusChampion?.(card)
+}
+
+const handleCommentsUpdated = async (newCount) => {
+  // Reload team data to get updated comment count
+  await loadTeam()
 }
 
 onMounted(async () => {

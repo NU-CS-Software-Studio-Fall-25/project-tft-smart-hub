@@ -102,7 +102,7 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import { authStore } from '../stores/authStore'
 import { fetchComments, createComment, deleteComment as apiDeleteComment } from '../services/api'
 
@@ -112,6 +112,9 @@ const props = defineProps({
     required: true,
   },
 })
+
+const emit = defineEmits(['comments-updated'])
+const router = useRouter()
 
 const comments = ref([])
 const loading = ref(false)
@@ -163,6 +166,15 @@ const loadComments = async () => {
 const submitComment = async () => {
   if (!newCommentContent.value.trim()) return
   
+  // Check if user is authenticated
+  if (!authStore.isAuthenticated) {
+    const shouldRedirect = confirm('You need to sign in to post comments. Would you like to sign in now?')
+    if (shouldRedirect) {
+      router.push({ path: '/login', query: { redirect: router.currentRoute.value.fullPath } })
+    }
+    return
+  }
+  
   submitting.value = true
   error.value = null
   
@@ -172,9 +184,19 @@ const submitComment = async () => {
     })
     comments.value.unshift(newComment)
     newCommentContent.value = ''
+    // Emit event to update parent component's comment count
+    emit('comments-updated', comments.value.length)
   } catch (err) {
     console.error('Failed to post comment:', err)
-    error.value = err.message || 'Failed to post comment. Please try again.'
+    // Handle 401 Unauthorized
+    if (err.response?.status === 401) {
+      const shouldRedirect = confirm('Your session has expired. Would you like to sign in again?')
+      if (shouldRedirect) {
+        router.push({ path: '/login', query: { redirect: router.currentRoute.value.fullPath } })
+      }
+    } else {
+      error.value = err.message || 'Failed to post comment. Please try again.'
+    }
   } finally {
     submitting.value = false
   }
@@ -189,6 +211,8 @@ const deleteComment = async (commentId) => {
   try {
     await apiDeleteComment(props.teamCompId, commentId)
     comments.value = comments.value.filter(c => c.id !== commentId)
+    // Emit event to update parent component's comment count
+    emit('comments-updated', comments.value.length)
   } catch (err) {
     console.error('Failed to delete comment:', err)
     error.value = 'Failed to delete comment. Please try again.'
