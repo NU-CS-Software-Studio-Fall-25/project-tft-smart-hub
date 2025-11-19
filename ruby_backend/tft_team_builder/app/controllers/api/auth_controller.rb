@@ -4,36 +4,15 @@ module Api
   class AuthController < BaseController
 
     def register
-      # 检查邮箱是否已被注册
-      if User.exists?(email: register_params[:email].to_s.downcase.strip)
-        return render json: { errors: ["Email has already been taken"] }, status: :unprocessable_entity
-      end
+      # 直接创建用户账户,无需邮箱验证
+      user = User.new(register_params)
+      user.email_verified_at = Time.current # 自动设置为已验证
       
-      # 删除该邮箱的旧待验证记录
-      PendingRegistration.where(email: register_params[:email].to_s.downcase.strip).destroy_all
-      
-      # 创建待验证的注册记录（不是真正的用户账户）
-      pending = PendingRegistration.new(
-        email: register_params[:email],
-        password: register_params[:password],
-        password_confirmation: register_params[:password_confirmation],
-        display_name: register_params[:display_name]
-      )
-
-      if pending.save
-        # 发送验证码邮件
-        begin
-          PendingRegistrationMailer.with(pending: pending).verification_email.deliver_now
-        rescue StandardError => e
-          Rails.logger.error("Failed to send verification email: #{e.message}")
-        end
-
-        render json: { 
-          message: "Verification code sent! Please check your email and enter the code to complete registration.",
-          email: pending.email
-        }, status: :created
+      if user.save
+        # 注册成功,直接返回token和用户信息
+        render json: auth_payload(user), status: :created
       else
-        render json: { errors: pending.errors.full_messages }, status: :unprocessable_entity
+        render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
       end
     end
 
@@ -84,13 +63,6 @@ module Api
       user = User.find_by(email: login_params[:email].to_s.downcase.strip)
 
       if user&.authenticate(login_params[:password])
-        unless user.email_verified?
-          return render json: { 
-            errors: ["Please verify your email before logging in. Check your inbox for the verification code."],
-            email_not_verified: true,
-            email: user.email
-          }, status: :unauthorized
-        end
         render json: auth_payload(user)
       else
         render_unauthorized("Invalid email or password")

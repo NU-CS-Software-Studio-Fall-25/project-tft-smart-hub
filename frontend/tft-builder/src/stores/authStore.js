@@ -80,10 +80,10 @@ export const authStore = reactive({
     this.loading = true
     this.error = null
     try {
-      const result = await registerUser(payload)
-      // Registration now returns a message, not token/user
-      // User needs to verify email first
-      return result
+      const { token, user } = await registerUser(payload)
+      // 注册现在直接返回 token 和 user,无需验证邮箱
+      this.setSession(token, user)
+      return user
     } catch (error) {
       this.error = extractErrorMessage(error)
       throw error

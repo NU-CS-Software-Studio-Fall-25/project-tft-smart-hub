@@ -13,28 +13,9 @@
           </div>
 
           <form @submit.prevent="onSubmit" class="needs-validation" novalidate>
-            <div v-if="mode === 'verify'" class="mb-3">
-              <label class="form-label">Email</label>
-              <input v-model.trim="form.email" type="email" class="form-control form-control-lg" required readonly />
-            </div>
-
-            <div v-else class="mb-3">
+            <div class="mb-3">
               <label class="form-label">Email</label>
               <input v-model.trim="form.email" type="email" class="form-control form-control-lg" required autocomplete="email" />
-            </div>
-
-            <div v-if="mode === 'verify'" class="mb-3">
-              <label class="form-label">Verification Code</label>
-              <input
-                v-model.trim="form.verificationCode"
-                type="text"
-                class="form-control form-control-lg"
-                required
-                placeholder="Enter 6-digit code"
-                maxlength="6"
-                style="text-transform: uppercase; letter-spacing: 2px; font-size: 18px;"
-              />
-              <div class="form-text">Check your email for the verification code</div>
             </div>
 
             <div v-if="mode === 'reset'" class="mb-3">
@@ -105,13 +86,7 @@
           </div>
 
           <div class="text-center mt-4 small">
-            <div v-if="mode === 'verify'">
-              <p>Didn't receive the code?</p>
-              <a href="#" @click.prevent="resendVerification">Resend verification email</a>
-              <br><br>
-              <a href="#" @click.prevent="switchMode('login')">Back to sign in</a>
-            </div>
-            <div v-else-if="mode === 'login'">
+            <div v-if="mode === 'login'">
               <div>
                 Need an account?
                 <a href="#" @click.prevent="switchMode('register')">Register now</a>
@@ -164,8 +139,6 @@ const modeTitle = computed(() => {
   switch (mode.value) {
     case 'register':
       return 'Create Account'
-    case 'verify':
-      return 'Verify Email'
     case 'forgot':
       return 'Forgot Password'
     case 'reset':
@@ -178,9 +151,7 @@ const modeTitle = computed(() => {
 const modeDescription = computed(() => {
   switch (mode.value) {
     case 'register':
-      return 'Register to start saving your favorite team compositions.'
-    case 'verify':
-      return 'Enter the 6-digit verification code we sent to your email.'
+      return 'Create your account and start building team compositions.'
     case 'forgot':
       return 'Enter your email and we will send you password reset instructions.'
     case 'reset':
@@ -194,8 +165,6 @@ const submitButtonLabel = computed(() => {
   switch (mode.value) {
     case 'register':
       return 'Create account'
-    case 'verify':
-      return 'Verify email'
     case 'forgot':
       return 'Send reset email'
     case 'reset':
@@ -251,40 +220,20 @@ async function onSubmit() {
   try {
     let redirectAfter = false
     if (mode.value === 'login') {
-      try {
-        await authStore.login({
-          email: form.email,
-          password: form.password,
-        })
-        redirectAfter = true
-      } catch (error) {
-        // Check if error is due to unverified email
-        if (error?.response?.data?.email_not_verified) {
-          successMessage.value = 'Your email is not verified yet. Please enter the verification code sent to your inbox.'
-          switchMode('verify', { preserveEmail: true, preserveSuccess: true })
-          form.verificationCode = ''
-          return
-        }
-        throw error
-      }
-    } else if (mode.value === 'verify') {
-      await authStore.verifyEmail({
+      await authStore.login({
         email: form.email,
-        token: form.verificationCode,
+        password: form.password,
       })
       redirectAfter = true
     } else if (mode.value === 'register') {
-      const result = await authStore.register({
+      await authStore.register({
         email: form.email,
         password: form.password,
         password_confirmation: form.passwordConfirmation,
         display_name: form.displayName || undefined,
       })
-      if (result && !result.errors) {
-        successMessage.value = 'We sent a verification code to your inbox. Enter it below to finish creating your account.'
-        switchMode('verify', { preserveEmail: true, preserveSuccess: true })
-        form.verificationCode = ''
-      }
+      // 注册成功后直接跳转
+      redirectAfter = true
     } else if (mode.value === 'forgot') {
       await authStore.requestPasswordReset({ email: form.email })
       successMessage.value = 'If the email exists in our system, you will receive password reset instructions shortly.'
@@ -306,18 +255,6 @@ async function onSubmit() {
     }
   } catch (error) {
     console.warn('[login] submission failed', error)
-  }
-}
-
-async function resendVerification() {
-  try {
-    await authStore.resendVerification({
-      email: form.email,
-    })
-    authStore.error = null
-    successMessage.value = 'A new verification email is on the way.'
-  } catch (error) {
-    console.warn('[login] resend verification failed', error)
   }
 }
 
