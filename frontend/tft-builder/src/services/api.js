@@ -219,8 +219,8 @@ export async function fetchComments(teamId) {
   return data
 }
 
-export async function createComment(teamId, content) {
-  const { data } = await http.post(`/team_comps/${teamId}/comments`, { content })
+export async function createComment(teamId, commentData) {
+  const { data } = await http.post(`/team_comps/${teamId}/comments`, { comment: commentData })
   return data
 }
 
