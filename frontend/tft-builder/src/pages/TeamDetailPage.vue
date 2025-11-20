@@ -64,7 +64,7 @@
             <div class="col-xl-8">
               <h2 class="h5 fw-semibold mb-3">Champion lineup</h2>
               <div class="row g-3">
-                <div v-for="card in team.cards" :key="card.id" class="col-6 col-sm-4 col-lg-3">
+                <div v-for="card in team.cards" :key="card.id" class="col-6 col-sm-4 col-lg-3 champion-card-col">
                   <div class="champion-card" @contextmenu.prevent="preview(card)">
                     <SpriteImage
                       :sprite="card.sprite"
@@ -287,6 +287,10 @@ watch(
   font-size: 1.125rem;
 }
 
+.champion-card-col {
+  display: flex;
+}
+
 .champion-card {
   display: flex;
   flex-direction: column;
@@ -296,6 +300,8 @@ watch(
   overflow: hidden;
   border: 1px solid rgba(0, 0, 0, 0.05);
   box-shadow: 0 1px 4px rgba(15, 23, 42, 0.12);
+  width: 100%;
+  height: 100%;
 }
 
 .detail-card-img {
@@ -309,6 +315,10 @@ watch(
 .champion-card .info {
   width: 100%;
   padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
 }
 
 .champion-card .name {
@@ -320,6 +330,7 @@ watch(
   display: flex;
   flex-wrap: wrap;
   gap: 0.25rem;
+  margin-top: auto;
 }
 
 .team-detail-heading {
