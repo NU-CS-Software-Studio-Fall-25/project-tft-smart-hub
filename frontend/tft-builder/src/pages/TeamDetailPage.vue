@@ -349,9 +349,10 @@ watch(
 }
 
 .detail-description-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
+  display: grid;
+  grid-template-columns: minmax(110px, 150px) 1fr;
+  gap: 0.5rem 1rem;
+  align-items: start;
 }
 
 .detail-description-label {
@@ -364,6 +365,17 @@ watch(
 
 .detail-description-value {
   font-size: 1rem;
+  word-break: break-word;
+}
+
+@media (max-width: 576px) {
+  .detail-description-row {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-description-label {
+    margin-bottom: 0.1rem;
+  }
 }
 
 .meta-list {
