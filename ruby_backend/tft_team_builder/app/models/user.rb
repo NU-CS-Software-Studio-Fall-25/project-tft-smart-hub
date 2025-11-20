@@ -17,6 +17,8 @@ class User < ApplicationRecord
   validate :email_format, if: -> { email.present? }
   validates :role, inclusion: { in: ROLES }
   validates :password, length: { minimum: 8 }, allow_nil: true, if: :password_required?
+  validates :password, confirmation: true, if: -> { password.present? && password_required? }
+  validates :password_confirmation, presence: true, if: -> { password.present? && password_required? }
   validate :password_complexity, if: -> { password.present? && password_required? }
 
   before_validation :normalize_role, :normalize_email
