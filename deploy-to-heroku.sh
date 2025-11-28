@@ -5,7 +5,10 @@
 
 set -e  # Exit on error
 
-HEROKU_APP="tft-smartcomp"
+# Allow overriding the Heroku app and host via environment variables.
+# Defaults keep backward compatibility with the original course app.
+HEROKU_APP="${HEROKU_APP:-tft-smartcomp}"
+HEROKU_APP_HOST="${HEROKU_APP_HOST:-${HEROKU_APP}-b3f1e37435eb.herokuapp.com}"
 HEROKU_GIT_URL="https://git.heroku.com/${HEROKU_APP}.git"
 PROJECT_ROOT="$(cd "$(dirname "$0")" && pwd)"
 
@@ -22,7 +25,7 @@ if [ ! -d "node_modules" ]; then
 fi
 
 echo "Building production bundle..."
-VITE_API_BASE_URL="https://${HEROKU_APP}-b3f1e37435eb.herokuapp.com/api" \
+VITE_API_BASE_URL="https://${HEROKU_APP_HOST}/api" \
 VITE_USE_MOCK=false \
 npm run build
 
@@ -48,13 +51,17 @@ echo ""
 
 # Step 3: Commit to GitHub (optional but recommended)
 echo "💾 Step 3: Committing to GitHub..."
-git add ruby_backend/tft_team_builder/public/
-if git diff --cached --quiet; then
-    echo "No changes to commit"
+if [ "${SKIP_GITHUB_PUSH:-0}" = "1" ]; then
+    echo "Skipping GitHub commit/push (SKIP_GITHUB_PUSH=1)"
 else
-    git commit -m "Update frontend build for deployment"
-    git push origin main
-    echo "✅ Pushed to GitHub"
+    git add ruby_backend/tft_team_builder/public/
+    if git diff --cached --quiet; then
+        echo "No changes to commit"
+    else
+        git commit -m "Update frontend build for deployment"
+        git push origin main
+        echo "✅ Pushed to GitHub"
+    fi
 fi
 echo ""
 
@@ -79,12 +86,13 @@ rm -rf .git
 
 cd "${PROJECT_ROOT}"
 echo ""
-echo "✨ Deployment complete!"
+echo "✅ Deployment complete!"
 echo ""
-echo "📱 App URL: https://${HEROKU_APP}-b3f1e37435eb.herokuapp.com/"
+echo "📱 App URL: https://${HEROKU_APP_HOST}/"
 echo "📊 Logs: heroku logs --tail --app ${HEROKU_APP}"
 echo ""
 echo "💡 Tips:"
 echo "   - Clear browser cache if UI doesn't update"
 echo "   - Check console for any errors"
 echo "   - Run 'heroku restart --app ${HEROKU_APP}' if needed"
+
