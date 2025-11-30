@@ -363,7 +363,7 @@ watch(
   display: grid;
   grid-template-columns: minmax(110px, 150px) 1fr;
   gap: 0.5rem 1rem;
-  align-items: start;
+  align-items: center;
 }
 
 .detail-description-label {
