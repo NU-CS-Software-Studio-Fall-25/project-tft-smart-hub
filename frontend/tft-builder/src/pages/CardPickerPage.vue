@@ -384,8 +384,13 @@ const onSearch = async () => {
 
 onMounted(async () => {
   if (!selectionStore.allCards.length) {
-    const all = await fetchCards()
-    selectionStore.setAllCards(all)
+    try {
+      const all = await fetchCards()
+      selectionStore.setAllCards(all)
+    } catch (err) {
+      console.error('[CardPickerPage] Failed to load champions:', err)
+      error.value = 'Failed to load champions. Please check the API connection.'
+    }
   }
 })
 </script>

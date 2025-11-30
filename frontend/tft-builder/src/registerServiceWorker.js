@@ -1,4 +1,10 @@
 export function registerServiceWorker() {
+  // Skip service worker in dev to avoid cache issues during local development
+  if (import.meta.env.DEV) {
+    console.log('Service Worker disabled in development');
+    return;
+  }
+
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker

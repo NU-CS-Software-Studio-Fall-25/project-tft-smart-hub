@@ -1,8 +1,23 @@
 ﻿import axios from 'axios'
 import { fetchCardsMock, fetchRecommendationsMock } from '../mocks'
 
-const DEFAULT_BASE_URL = 'http://localhost:3000/api'
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || DEFAULT_BASE_URL
+// Resolve API base URL with a production-safe fallback.
+// Default to same-origin /api to avoid mixed-content blocks when the page is served over HTTPS.
+const DEFAULT_BASE_URL = (() => {
+  if (typeof window !== 'undefined' && window.location?.origin) {
+    return `${window.location.origin.replace(/\/$/, '')}/api`
+  }
+  return 'http://localhost:3000/api'
+})()
+
+const envBase = (import.meta.env.VITE_API_BASE_URL || '').trim()
+let API_BASE_URL = envBase || DEFAULT_BASE_URL
+
+// Avoid browsers blocking http calls when the app is served via https
+if (typeof window !== 'undefined' && window.location?.protocol === 'https:' && API_BASE_URL.startsWith('http://')) {
+  API_BASE_URL = API_BASE_URL.replace(/^http:\/\//i, 'https://')
+}
+
 const USE_MOCK = String(import.meta.env.VITE_USE_MOCK || 'false').toLowerCase() === 'true'
 
 const http = axios.create({
