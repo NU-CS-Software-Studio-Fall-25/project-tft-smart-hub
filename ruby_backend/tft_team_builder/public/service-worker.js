@@ -46,9 +46,14 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
-  
+
+  // Skip non-HTTP(S) schemes (e.g. chrome-extension://) to avoid Cache API errors
+  if (!url.protocol.startsWith('http')) {
+    return;
+  }
+
   // Network first strategy for HTML files and API calls
-  if (request.headers.get('accept').includes('text/html') || url.pathname.includes('/api/')) {
+  if (request.headers.get('accept')?.includes('text/html') || url.pathname.includes('/api/')) {
     event.respondWith(
       fetch(request)
         .then((response) => {
@@ -61,34 +66,30 @@ self.addEventListener('fetch', (event) => {
           }
           return response;
         })
-        .catch(() => {
-          // Fallback to cache if network fails
-          return caches.match(request);
-        })
+        .catch(() => caches.match(request))
     );
   } else {
     // Cache first strategy for assets (CSS, JS, images)
     event.respondWith(
-      caches.match(request)
-        .then((response) => {
-          if (response) {
+      caches.match(request).then((response) => {
+        if (response) {
+          return response;
+        }
+
+        return fetch(request).then((response) => {
+          // Don't cache if not a valid response
+          if (!response || response.status !== 200 || response.type !== 'basic') {
             return response;
           }
-          
-          return fetch(request).then((response) => {
-            // Don't cache if not a valid response
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
-            
-            const responseToCache = response.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(request, responseToCache);
-            });
-            
-            return response;
+
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(request, responseToCache);
           });
-        })
+
+          return response;
+        });
+      })
     );
   }
 });
