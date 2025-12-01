@@ -1,26 +1,21 @@
-# Deployment documentation (keep local only)
-DEPLOYMENT.md
-
-# Deployment script with sensitive info
-deploy-to-heroku.sh
-
-# Environment files
-*.env
-.env.*
-!.env.example
-
-# Temporary files
+# Logs
 *.log
-tmp/
-log/
+ruby_backend/tft_team_builder/log/*.log
 
-# Node modules
-node_modules/
+# Rails runtime cache / tmp
+ruby_backend/tft_team_builder/tmp/cache/
+ruby_backend/tft_team_builder/tmp/pids/
+ruby_backend/tft_team_builder/tmp/sockets/
+ruby_backend/tft_team_builder/tmp/storage/
 
-# Build outputs
-dist/
-build/
+# Node modules (frontend)
+frontend/tft-builder/node_modules/
+
+# Frontend build outputs / cache
+frontend/tft-builder/dist/
+frontend/tft-builder/.vite/
 
 # OS files
 .DS_Store
 Thumbs.db
+

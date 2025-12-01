@@ -56,7 +56,14 @@
           <div v-if="teamType === 'system'" class="system-teams-layout">
             <div class="row g-4 row-cols-1 row-cols-lg-2 mb-4">
               <div v-for="team in paginatedTeams" :key="team.id" class="col">
-                <div class="system-team-card card h-100 shadow-sm border-0">
+                <div
+                  class="system-team-card card h-100 shadow-sm border-0 clickable-card"
+                  role="button"
+                  tabindex="0"
+                  @click="goToTeam(team.id)"
+                  @keydown.enter.prevent="goToTeam(team.id)"
+                  @keydown.space.prevent="goToTeam(team.id)"
+                >
                   <div class="card-body d-flex flex-column">
                     <div class="system-team-header d-flex justify-content-between align-items-start mb-3">
                       <div class="pe-3 flex-grow-1">
@@ -137,19 +144,14 @@
                         class="btn btn-sm btn-outline-secondary"
                         :to="{ name: 'team-detail', params: { id: team.id } }"
                         title="View comments"
+                        @click.stop
                       >
                         <i class="bi bi-chat"></i>
                         {{ team.commentsCount || 0 }}
                       </RouterLink>
                     </div>
                     <div class="d-flex gap-2 ms-auto">
-                      <RouterLink
-                        class="btn btn-sm btn-outline-primary"
-                        :to="{ name: 'team-detail', params: { id: team.id } }"
-                      >
-                        View details
-                      </RouterLink>
-                      <button v-if="isAdmin" class="btn btn-sm btn-outline-danger" @click="removeTeam(team.id)" :disabled="deletingTeamId === team.id">
+                      <button v-if="isAdmin" class="btn btn-sm btn-outline-danger" @click.stop="removeTeam(team.id)" :disabled="deletingTeamId === team.id">
                         <span v-if="deletingTeamId === team.id" class="spinner-border spinner-border-sm"></span>
                         <i v-else class="bi bi-trash"></i>
                       </button>
@@ -163,7 +165,16 @@
           <!-- User Teams Layout: List -->
           <div v-else class="user-teams-layout">
             <div class="user-teams-list">
-              <div v-for="team in paginatedTeams" :key="team.id" class="user-team-row card mb-3 shadow-sm border-0">
+              <div
+                v-for="team in paginatedTeams"
+                :key="team.id"
+                class="user-team-row card mb-3 shadow-sm border-0 clickable-card"
+                role="button"
+                tabindex="0"
+                @click="goToTeam(team.id)"
+                @keydown.enter.prevent="goToTeam(team.id)"
+                @keydown.space.prevent="goToTeam(team.id)"
+              >
                 <div class="card-body p-3">
                   <div class="d-flex align-items-center gap-3">
                     <div class="user-team-info flex-grow-1">
@@ -222,22 +233,17 @@
                           class="btn btn-sm btn-outline-secondary"
                           :to="{ name: 'team-detail', params: { id: team.id } }"
                           title="View comments"
+                          @click.stop
                         >
                           <i class="bi bi-chat"></i>
                           {{ team.commentsCount || 0 }}
                         </RouterLink>
                       </div>
                       <div class="d-flex flex-column gap-2">
-                        <RouterLink
-                          class="btn btn-sm btn-outline-primary"
-                          :to="{ name: 'team-detail', params: { id: team.id } }"
-                        >
-                          View
-                        </RouterLink>
-                        <button v-if="canEditTeam(team)" class="btn btn-sm btn-outline-secondary" @click="editTeam(team.id)">
+                        <button v-if="canEditTeam(team)" class="btn btn-sm btn-outline-secondary" @click.stop="editTeam(team.id)">
                           <i class="bi bi-pencil"></i>
                         </button>
-                        <button v-if="canDeleteTeam(team)" class="btn btn-sm btn-outline-danger" @click="removeTeam(team.id)" :disabled="deletingTeamId === team.id">
+                        <button v-if="canDeleteTeam(team)" class="btn btn-sm btn-outline-danger" @click.stop="removeTeam(team.id)" :disabled="deletingTeamId === team.id">
                           <span v-if="deletingTeamId === team.id" class="spinner-border spinner-border-sm"></span>
                           <i v-else class="bi bi-trash"></i>
                         </button>
@@ -528,6 +534,10 @@ const toggleFavorite = async (team) => {
 }
 
 
+const goToTeam = (id) => {
+  router.push({ name: 'team-detail', params: { id } })
+}
+
 const editTeam = (id) => {
   router.push({ name: 'team-edit', params: { id } })
 }
@@ -610,6 +620,15 @@ watch(
 .system-team-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15) !important;
+}
+
+.clickable-card {
+  cursor: pointer;
+}
+
+.clickable-card:focus-visible {
+  outline: 3px solid #0d6efd;
+  outline-offset: 2px;
 }
 
 .system-team-card .card-body {

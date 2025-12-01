@@ -98,7 +98,7 @@
               </div>
 
               <div class="champion-grid-container">
-                <div class="d-flex flex-wrap gap-3 pb-3">
+                <div class="champion-grid">
                   <CardTile
                     v-for="card in filteredCards"
                     :key="card.id"
@@ -353,13 +353,39 @@ watch(
   background: #ffb300;
 }
 
-/* Remove box background from champion names */
-.champion-grid-container :deep(.tft-card-name) {
+.champion-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.9rem 0.75rem;
+  padding-bottom: 0.25rem;
+  align-items: start;
+}
+
+.champion-grid :deep(.tft-card-tile) {
+  width: 100%;
+  align-items: center;
+  gap: 0.45rem;
+  padding-bottom: 0.55rem;
+}
+
+.champion-grid :deep(.tft-card-img) {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+/* Keep card names visible and out of the shadow overlap */
+.champion-grid :deep(.tft-card-name) {
   background: none !important;
   box-shadow: none !important;
   padding: 0 !important;
   color: #1f2638 !important;
   font-size: 0.85rem !important;
+  text-shadow: none !important;
+  display: block;
+  margin-top: 0.25rem;
+  min-height: 1.4rem;
 }
 </style>
 
