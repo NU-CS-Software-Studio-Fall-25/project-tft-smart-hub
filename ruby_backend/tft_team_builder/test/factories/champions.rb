@@ -10,7 +10,7 @@ FactoryBot.define do
     sprite_y { 0 }
     sprite_w { 100 }
     sprite_h { 100 }
-    sequence(:api_id) { |n| "TFT#{13}_Champion#{n}" }
-    set_identifier { "set13" }
+    sequence(:api_id) { |n| "TFT15_Champion#{n}" }
+    set_identifier { "TFT15" }
   end
 end

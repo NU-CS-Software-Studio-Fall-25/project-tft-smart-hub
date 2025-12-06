@@ -1,0 +1,9 @@
+--no-private
+--protected
+--exclude vendor,log,tmp,node_modules,public/assets,spec,test
+--markup markdown
+--title "TFT Smart Hub API Documentation"
+--template default
+--output-dir doc
+app/**/*.rb
+lib/**/*.rb

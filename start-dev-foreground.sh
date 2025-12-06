@@ -23,6 +23,13 @@ fi
 # Start backend in background
 echo "📡 Starting Rails backend..."
 cd "${PROJECT_ROOT}/ruby_backend/tft_team_builder"
+
+# Set database environment variables
+export PG_USERNAME=zrt
+export PG_PASSWORD=postgres
+export PG_HOST=localhost
+export PG_PORT=5432
+
 bundle exec rails server > /dev/null 2>&1 &
 BACKEND_PID=$!
 echo "✅ Backend started (PID: ${BACKEND_PID})"

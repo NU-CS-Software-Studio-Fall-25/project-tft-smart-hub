@@ -1,6 +1,21 @@
 # TFT Smart Hub
 # Temporary Link: <https://tft-smarthub-517534671b49.herokuapp.com//>
 
+
+---
+Milestone4:
+1. RSpec Test: [View Test Summary](./docs/RSpec_TST_SUMMARY.md)
+2. RDoc documentation: [View RDoc Doc](./ruby_backend/tft_team_builder/doc/_index.html)
+
+Useful Scripts:
+Run all RSpec tests: `./run-rspec.sh`  
+Run specific RSpec test: `./spec/models/user_spec.rb`  
+Generate RSpec coverage report: `./run-rspec.sh coverage`  
+Generate RDoc doc: `./generate-docs.sh`
+
+Start the server locally: `./start-dev.sh`  
+Stop the server locally: `./stop-dev.sh`  
+
 ---
 Milestone3: 
 - Cucumber tests: [View Test Summary](./ruby_backend/tft_team_builder/features/TEST_SUMMARY.md)

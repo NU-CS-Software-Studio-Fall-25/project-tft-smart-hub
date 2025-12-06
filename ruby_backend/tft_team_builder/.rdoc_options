@@ -1,0 +1,24 @@
+# RDoc options file
+# Generated automatically
+
+--- !ruby/object:RDoc::Options
+rdoc_version: 7.1.0
+encoding: UTF-8
+title: TFT Smart Hub API Documentation
+main_page: README.md
+markup: markdown
+template: hanna
+output_dir: doc
+charset: utf-8
+all: true
+line_numbers: true
+ri: true
+exclude_dirs:
+- vendor
+- log
+- tmp
+- node_modules
+- public/assets
+- spec
+- test
+

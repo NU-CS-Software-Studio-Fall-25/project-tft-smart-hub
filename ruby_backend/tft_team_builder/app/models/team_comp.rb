@@ -1,5 +1,78 @@
+# frozen_string_literal: true
+
+# = TeamComp Model
+#
+# Represents a Teamfight Tactics team composition.
+# Stores champion configurations, metadata, and user interactions.
+#
+# == Attributes
+# * +name+ - Team composition name (required, max 50 chars)
+# * +description+ - Detailed description (max 200 chars)
+# * +notes+ - Additional notes (max 100 chars)
+# * +champions+ - Comma-separated champion names (required)
+# * +set_identifier+ - TFT set identifier (e.g., 'TFT15', default: TFT15)
+# * +team_type+ - Type of team ('system' or 'user')
+# * +size+ - Number of units in composition
+# * +play_count+ - Number of times this composition was played
+# * +win_count+ - Number of games won with this composition
+# * +top4_count+ - Number of top 4 placements
+# * +avg_placement+ - Average placement statistic
+# * +composition_key+ - Unique identifier for composition
+# * +top1_rate+ - First place win rate
+# * +top2_rate+ - Top 2 placement rate
+# * +top3_rate+ - Top 3 placement rate
+# * +top4_rate+ - Top 4 placement rate
+# * +win_rate+ - Overall win rate percentage
+# * +play_rate+ - Play rate percentage
+# * +user_id+ - Associated user (nullable for system teams)
+# * +created_at+ - Record creation timestamp
+# * +updated_at+ - Record update timestamp
+#
+# == Associations
+# * +belongs_to :user+ - Owner of the team composition (optional)
+# * +has_many :likes+ - User likes on this team
+# * +has_many :favorites+ - User favorites of this team
+# * +has_many :comments+ - Comments on this team
+#
+# == Validations
+# * +name+ - Required, maximum 50 characters
+# * +champions+ - Required (comma-separated champion list)
+# * +set_identifier+ - Required (auto-set to default if blank)
+# * +description+ - Optional, maximum 200 characters
+# * +notes+ - Optional, maximum 100 characters
+#
+# == Scopes
+# * +for_set(set_identifier)+ - Filter teams by TFT set
+# * +system_teams+ - Get all system teams
+# * +user_teams+ - Get all user-created teams
+#
+# == Class Constants
+# * +DEFAULT_SET_IDENTIFIER+ - Default TFT set (from ENV or "TFT15")
+#
+# == Methods
+# * +champion_names+ - Parse and return array of champion names
+# * +champion_records+ - Fetch associated Champion records from database
+# * +win_rate_value+ - Convert win_rate to float
+# * +play_rate_value+ - Convert play_rate to float
+# * +derived_metadata+ - Generate metadata hash with calculated values
+#
+# == Example
+#   # Create a user team composition
+#   team = TeamComp.create(
+#     name: "Astral Casters",
+#     champions: "Ahri, Lulu, Taliyah, Neeko",
+#     set_identifier: "TFT15",
+#     team_type: "user",
+#     user: current_user
+#   )
+#
+#   # Get champion objects
+#   team.champion_records  # => [#<Champion>, #<Champion>, ...]
+#
+#   # Filter by set
+#   TeamComp.for_set("TFT15")
+#
 class TeamComp < ApplicationRecord
-  DEFAULT_SET_IDENTIFIER = ENV.fetch("DEFAULT_TFT_SET", "TFT15")
 
   belongs_to :user, optional: true
   has_many :likes, dependent: :destroy

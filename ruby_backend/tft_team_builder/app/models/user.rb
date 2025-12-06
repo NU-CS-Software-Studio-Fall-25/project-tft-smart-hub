@@ -1,5 +1,48 @@
 # frozen_string_literal: true
 
+# = User Model
+#
+# Represents a user in the TFT Smart Hub application.
+# Handles authentication, OAuth integration, and user preferences.
+#
+# == Attributes
+# * +email+ - User's email address (unique, required)
+# * +password+ - Encrypted password for local authentication
+# * +password_digest+ - BCrypt encrypted password hash
+# * +role+ - User role (user or admin)
+# * +provider+ - OAuth provider name (google, etc.)
+# * +uid+ - OAuth provider's unique identifier
+# * +email_verified_at+ - Timestamp when email was verified
+# * +email_verification_token+ - Token for email verification
+# * +password_reset_token+ - Token for password reset
+# * +created_at+ - Record creation timestamp
+# * +updated_at+ - Record update timestamp
+#
+# == Associations
+# * +has_many :likes+ - User's team likes
+# * +has_many :favorites+ - User's favorite team compositions
+# * +has_many :comments+ - User's comments on team compositions
+# * +has_many :liked_teams+ - Teams the user has liked
+# * +has_many :favorited_teams+ - Teams the user has favorited
+#
+# == Class Constants
+# * +ROLES+ - Array of valid user roles: ['user', 'admin']
+# * +EMAIL_VERIFICATION_TOKEN_TTL+ - Email verification token expiration (2 hours)
+# * +PASSWORD_RESET_TOKEN_TTL+ - Password reset token expiration (2 hours)
+#
+# == Authentication Methods
+# * +authenticate(password)+ - Verify password (from has_secure_password)
+# * +oauth_user?+ - Check if user authenticated via OAuth
+# * +from_google_oauth(payload)+ - Create/find user from Google OAuth
+#
+# == Example
+#   # Create a local user
+#   user = User.create(email: "user@example.com", password: "SecurePass123!")
+#
+#   # Create via Google OAuth
+#   payload = { 'email' => 'user@google.com', 'sub' => 'google_uid' }
+#   user = User.from_google_oauth(payload)
+#
 class User < ApplicationRecord
   has_secure_password validations: false  # 关闭自动验证，因为 OAuth 用户可能没有密码
 

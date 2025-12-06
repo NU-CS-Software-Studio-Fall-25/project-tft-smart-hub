@@ -1,0 +1,18 @@
+# Documentation generated files
+doc/
+docs/
+.yardoc/
+
+# YARD cache
+.yardopts
+
+# JSDoc output
+jsdoc_output/
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db

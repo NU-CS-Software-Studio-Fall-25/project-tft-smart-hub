@@ -1,6 +1,35 @@
 # frozen_string_literal: true
 
 module Api
+  # = Team Compositions API Controller
+  #
+  # Provides REST API endpoints for managing Teamfight Tactics team compositions.
+  # Handles CRUD operations, filtering, searching, and pagination.
+  #
+  # == Routes
+  # * GET /api/team_comps - List all team compositions
+  # * GET /api/team_comps/:id - Show single team composition
+  # * POST /api/team_comps - Create new team composition (authenticated)
+  # * PATCH /api/team_comps/:id - Update team composition (authorized)
+  # * DELETE /api/team_comps/:id - Delete team composition (authorized)
+  #
+  # == Query Parameters
+  # * +type+ - Filter by team type ('system' or 'user')
+  # * +set+ - Filter by TFT set identifier
+  # * +search+ - Search teams by name or champions
+  # * +per+/+limit+ - Items per page (1-200, default 10)
+  # * +page+ - Page number for pagination
+  # * +include_cards+ - Include champion details when true
+  # * +sort+ - Sort field (win_rate, created_at, etc.)
+  #
+  # == Authentication
+  # * Requires authentication for create/update/delete operations
+  # * GET requests are public (except when unauthorized)
+  #
+  # == Authorization
+  # * Users can only modify their own team compositions
+  # * System teams are read-only for regular users
+  #
   class TeamCompsController < BaseController
     before_action :set_team_comp, only: %i[show update destroy]
     before_action :authenticate_user!, only: %i[create update destroy]

@@ -2,6 +2,8 @@ FactoryBot.define do
   factory :team_comp do
     name { Faker::Game.title }
     description { Faker::Lorem.paragraph }
+    champions { 'Aatrox, Braum, Caitlyn' }
+    set_identifier { 'TFT15' }
     association :user
     team_type { 'user' }
 
@@ -11,11 +13,7 @@ FactoryBot.define do
     end
 
     trait :with_champions do
-      after(:create) do |team_comp|
-        create_list(:champion, 3).each do |champion|
-          team_comp.champions << champion
-        end
-      end
+      champions { 'Aatrox, Braum, Caitlyn, Darius, Ekko' }
     end
   end
 end

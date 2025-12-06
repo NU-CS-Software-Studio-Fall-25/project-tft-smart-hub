@@ -1,0 +1,30 @@
+{
+  "source": {
+    "include": ["src"],
+    "includePattern": ".+\\.js$",
+    "excludePattern": "(^|\\/|\\\\)_"
+  },
+  "opts": {
+    "destination": "./docs",
+    "recurse": true,
+    "readme": "./README.md",
+    "template": "node_modules/better-docs",
+    "html": true
+  },
+  "templates": {
+    "default": {
+      "staticFiles": {
+        "include": ["./static"]
+      }
+    },
+    "better-docs": {
+      "name": "TFT Smart Hub Frontend API",
+      "navLinks": [
+        {
+          "label": "GitHub",
+          "href": "https://github.com/NU-CS-Software-Studio-Fall-25/project-tft-smart-hub"
+        }
+      ]
+    }
+  }
+}
