@@ -84,14 +84,17 @@ const percentage = (value) => {
   return `${(value * 100).toFixed(1)}%`
 }
 
-onMounted(async () => {
+onMounted(() => {
+  // Load data in background - don't block page render
   if (!selectionStore.allCards.length) {
-    const cards = await fetchCards()
-    selectionStore.setAllCards(cards)
+    fetchCards()
+      .then(cards => selectionStore.setAllCards(cards))
+      .catch(error => console.warn('Failed to load cards:', error))
   }
   if (!teamStore.list.length) {
-    const { teams, meta } = await fetchTeamComps({ limit: 6 })
-    teamStore.setTeams(teams, meta)
+    fetchTeamComps({ limit: 6 })
+      .then(({ teams, meta }) => teamStore.setTeams(teams, meta))
+      .catch(error => console.warn('Failed to load teams:', error))
   }
 })
 </script>
