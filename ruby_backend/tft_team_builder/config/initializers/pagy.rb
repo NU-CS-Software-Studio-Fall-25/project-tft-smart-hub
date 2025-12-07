@@ -4,7 +4,7 @@
 # Customize only what you really need
 # See https://ddnexus.github.io/pagy/docs/api/pagy#global-vars
 
-require 'pagy/extras/metadata'
+require "pagy/extras/metadata"
 
 # Items per page (default: 20)
 Pagy::DEFAULT[:limit] = 10  # Use :limit instead of :items for Pagy 9.x

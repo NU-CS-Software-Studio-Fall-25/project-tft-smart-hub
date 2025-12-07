@@ -2,12 +2,11 @@
 
 module Api
   class AuthController < BaseController
-
     def register
       # 直接创建用户账户,无需邮箱验证
       user = User.new(register_params)
       user.email_verified_at = Time.current # 自动设置为已验证
-      
+
       if user.save
         # 注册成功,直接返回token和用户信息
         render json: auth_payload(user), status: :created
@@ -19,43 +18,43 @@ module Api
     def verify_email
       email = verify_email_params[:email].to_s.downcase.strip
       code = verify_email_params[:token]
-      
+
       pending = PendingRegistration.valid_codes.find_by(email: email)
-      
+
       if pending.nil?
-        return render json: { errors: ["No pending registration found or code expired"] }, status: :unprocessable_entity
+        return render json: { errors: [ "No pending registration found or code expired" ] }, status: :unprocessable_entity
       end
-      
+
       if pending.verify_code(code)
         begin
           # 验证成功，创建真正的用户账户
           user = pending.create_user!
           render json: auth_payload(user)
         rescue ActiveRecord::RecordInvalid => e
-          render json: { errors: [e.message] }, status: :unprocessable_entity
+          render json: { errors: [ e.message ] }, status: :unprocessable_entity
         end
       else
-        render json: { errors: ["Invalid verification code"] }, status: :unprocessable_entity
+        render json: { errors: [ "Invalid verification code" ] }, status: :unprocessable_entity
       end
     end
 
     def resend_verification
       email = resend_params[:email].to_s.downcase.strip
-      
+
       pending = PendingRegistration.valid_codes.find_by(email: email)
-      
+
       if pending
         pending.resend_code!
-        
+
         begin
           PendingRegistrationMailer.with(pending: pending).verification_email.deliver_now
         rescue StandardError => e
           Rails.logger.error("Failed to resend verification email: #{e.message}")
         end
-        
+
         render json: { message: "Verification code sent successfully" }
       else
-        render json: { errors: ["No pending registration found or registration expired"] }, status: :not_found
+        render json: { errors: [ "No pending registration found or registration expired" ] }, status: :not_found
       end
     end
 
@@ -71,18 +70,18 @@ module Api
 
     def google_auth
       token = google_auth_params[:credential]
-      
+
       begin
         # Verify the Google ID token
         validator = GoogleIDToken::Validator.new
         # In development, allow audience mismatch for localhost testing
         payload = if Rails.env.development?
           begin
-            validator.check(token, ENV['GOOGLE_CLIENT_ID'])
+            validator.check(token, ENV["GOOGLE_CLIENT_ID"])
           rescue GoogleIDToken::ValidationError => e
             if e.message.include?("audience")
               # For development, try to decode without audience validation
-              require 'jwt'
+              require "jwt"
               decoded = JWT.decode(token, nil, false)[0]
               decoded
             else
@@ -90,26 +89,26 @@ module Api
             end
           end
         else
-          validator.check(token, ENV['GOOGLE_CLIENT_ID'])
+          validator.check(token, ENV["GOOGLE_CLIENT_ID"])
         end
-        
+
         unless payload
-          return render json: { errors: ["Invalid Google token"] }, status: :unauthorized
+          return render json: { errors: [ "Invalid Google token" ] }, status: :unauthorized
         end
-        
+
         # Create or find user from Google OAuth
         user = User.from_google_oauth(payload)
-        
+
         if user.persisted?
           render json: auth_payload(user)
         else
           render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
         end
       rescue GoogleIDToken::ValidationError => e
-        render json: { errors: ["Google authentication failed: #{e.message}"] }, status: :unauthorized
+        render json: { errors: [ "Google authentication failed: #{e.message}" ] }, status: :unauthorized
       rescue StandardError => e
         Rails.logger.error("Google OAuth error: #{e.message}")
-        render json: { errors: ["Authentication failed"] }, status: :internal_server_error
+        render json: { errors: [ "Authentication failed" ] }, status: :internal_server_error
       end
     end
 
@@ -131,7 +130,7 @@ module Api
       user = User.find_by(email: reset_password_params[:email].to_s.downcase.strip)
 
       unless user&.valid_reset_password_token?(reset_password_params[:token])
-        return render json: { errors: ["Invalid or expired password reset token"] }, status: :unprocessable_entity
+        return render json: { errors: [ "Invalid or expired password reset token" ] }, status: :unprocessable_entity
       end
 
       unless user.update(password: reset_password_params[:password], password_confirmation: reset_password_params[:password_confirmation])

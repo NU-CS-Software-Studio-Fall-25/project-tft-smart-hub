@@ -40,9 +40,9 @@ module Api
 
       # Filter by team type
       case params[:type]
-      when 'system'
+      when "system"
         scope = scope.system_teams
-      when 'user'
+      when "user"
         scope = scope.user_teams
       end
 
@@ -132,7 +132,7 @@ module Api
         return
       end
 
-      sorted = results.sort_by { |entry| [-entry[:matches].length, -(entry[:team_comp].win_rate_value || 0.0)] }
+      sorted = results.sort_by { |entry| [ -entry[:matches].length, -(entry[:team_comp].win_rate_value || 0.0) ] }
       top = sorted.first(params.fetch(:limit, 10).to_i.clamp(1, 25))
 
       payload = top.map do |entry|
@@ -159,7 +159,7 @@ module Api
       return if current_user.admin?
       return if @team_comp.user_id == current_user.id
 
-      render json: { error: 'You are not authorized to modify this team' }, status: :forbidden
+      render json: { error: "You are not authorized to modify this team" }, status: :forbidden
     end
 
     def include_cards?
@@ -241,7 +241,7 @@ module Api
 
       # Cache champions in each team_comp instance
       comps.each do |comp|
-        comp.instance_variable_set(:@champion_records_cache, 
+        comp.instance_variable_set(:@champion_records_cache,
           comp.champion_names.map { |name| champions_hash[name] }.compact
         )
       end

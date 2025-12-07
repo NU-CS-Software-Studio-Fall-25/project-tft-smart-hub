@@ -73,6 +73,7 @@
 #   TeamComp.for_set("TFT15")
 #
 class TeamComp < ApplicationRecord
+  DEFAULT_SET_IDENTIFIER = ENV.fetch("DEFAULT_TFT_SET", "TFT15")
 
   belongs_to :user, optional: true
   has_many :likes, dependent: :destroy
@@ -80,8 +81,8 @@ class TeamComp < ApplicationRecord
   has_many :comments, dependent: :destroy
 
   scope :for_set, ->(set_identifier) { set_identifier.present? ? where(set_identifier:) : all }
-  scope :system_teams, -> { where(team_type: 'system') }
-  scope :user_teams, -> { where(team_type: 'user') }
+  scope :system_teams, -> { where(team_type: "system") }
+  scope :user_teams, -> { where(team_type: "user") }
 
   before_validation :apply_default_set_identifier
 

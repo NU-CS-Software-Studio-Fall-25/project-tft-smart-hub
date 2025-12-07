@@ -77,20 +77,20 @@ class User < ApplicationRecord
   end
 
   def self.from_google_oauth(payload)
-    email = payload['email']
-    uid = payload['sub']
-    
+    email = payload["email"]
+    uid = payload["sub"]
+
     # 首先尝试通过 provider + uid 查找
-    user = find_by(provider: 'google', uid: uid)
-    
+    user = find_by(provider: "google", uid: uid)
+
     # 如果没找到,通过邮箱查找现有用户
     if user.nil?
       user = find_by(email: email)
-      
+
       if user
         # 用户已存在(可能是通过密码注册的),更新为 OAuth 用户
         user.update!(
-          provider: 'google',
+          provider: "google",
           uid: uid,
           email_verified_at: Time.current  # Google 已验证邮箱
         )
@@ -98,16 +98,16 @@ class User < ApplicationRecord
         # 创建新用户
         user = create!(
           email: email,
-          provider: 'google',
+          provider: "google",
           uid: uid,
-          display_name: payload['name'] || email.split('@').first,
-          role: 'user',
+          display_name: payload["name"] || email.split("@").first,
+          role: "user",
           email_verified_at: Time.current,
-          password_digest: ''  # OAuth 用户不需要密码
+          password_digest: ""  # OAuth 用户不需要密码
         )
       end
     end
-    
+
     user
   end
 
@@ -224,23 +224,23 @@ class User < ApplicationRecord
     end
 
     # Check for consecutive dots in local part
-    local_part = email.split('@').first
-    if local_part.include?('..')
+    local_part = email.split("@").first
+    if local_part.include?("..")
       errors.add(:email, "must be a valid email address (consecutive dots not allowed)")
       return
     end
 
     # Check for consecutive dots in domain part
-    domain_part = email.split('@').last
-    if domain_part.include?('..')
+    domain_part = email.split("@").last
+    if domain_part.include?("..")
       errors.add(:email, "must be a valid email address (consecutive dots not allowed in domain)")
       return
     end
 
     # Check that domain has at least one dot
-    unless domain_part.include?('.')
+    unless domain_part.include?(".")
       errors.add(:email, "must be a valid email address (domain must contain a dot)")
-      return
+      nil
     end
   end
 

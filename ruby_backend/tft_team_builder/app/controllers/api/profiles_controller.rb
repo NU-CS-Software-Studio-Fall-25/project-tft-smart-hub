@@ -30,7 +30,7 @@ module Api
     def update_password
       # Verify current password before allowing change
       unless current_user.authenticate_current_password(password_params[:current_password])
-        return render json: { errors: ["Current password is incorrect"] }, status: :unprocessable_entity
+        return render json: { errors: [ "Current password is incorrect" ] }, status: :unprocessable_entity
       end
 
       # Update password

@@ -1,6 +1,6 @@
 module Api
   class CommentsController < BaseController
-    before_action :authenticate_user!, except: [:index]
+    before_action :authenticate_user!, except: [ :index ]
     before_action :set_team_comp
 
     def index
@@ -14,13 +14,13 @@ module Api
           user: {
             id: comment.user.id,
             email: comment.user.email,
-            displayName: comment.user.display_name || comment.user.email.split('@').first
+            displayName: comment.user.display_name || comment.user.email.split("@").first
           },
           canDelete: current_user && (current_user.id == comment.user_id || current_user.admin?)
         }
       end
 
-      render json: { 
+      render json: {
         comments: serialized_comments,
         meta: {
           total: serialized_comments.length
@@ -42,25 +42,25 @@ module Api
           user: {
             id: current_user.id,
             email: current_user.email,
-            displayName: current_user.display_name || current_user.email.split('@').first
+            displayName: current_user.display_name || current_user.email.split("@").first
           },
           canDelete: true
         }, status: :created
       else
-        render json: { error: comment.errors.full_messages.join(', ') }, status: :unprocessable_entity
+        render json: { error: comment.errors.full_messages.join(", ") }, status: :unprocessable_entity
       end
     end
 
     def destroy
       comment = Comment.find(params[:id])
-      
+
       unless current_user.id == comment.user_id || current_user.admin?
-        render json: { error: 'Not authorized to delete this comment' }, status: :forbidden
+        render json: { error: "Not authorized to delete this comment" }, status: :forbidden
         return
       end
 
       comment.destroy
-      render json: { message: 'Comment deleted successfully' }
+      render json: { message: "Comment deleted successfully" }
     end
 
     private
@@ -68,7 +68,7 @@ module Api
     def set_team_comp
       @team_comp = TeamComp.find(params[:team_comp_id])
     rescue ActiveRecord::RecordNotFound
-      render json: { error: 'Team composition not found' }, status: :not_found
+      render json: { error: "Team composition not found" }, status: :not_found
     end
 
     def comment_params

@@ -2,10 +2,10 @@ class PendingRegistrationMailer < ApplicationMailer
   def verification_email
     @pending = params[:pending]
     @verification_code = @pending.verification_code
-    
+
     # Use Resend API directly (official way)
-    Resend.api_key = ENV.fetch('RESEND_API_KEY', 'test_key')
-    
+    Resend.api_key = ENV.fetch("RESEND_API_KEY", "test_key")
+
     html_body = <<~HTML
       <!DOCTYPE html>
       <html>
@@ -38,7 +38,7 @@ class PendingRegistrationMailer < ApplicationMailer
         </body>
       </html>
     HTML
-    
+
     begin
       Resend::Emails.send({
         from: "onboarding@resend.dev",

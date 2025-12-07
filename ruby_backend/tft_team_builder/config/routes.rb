@@ -22,14 +22,14 @@ Rails.application.routes.draw do
         post :like, to: "likes#create"
         delete :like, to: "likes#destroy"
         get :like, to: "likes#check"
-        
+
         post :favorite, to: "favorites#create"
         delete :favorite, to: "favorites#destroy"
         get :favorite, to: "favorites#check"
       end
       resources :comments, only: %i[index create destroy]
     end
-    
+
     resources :favorites, only: %i[index]
   end
 

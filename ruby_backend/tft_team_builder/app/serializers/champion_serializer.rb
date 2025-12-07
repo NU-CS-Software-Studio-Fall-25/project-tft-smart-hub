@@ -43,7 +43,7 @@ class ChampionSerializer
     if compiled_asset.present?
       compiled_uri = URI.parse(compiled_asset)
       return compiled_asset if compiled_uri.scheme.present?
-      return "#{request.base_url}#{compiled_asset}"
+      "#{request.base_url}#{compiled_asset}"
     end
   rescue URI::InvalidURIError
     nil

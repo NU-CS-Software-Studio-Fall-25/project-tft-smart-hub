@@ -10,7 +10,7 @@ class CreatePendingRegistrations < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
-    
+
     add_index :pending_registrations, :email, unique: true
     add_index :pending_registrations, :verification_code
     add_index :pending_registrations, :expires_at

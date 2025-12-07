@@ -10,7 +10,7 @@ module ChampionsHelper
       "height: #{champion.sprite_h}px;",
       "display: inline-block;",
       "zoom: 1.2;"
-    ].join(' ')
+    ].join(" ")
 
     content_tag(:div, nil, class: options[:class], style: style, title: champion.name)
   end

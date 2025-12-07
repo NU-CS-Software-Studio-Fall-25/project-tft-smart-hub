@@ -124,7 +124,7 @@ module Services
           top2_rate: comp_data["top2_rate"],
           top3_rate: comp_data["top3_rate"],
           top4_rate: comp_data["top4_rate"],
-          team_type: 'system',
+          team_type: "system",
           raw_data: comp_data
         )
 
@@ -160,7 +160,7 @@ module Services
           tier: trait["tier_current"],
           style: trait["style"]
         }
-      end.sort_by { |entry| [-entry[:units].to_i, -entry[:tier].to_i] }
+      end.sort_by { |entry| [ -entry[:units].to_i, -entry[:tier].to_i ] }
     end
 
     def build_comp_name(names, trait_summary, comp_data)
@@ -168,7 +168,7 @@ module Services
       carry = select_carry(names)
       size = comp_data["size"] || names.size
 
-      [featured_trait, "#{size}-Unit Core", carry && "(#{carry} Carry)"].compact.join(" ")
+      [ featured_trait, "#{size}-Unit Core", carry && "(#{carry} Carry)" ].compact.join(" ")
     end
 
     def build_comp_description(names, trait_summary, comp_data)
@@ -192,7 +192,7 @@ module Services
       return if names.empty?
 
       champion_costs = Champion.where(set_identifier: set_identifier, name: names).pluck(:name, :cost, :tier).to_h do |name, cost, tier|
-        [name, cost || tier || 0]
+        [ name, cost || tier || 0 ]
       end
 
       names.max_by { |name| champion_costs[name] || 0 }
@@ -228,6 +228,6 @@ module Services
     def log(message)
       logger&.info("[tft-data-import] #{message}")
     end
+    end
   end
-end
 end

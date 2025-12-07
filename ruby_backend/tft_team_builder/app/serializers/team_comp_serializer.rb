@@ -22,16 +22,16 @@ class TeamCompSerializer
       championNames: team_comp.champion_names,
       size: team_comp.size || team_comp.champion_names.length,
       championCount: team_comp.champion_names.length,
-      isSystemTeam: team_comp.team_type == 'system',
+      isSystemTeam: team_comp.team_type == "system",
       userId: team_comp.user_id,
-      userName: team_comp.user&.email&.split('@')&.first || team_comp.user&.email,
+      userName: team_comp.user&.email&.split("@")&.first || team_comp.user&.email,
       likesCount: team_comp.likes_count,
       favoritesCount: team_comp.favorites_count,
       commentsCount: team_comp.comments_count,
       createdAt: team_comp.created_at,
       updatedAt: team_comp.updated_at
     }
-    
+
     # Add user interaction status if current_user is provided
     if current_user
       payload[:isLiked] = team_comp.likes.exists?(user_id: current_user.id)
