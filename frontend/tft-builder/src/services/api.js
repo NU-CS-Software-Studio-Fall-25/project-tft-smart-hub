@@ -95,8 +95,8 @@ export async function loginUser(payload) {
   return data
 }
 
-export async function loginWithGoogle(credential) {
-  const { data } = await http.post('/auth/google', { credential })
+export async function loginWithGoogle(credential, termsAccepted = false) {
+  const { data } = await http.post('/auth/google', { credential, terms_accepted: termsAccepted })
   return data
 }
 

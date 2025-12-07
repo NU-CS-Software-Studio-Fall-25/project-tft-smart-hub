@@ -66,6 +66,20 @@
               </label>
             </div>
 
+            <div v-if="googleCredential" class="form-check mb-3">
+              <input
+                v-model="form.termsAccepted"
+                type="checkbox"
+                class="form-check-input"
+                id="googleTermsCheckbox"
+                required
+              />
+              <label class="form-check-label small" for="googleTermsCheckbox">
+                I agree to the
+                <a href="#" @click.prevent="goToGuidelines" class="text-decoration-none">Community Guidelines and Terms of Service</a>
+              </label>
+            </div>
+
             <div v-if="authStore.error" class="alert alert-danger py-2">
               {{ authStore.error }}
             </div>
@@ -113,6 +127,7 @@ const route = useRoute()
 
 const mode = ref('login')
 const successMessage = ref('')
+const googleCredential = ref(null)
 const form = reactive({
   email: '',
   password: '',
@@ -144,6 +159,9 @@ const modeDescription = computed(() => {
 })
 
 const submitButtonLabel = computed(() => {
+  if (googleCredential.value) {
+    return 'Accept & Sign In'
+  }
   switch (mode.value) {
     case 'register':
       return 'Create account'
@@ -192,7 +210,12 @@ watch(() => route.fullPath, applyRouteState)
 async function onSubmit() {
   try {
     let redirectAfter = false
-    if (mode.value === 'login') {
+    if (googleCredential.value && form.termsAccepted) {
+      // Completing Google sign-in with terms acceptance
+      await authStore.googleLogin(googleCredential.value, true)
+      googleCredential.value = null
+      redirectAfter = true
+    } else if (mode.value === 'login') {
       await authStore.login({
         email: form.email,
         password: form.password,
@@ -261,12 +284,20 @@ async function handleGoogleCallback(response) {
   try {
     authStore.loading = true
     authStore.error = null
-    await authStore.googleLogin(response.credential)
+    await authStore.googleLogin(response.credential, form.termsAccepted)
     const redirectTo = route.query.redirect || '/'
     router.replace(redirectTo)
   } catch (error) {
     console.error('[Google Sign-In] Authentication failed', error)
-    authStore.error = 'Google sign-in failed. Please try again.'
+    // Check if error requires terms acceptance
+    if (error.response?.status === 422 && error.response?.data?.requires_terms) {
+      // Store credential and show terms checkbox
+      googleCredential.value = response.credential
+      authStore.error = null
+      // Mode stays as 'login' but we show the terms checkbox
+    } else {
+      authStore.error = 'Google sign-in failed. Please try again.'
+    }
   } finally {
     authStore.loading = false
   }

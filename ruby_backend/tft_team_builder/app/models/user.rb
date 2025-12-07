@@ -93,12 +93,10 @@ class User < ApplicationRecord
         user.update!(
           provider: "google",
           uid: uid,
-          email_verified_at: Time.current,  # Google 已验证邮箱
-          terms_accepted: true,
-          terms_accepted_at: Time.current
+          email_verified_at: Time.current  # Google 已验证邮箱
         )
       else
-        # 创建新用户
+        # 创建新用户 (不接受条款,需要用户手动勾选)
         user = create!(
           email: email,
           provider: "google",
@@ -106,8 +104,7 @@ class User < ApplicationRecord
           display_name: payload["name"] || email.split("@").first,
           role: "user",
           email_verified_at: Time.current,
-          terms_accepted: true,
-          terms_accepted_at: Time.current,
+          terms_accepted: false,
           password_digest: ""  # OAuth 用户不需要密码
         )
       end
@@ -259,6 +256,7 @@ class User < ApplicationRecord
   end
 
   def validate_terms?
-    new_record?
+    # Validate terms for new users or users who haven't accepted yet
+    new_record? || !terms_accepted?
   end
 end

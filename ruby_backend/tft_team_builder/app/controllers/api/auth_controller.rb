@@ -71,6 +71,7 @@ module Api
 
     def google_auth
       token = google_auth_params[:credential]
+      terms_accepted = google_auth_params[:terms_accepted]
 
       begin
         # Verify the Google ID token
@@ -99,6 +100,17 @@ module Api
 
         # Create or find user from Google OAuth
         user = User.from_google_oauth(payload)
+
+        # Handle terms acceptance for new users or users who haven't accepted yet
+        if terms_accepted && !user.terms_accepted?
+          user.update!(
+            terms_accepted: true,
+            terms_accepted_at: Time.current
+          )
+        elsif !terms_accepted && !user.terms_accepted?
+          # User hasn't accepted terms, return error
+          return render json: { errors: [ "You must accept the Community Guidelines and Terms of Service" ], requires_terms: true, user_id: user.id }, status: :unprocessable_entity
+        end
 
         if user.persisted?
           render json: auth_payload(user)
@@ -183,7 +195,7 @@ module Api
     end
 
     def google_auth_params
-      params.permit(:credential)
+      params.permit(:credential, :terms_accepted)
     end
   end
 end
