@@ -168,12 +168,10 @@ const toggleLike = async (team) => {
   try {
     if (team.isLiked) {
       const result = await unlikeTeam(team.id)
-      team.isLiked = result.liked
-      team.likesCount = result.likesCount
+      Object.assign(team, { isLiked: result.liked, likesCount: result.likesCount })
     } else {
       const result = await likeTeam(team.id)
-      team.isLiked = result.liked
-      team.likesCount = result.likesCount
+      Object.assign(team, { isLiked: result.liked, likesCount: result.likesCount })
     }
   } catch (error) {
     console.error('[FavoritesPage] Failed to toggle like:', error)

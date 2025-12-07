@@ -469,35 +469,32 @@ const toggleLike = async (team) => {
   const originalCount = team.likesCount
   
   try {
-    // Optimistic update
-    team.isLiked = !team.isLiked
-    team.likesCount = team.isLiked ? (originalCount || 0) + 1 : Math.max(0, (originalCount || 0) - 1)
+    // Optimistic update - use Object.assign to trigger reactivity
+    const newLiked = !team.isLiked
+    const newCount = newLiked ? (originalCount || 0) + 1 : Math.max(0, (originalCount || 0) - 1)
+    Object.assign(team, { isLiked: newLiked, likesCount: newCount })
 
     if (originalLiked) {
       const result = await unlikeTeam(team.id)
       // Verify and sync with server response
-      team.isLiked = result.liked
-      team.likesCount = result.likesCount
+      Object.assign(team, { isLiked: result.liked, likesCount: result.likesCount })
     } else {
       const result = await likeTeam(team.id)
       // Verify and sync with server response
-      team.isLiked = result.liked
-      team.likesCount = result.likesCount
+      Object.assign(team, { isLiked: result.liked, likesCount: result.likesCount })
     }
   } catch (error) {
     console.error('[TeamListPage] Failed to toggle like:', error)
     
     // Rollback on error
-    team.isLiked = originalLiked
-    team.likesCount = originalCount
+    Object.assign(team, { isLiked: originalLiked, likesCount: originalCount })
     
     // Handle 422 error (already liked/unliked)
     if (error.response?.status === 422) {
       // If we get 422, reload team to get the correct state
       try {
         const updatedTeam = await fetchTeamComp(team.id)
-        team.isLiked = updatedTeam.isLiked
-        team.likesCount = updatedTeam.likesCount
+        Object.assign(team, { isLiked: updatedTeam.isLiked, likesCount: updatedTeam.likesCount })
       } catch (e) {
         console.error('[TeamListPage] Failed to reload team:', e)
       }
@@ -519,35 +516,32 @@ const toggleFavorite = async (team) => {
   const originalCount = team.favoritesCount
 
   try {
-    // Optimistic update
-    team.isFavorited = !team.isFavorited
-    team.favoritesCount = team.isFavorited ? (originalCount || 0) + 1 : Math.max(0, (originalCount || 0) - 1)
+    // Optimistic update - use Object.assign to trigger reactivity
+    const newFavorited = !team.isFavorited
+    const newCount = newFavorited ? (originalCount || 0) + 1 : Math.max(0, (originalCount || 0) - 1)
+    Object.assign(team, { isFavorited: newFavorited, favoritesCount: newCount })
 
     if (originalFavorited) {
       const result = await unfavoriteTeam(team.id)
       // Verify and sync with server response
-      team.isFavorited = result.favorited
-      team.favoritesCount = result.favoritesCount
+      Object.assign(team, { isFavorited: result.favorited, favoritesCount: result.favoritesCount })
     } else {
       const result = await favoriteTeam(team.id)
       // Verify and sync with server response
-      team.isFavorited = result.favorited
-      team.favoritesCount = result.favoritesCount
+      Object.assign(team, { isFavorited: result.favorited, favoritesCount: result.favoritesCount })
     }
   } catch (error) {
     console.error('[TeamListPage] Failed to toggle favorite:', error)
     
     // Rollback on error
-    team.isFavorited = originalFavorited
-    team.favoritesCount = originalCount
+    Object.assign(team, { isFavorited: originalFavorited, favoritesCount: originalCount })
 
     // Handle 422 error (already favorited)
     if (error.response?.status === 422) {
       // If we get 422, reload team to get the correct state
       try {
         const updatedTeam = await fetchTeamComp(team.id)
-        team.isFavorited = updatedTeam.isFavorited
-        team.favoritesCount = updatedTeam.favoritesCount
+        Object.assign(team, { isFavorited: updatedTeam.isFavorited, favoritesCount: updatedTeam.favoritesCount })
       } catch (e) {
         console.error('[TeamListPage] Failed to reload team:', e)
       }

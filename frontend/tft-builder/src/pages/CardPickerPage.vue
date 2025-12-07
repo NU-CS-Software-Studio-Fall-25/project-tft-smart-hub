@@ -346,12 +346,10 @@ const toggleFavorite = async (team) => {
   try {
     if (team.isFavorited) {
       const result = await unfavoriteTeam(team.id)
-      team.isFavorited = result.favorited
-      team.favoritesCount = result.favoritesCount
+      Object.assign(team, { isFavorited: result.favorited, favoritesCount: result.favoritesCount })
     } else {
       const result = await favoriteTeam(team.id)
-      team.isFavorited = result.favorited
-      team.favoritesCount = result.favoritesCount
+      Object.assign(team, { isFavorited: result.favorited, favoritesCount: result.favoritesCount })
     }
   } catch (error) {
     console.error('[CardPickerPage] Failed to toggle favorite:', error)
