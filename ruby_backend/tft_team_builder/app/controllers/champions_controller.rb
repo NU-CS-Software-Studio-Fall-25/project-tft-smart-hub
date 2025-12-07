@@ -1,12 +1,12 @@
 class ChampionsController < ApplicationController
-  # 这个方法对应 "英雄列表" 页面 (GET /champions)
+  # GET /champions - Returns the list of champions for the picker page
   def index
-    # 从数据库中获取所有 Champion 记录，并按费用 (tier) 排序
+    # Retrieve all Champion records from database and sort by tier
     @champions = Champion.for_set(params[:set]).ordered_for_picker
   end
 
-  # 这个方法对应 "英雄详情" 页面 (GET /champions/:id)
-  # 我们之后会用到
+  # GET /champions/:id - Returns a specific champion detail
+  # Only used for detailed champion information
   def show
     @champion = Champion.find(params[:id])
   end

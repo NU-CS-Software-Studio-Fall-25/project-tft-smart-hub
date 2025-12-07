@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe TeamComp, type: :model do
   describe 'validations' do
     subject { build(:team_comp) }
-    
+
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:champions) }
     it { is_expected.to validate_length_of(:name).is_at_most(50) }
@@ -62,19 +62,19 @@ RSpec.describe TeamComp, type: :model do
     it 'parses comma-separated champion names' do
       team = create(:team_comp, champions: 'Aatrox, Braum, Caitlyn')
       names = team.champion_names
-      expect(names).to eq(['Aatrox', 'Braum', 'Caitlyn'])
+      expect(names).to eq([ 'Aatrox', 'Braum', 'Caitlyn' ])
     end
 
     it 'strips whitespace from champion names' do
       team = create(:team_comp, champions: ' Aatrox ,  Braum  , Caitlyn ')
       names = team.champion_names
-      expect(names).to eq(['Aatrox', 'Braum', 'Caitlyn'])
+      expect(names).to eq([ 'Aatrox', 'Braum', 'Caitlyn' ])
     end
 
     it 'rejects blank names' do
       team = create(:team_comp, champions: ' Aatrox ,  ,  Caitlyn ')
       names = team.champion_names
-      expect(names).to eq(['Aatrox', 'Caitlyn'])
+      expect(names).to eq([ 'Aatrox', 'Caitlyn' ])
     end
   end
 
@@ -83,7 +83,7 @@ RSpec.describe TeamComp, type: :model do
       aatrox = create(:champion, name: 'Aatrox', api_id: 'TFT15_Aatrox')
       braum = create(:champion, name: 'Braum', api_id: 'TFT15_Braum')
       team = create(:team_comp, champions: 'Aatrox, Braum')
-      
+
       records = team.champion_records
       expect(records).to include(aatrox, braum)
     end

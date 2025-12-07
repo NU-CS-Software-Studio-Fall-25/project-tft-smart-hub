@@ -45,7 +45,7 @@ class Api::TeamCompsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "recommendations include match metadata" do
-    include_ids = [champions(:one).id]
+    include_ids = [ champions(:one).id ]
 
     post recommendations_api_team_comps_path,
          params: { include_cards: include_ids },
@@ -75,4 +75,3 @@ class Api::TeamCompsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Updated", JSON.parse(response.body)["description"]
   end
 end
-

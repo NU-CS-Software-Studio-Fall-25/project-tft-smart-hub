@@ -3,7 +3,7 @@ FactoryBot.define do
     sequence(:name) { |n| "Champion#{n}" }
     tier { rand(1..5) }
     cost { tier }
-    traits { ["Trait1", "Trait2"] }
+    traits { [ "Trait1", "Trait2" ] }
     image_url { Faker::Internet.url }
     sprite_name { "champions.png" }
     sprite_x { 0 }

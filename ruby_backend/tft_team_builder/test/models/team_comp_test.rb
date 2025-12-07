@@ -5,7 +5,7 @@ class TeamCompTest < ActiveSupport::TestCase
 
   test "champion_names returns normalized array" do
     comp = team_comps(:one)
-    assert_equal ["Aatrox", "Kayle"], comp.champion_names
+    assert_equal [ "Aatrox", "Kayle" ], comp.champion_names
   end
 
   test "win_rate_value converts to float" do
