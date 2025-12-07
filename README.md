@@ -1,6 +1,12 @@
 # TFT Smart Hub
 # Temporary Link: <https://tft-smarthub-517534671b49.herokuapp.com//>
 
+## 📌 Quick Links
+
+- 📋 **[TODO & Roadmap](./TODO.md)** - Next sprint items and future improvements
+- 🛡️ **[Branch Protection Guide](./BRANCH_PROTECTION_GUIDE.md)** - How to set up branch protection
+- ⚙️ **[CI/CD Setup](./CI_CD_SETUP.md)** - Complete CI/CD configuration
+- 🚀 **[Quick Start Guide](./CI_CD_QUICK_START.md)** - Getting started with CI/CD
 
 ---
 Milestone4:
