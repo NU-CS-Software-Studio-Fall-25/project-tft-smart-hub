@@ -25,3 +25,4 @@ pull.md
 # YARD cache (but allow doc folder for GitHub Pages)
 ruby_backend/tft_team_builder/.yardoc/
 
+TODO.md

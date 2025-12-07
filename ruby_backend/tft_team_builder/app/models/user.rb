@@ -63,6 +63,7 @@ class User < ApplicationRecord
   validates :password, confirmation: true, if: -> { password.present? && password_required? }
   validates :password_confirmation, presence: true, if: -> { password.present? && password_required? }
   validate :password_complexity, if: -> { password.present? && password_required? }
+  validates :terms_accepted, acceptance: { accept: true, message: "must be accepted" }, if: :validate_terms?
 
   before_validation :normalize_role, :normalize_email
   before_create :generate_email_verification_token, unless: :oauth_user?
@@ -95,7 +96,7 @@ class User < ApplicationRecord
           email_verified_at: Time.current  # Google 已验证邮箱
         )
       else
-        # 创建新用户
+        # 创建新用户 (不接受条款,需要用户手动勾选)
         user = create!(
           email: email,
           provider: "google",
@@ -103,6 +104,7 @@ class User < ApplicationRecord
           display_name: payload["name"] || email.split("@").first,
           role: "user",
           email_verified_at: Time.current,
+          terms_accepted: false,
           password_digest: ""  # OAuth 用户不需要密码
         )
       end
@@ -251,5 +253,11 @@ class User < ApplicationRecord
 
   def password_required?
     !oauth_user?
+  end
+
+  def validate_terms?
+    # Validate terms only for local (non-OAuth) users
+    # OAuth users accept terms after login via web interface
+    !oauth_user? && (new_record? || !terms_accepted)
   end
 end

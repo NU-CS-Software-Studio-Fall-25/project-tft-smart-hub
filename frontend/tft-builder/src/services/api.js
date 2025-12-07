@@ -95,13 +95,18 @@ export async function loginUser(payload) {
   return data
 }
 
-export async function loginWithGoogle(credential) {
-  const { data } = await http.post('/auth/google', { credential })
+export async function loginWithGoogle(credential, termsAccepted = false) {
+  const { data } = await http.post('/auth/google', { credential, terms_accepted: termsAccepted })
   return data
 }
 
 export async function fetchCurrentUser() {
   const { data } = await http.get('/auth/me')
+  return data.user
+}
+
+export async function acceptTermsRequest() {
+  const { data } = await http.post('/auth/accept_terms')
   return data.user
 }
 

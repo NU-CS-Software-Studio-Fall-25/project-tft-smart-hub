@@ -1,7 +1,7 @@
 # TFT Smart Hub
-# Temporary Link: <https://tft-smarthub-517534671b49.herokuapp.com//>
+# Temporary Link: <https://tft-smartcomp-b3f1e37435eb.herokuapp.com/>
 
-
+## 📌 Quick Links
 ---
 Milestone4:
 1. RSpec Test: [View Test Summary](./docs/RSpec_TST_SUMMARY.md)

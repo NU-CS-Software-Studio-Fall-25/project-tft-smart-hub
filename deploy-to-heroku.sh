@@ -27,6 +27,7 @@ fi
 echo "Building production bundle..."
 VITE_API_BASE_URL="https://${HEROKU_APP_HOST}/api" \
 VITE_USE_MOCK=false \
+VITE_GOOGLE_CLIENT_ID="1041776439724-hu5qnhvlq27kmg11ugmfttsuj6t2ntt0.apps.googleusercontent.com" \
 npm run build
 
 if [ ! -f "dist/index.html" ]; then

@@ -61,13 +61,14 @@ export const authStore = reactive({
     }
   },
 
-  async googleLogin(credential) {
+  async googleLogin(credential, termsAccepted = false) {
     this.loading = true
     this.error = null
     try {
-      const { token, user } = await loginWithGoogle(credential)
+      const response = await loginWithGoogle(credential, termsAccepted)
+      const { token, user, is_new_user } = response
       this.setSession(token, user)
-      return user
+      return { user, is_new_user: is_new_user || false }
     } catch (error) {
       this.error = extractErrorMessage(error)
       throw error

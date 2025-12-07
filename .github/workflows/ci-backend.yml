@@ -85,7 +85,6 @@ jobs:
           files: ruby_backend/tft_team_builder/rspec.xml
           check_name: RSpec Test Results
           comment_mode: always
-          check_name: RSpec Test Results
 
   rubocop:
     name: RuboCop Linting
