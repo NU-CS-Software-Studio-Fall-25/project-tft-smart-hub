@@ -24,7 +24,7 @@ const router = createRouter({
     { path: '/teams', name: 'teams', component: TeamListPage },
     { path: '/teams/new', name: 'team-create', component: TeamEditorPage, meta: { requiresAuth: true } },
     { path: '/teams/:id', name: 'team-detail', component: TeamDetailPage, props: true },
-    { path: '/teams/:id/edit', name: 'team-edit', component: TeamEditorPage, props: true, meta: { requiresAdmin: true } },
+    { path: '/teams/:id/edit', name: 'team-edit', component: TeamEditorPage, props: true, meta: { requiresAuth: true } },
     { path: '/favorites', name: 'favorites', component: FavoritesPage, meta: { requiresAuth: true } },
     { path: '/profile', name: 'profile', component: ProfilePage, meta: { requiresAuth: true } },
     { path: '/guidelines', name: 'guidelines', component: GuidelinesPage },

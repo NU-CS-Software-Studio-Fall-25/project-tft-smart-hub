@@ -17,8 +17,8 @@
       <div v-if="!authStore.isAuthenticated()" class="alert alert-warning">
         Please sign in to create a new team composition.
       </div>
-      <div v-else-if="isEdit && !authStore.isAdmin()" class="alert alert-danger">
-        Only administrators can update or delete existing team compositions.
+      <div v-else-if="isEdit && !canEditCurrentTeam" class="alert alert-danger">
+        You don't have permission to edit this team composition.
       </div>
 
       <form class="row g-4" @submit.prevent="submit">
@@ -158,6 +158,18 @@ const route = useRoute()
 const isEdit = computed(() => Boolean(props.id))
 const id = computed(() => props.id)
 
+const currentTeam = computed(() => {
+  if (!isEdit.value) return null
+  return teamStore.getById(Number(id.value))
+})
+
+const canEditCurrentTeam = computed(() => {
+  if (!isEdit.value) return true // Creating new team
+  if (!currentTeam.value) return false
+  if (authStore.isAdmin()) return true
+  return !currentTeam.value.isSystemTeam && currentTeam.value.userId === authStore.user?.id
+})
+
 const form = reactive({
   name: '',
   description: '',
@@ -204,7 +216,7 @@ const selectedCards = computed(() =>
 
 const canSubmit = computed(() => {
   if (!authStore.isAuthenticated()) return false
-  if (isEdit.value && !authStore.isAdmin()) return false
+  if (isEdit.value && !canEditCurrentTeam.value) return false
   return Boolean(form.name && selectedIds.value.size > 0)
 })
 
@@ -248,9 +260,9 @@ const submit = async () => {
     return
   }
 
-  if (isEdit.value && !authStore.isAdmin()) {
-    error.value = "Administrator privileges are required to modify existing team compositions."
-    console.warn('[TeamEditorPage] User not admin')
+  if (isEdit.value && !canEditCurrentTeam.value) {
+    error.value = "You don't have permission to edit this team composition."
+    console.warn('[TeamEditorPage] User lacks permission to edit this team')
     return
   }
 
