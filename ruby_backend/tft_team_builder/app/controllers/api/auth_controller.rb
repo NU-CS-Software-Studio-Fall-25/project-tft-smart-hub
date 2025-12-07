@@ -6,6 +6,7 @@ module Api
       # 直接创建用户账户,无需邮箱验证
       user = User.new(register_params)
       user.email_verified_at = Time.current # 自动设置为已验证
+      user.terms_accepted_at = Time.current if user.terms_accepted # 设置接受时间
 
       if user.save
         # 注册成功,直接返回token和用户信息
@@ -156,7 +157,7 @@ module Api
 
     def register_params
       attrs = params.require(:user).permit(:email, :password, :password_confirmation,
-                                           :display_name, :bio, :location, :avatar_url)
+                                           :display_name, :bio, :location, :avatar_url, :terms_accepted)
       attrs[:role] = "user"
       attrs
     end

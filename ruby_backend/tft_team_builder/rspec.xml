@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="rspec" tests="29" skipped="0" failures="0" errors="0" time="0.344623" timestamp="2025-12-06T18:28:31-06:00" hostname="RuitaoZhou">
+<properties>
+<property name="seed" value="23844"/>
+</properties>
+<testcase classname="spec.models.team_comp_spec" name="TeamComp validations is expected to validate that :name cannot be empty/falsy" file="./spec/models/team_comp_spec.rb" time="0.179985"></testcase>
+<testcase classname="spec.models.team_comp_spec" name="TeamComp validations is expected to validate that :champions cannot be empty/falsy" file="./spec/models/team_comp_spec.rb" time="0.004465"></testcase>
+<testcase classname="spec.models.team_comp_spec" name="TeamComp validations is expected to validate that the length of :name is at most 50" file="./spec/models/team_comp_spec.rb" time="0.003033"></testcase>
+<testcase classname="spec.models.team_comp_spec" name="TeamComp validations is expected to validate that the length of :description is at most 200" file="./spec/models/team_comp_spec.rb" time="0.002599"></testcase>
+<testcase classname="spec.models.team_comp_spec" name="TeamComp validations is expected to validate that the length of :notes is at most 100" file="./spec/models/team_comp_spec.rb" time="0.002922"></testcase>
+<testcase classname="spec.models.team_comp_spec" name="TeamComp validations sets default set_identifier to TFT15" file="./spec/models/team_comp_spec.rb" time="0.002902"></testcase>
+<testcase classname="spec.models.team_comp_spec" name="TeamComp associations is expected to belong to user optional: true" file="./spec/models/team_comp_spec.rb" time="0.001581"></testcase>
+<testcase classname="spec.models.team_comp_spec" name="TeamComp associations is expected to have many likes dependent =&gt; destroy" file="./spec/models/team_comp_spec.rb" time="0.003197"></testcase>
+<testcase classname="spec.models.team_comp_spec" name="TeamComp associations is expected to have many favorites dependent =&gt; destroy" file="./spec/models/team_comp_spec.rb" time="0.002775"></testcase>
+<testcase classname="spec.models.team_comp_spec" name="TeamComp associations is expected to have many comments dependent =&gt; destroy" file="./spec/models/team_comp_spec.rb" time="0.002898"></testcase>
+<testcase classname="spec.models.team_comp_spec" name="TeamComp scopes .system_teams returns only system teams" file="./spec/models/team_comp_spec.rb" time="0.018278"></testcase>
+<testcase classname="spec.models.team_comp_spec" name="TeamComp scopes .user_teams returns only user teams" file="./spec/models/team_comp_spec.rb" time="0.014036"></testcase>
+<testcase classname="spec.models.team_comp_spec" name="TeamComp scopes .for_set filters teams by set identifier" file="./spec/models/team_comp_spec.rb" time="0.014403"></testcase>
+<testcase classname="spec.models.team_comp_spec" name="TeamComp scopes .for_set returns all teams when set is blank" file="./spec/models/team_comp_spec.rb" time="0.012251"></testcase>
+<testcase classname="spec.models.team_comp_spec" name="TeamComp#champion_names parses comma-separated champion names" file="./spec/models/team_comp_spec.rb" time="0.005118"></testcase>
+<testcase classname="spec.models.team_comp_spec" name="TeamComp#champion_names strips whitespace from champion names" file="./spec/models/team_comp_spec.rb" time="0.004735"></testcase>
+<testcase classname="spec.models.team_comp_spec" name="TeamComp#champion_names rejects blank names" file="./spec/models/team_comp_spec.rb" time="0.006632"></testcase>
+<testcase classname="spec.models.team_comp_spec" name="TeamComp#champion_records returns champion records from database" file="./spec/models/team_comp_spec.rb" time="0.018308"></testcase>
+<testcase classname="spec.models.team_comp_spec" name="TeamComp#champion_records returns empty array when no matching champions" file="./spec/models/team_comp_spec.rb" time="0.006067"></testcase>
+<testcase classname="spec.models.team_comp_spec" name="TeamComp callbacks before_validation sets default set identifier to TFT15" file="./spec/models/team_comp_spec.rb" time="0.002465"></testcase>
+<testcase classname="spec.models.user_spec" name="User validations is expected to validate that :email cannot be empty/falsy" file="./spec/models/user_spec.rb" time="0.005144"></testcase>
+<testcase classname="spec.models.user_spec" name="User validations is expected to validate that :email is case-insensitively unique" file="./spec/models/user_spec.rb" time="0.005937"></testcase>
+<testcase classname="spec.models.user_spec" name="User associations is expected to have many comments" file="./spec/models/user_spec.rb" time="0.001132"></testcase>
+<testcase classname="spec.models.user_spec" name="User associations is expected to have many likes" file="./spec/models/user_spec.rb" time="0.001132"></testcase>
+<testcase classname="spec.models.user_spec" name="User associations is expected to have many favorites" file="./spec/models/user_spec.rb" time="0.001051"></testcase>
+<testcase classname="spec.models.user_spec" name="User#authenticate returns user when password is correct" file="./spec/models/user_spec.rb" time="0.004397"></testcase>
+<testcase classname="spec.models.user_spec" name="User#authenticate returns false when password is incorrect" file="./spec/models/user_spec.rb" time="0.005255"></testcase>
+<testcase classname="spec.models.user_spec" name="User#admin? returns true for admin user" file="./spec/models/user_spec.rb" time="0.003812"></testcase>
+<testcase classname="spec.models.user_spec" name="User#admin? returns false for regular user" file="./spec/models/user_spec.rb" time="0.003584"></testcase>
+</testsuite>

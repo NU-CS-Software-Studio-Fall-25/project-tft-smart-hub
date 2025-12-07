@@ -5,6 +5,8 @@ FactoryBot.define do
     password_confirmation { "Test123!@#" }
     role { "user" }
     email_verified_at { Time.current }
+    terms_accepted { true }
+    terms_accepted_at { Time.current }
 
     trait :admin do
       role { "admin" }

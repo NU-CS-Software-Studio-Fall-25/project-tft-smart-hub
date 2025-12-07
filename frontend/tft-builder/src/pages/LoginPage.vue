@@ -52,6 +52,20 @@
               <input v-model.trim="form.displayName" type="text" class="form-control" placeholder="Your in-game alias" />
             </div>
 
+            <div v-if="mode === 'register'" class="form-check mb-3">
+              <input
+                v-model="form.termsAccepted"
+                type="checkbox"
+                class="form-check-input"
+                id="termsCheckbox"
+                required
+              />
+              <label class="form-check-label small" for="termsCheckbox">
+                I agree to the
+                <a href="#" @click.prevent="goToGuidelines" class="text-decoration-none">Community Guidelines and Terms of Service</a>
+              </label>
+            </div>
+
             <div v-if="authStore.error" class="alert alert-danger py-2">
               {{ authStore.error }}
             </div>
@@ -104,6 +118,7 @@ const form = reactive({
   password: '',
   passwordConfirmation: '',
   displayName: '',
+  termsAccepted: false,
   verificationCode: '',
   resetToken: '',
 })
@@ -189,6 +204,7 @@ async function onSubmit() {
         password: form.password,
         password_confirmation: form.passwordConfirmation,
         display_name: form.displayName || undefined,
+        terms_accepted: form.termsAccepted,
       })
       // 注册成功后直接跳转
       redirectAfter = true
@@ -259,6 +275,10 @@ async function handleGoogleCallback(response) {
 watch(mode, () => {
   initializeGoogleSignIn()
 })
+
+function goToGuidelines() {
+  router.push('/guidelines')
+}
 
 onMounted(() => {
   initializeGoogleSignIn()
