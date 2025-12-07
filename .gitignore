@@ -2,7 +2,7 @@
 *.log
 ruby_backend/tft_team_builder/log/*.log
 
-# Rails runtime cache / tmp
+# Rails runtime cache / tmp (but NOT the doc folder)
 ruby_backend/tft_team_builder/tmp/cache/
 ruby_backend/tft_team_builder/tmp/pids/
 ruby_backend/tft_team_builder/tmp/sockets/
@@ -21,4 +21,7 @@ Thumbs.db
 
 # pull.md
 pull.md
+
+# YARD cache (but allow doc folder for GitHub Pages)
+ruby_backend/tft_team_builder/.yardoc/
 
