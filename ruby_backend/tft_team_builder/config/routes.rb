@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     post "auth/reset_password", to: "auth#reset_password"
     post "auth/login", to: "auth#login"
     post "auth/google", to: "auth#google_auth"
+    post "auth/accept_terms", to: "auth#accept_terms"
     get "auth/me", to: "auth#me"
 
     resource :profile, only: %i[show update], controller: :profiles

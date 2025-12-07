@@ -131,6 +131,16 @@ module Api
       render json: { user: serialize_user(current_user) }
     end
 
+    def accept_terms
+      return render_unauthorized unless current_user
+
+      if current_user.update(terms_accepted: true, terms_accepted_at: Time.current)
+        render json: { message: "Terms of Service accepted successfully", user: serialize_user(current_user) }
+      else
+        render json: { errors: current_user.errors.full_messages }, status: :unprocessable_entity
+      end
+    end
+
     def forgot_password
       email = forgot_password_params[:email].to_s.downcase.strip
       user = User.find_by(email: email)
