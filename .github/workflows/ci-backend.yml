@@ -11,6 +11,11 @@ on:
     paths:
       - 'ruby_backend/**'
 
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
 jobs:
   rspec:
     name: RSpec Tests
@@ -74,10 +79,12 @@ jobs:
           path: ruby_backend/tft_team_builder/rspec.xml
 
       - name: Publish Test Results
-        if: always()
+        if: always() && hashFiles('ruby_backend/tft_team_builder/rspec.xml') != ''
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
           files: ruby_backend/tft_team_builder/rspec.xml
+          check_name: RSpec Test Results
+          comment_mode: always
           check_name: RSpec Test Results
 
   rubocop:
