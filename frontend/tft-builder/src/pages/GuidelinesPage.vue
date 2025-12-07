@@ -82,21 +82,63 @@
       </div>
 
       <div class="guidelines-actions">
-        <button @click="goBack" class="btn-secondary">Go Back</button>
+        <button v-if="!isAcceptingTerms" @click="goBack" class="btn-secondary">Go Back</button>
+        <button v-if="isAcceptingTerms" @click="acceptTerms" class="btn-primary" :disabled="acceptingTermsLoading">
+          <span v-if="acceptingTermsLoading" class="spinner-border spinner-border-sm me-2"></span>
+          I Accept & Continue
+        </button>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  name: "GuidelinesPage",
-  methods: {
-    goBack() {
-      this.$router.go(-1);
+<script setup>
+import { ref, computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { authStore } from '../stores/authStore'
+
+const router = useRouter()
+const route = useRoute()
+const acceptingTermsLoading = ref(false)
+
+// Check if user needs to accept terms (came from Google login)
+const isAcceptingTerms = computed(() => {
+  return !!route.query.return && authStore.user && !authStore.user.terms_accepted
+})
+
+async function acceptTerms() {
+  try {
+    acceptingTermsLoading.value = true
+    const response = await fetch('/api/auth/accept_terms', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authStore.token}`
+      }
+    })
+    
+    if (response.ok) {
+      const data = await response.json()
+      // Update user in store and persist to localStorage
+      if (data.user) {
+        authStore.setSession(authStore.token, data.user)
+      }
+      // Redirect to return path or home
+      const redirectTo = route.query.return || '/'
+      router.replace(redirectTo)
+    } else {
+      console.error('Failed to accept terms')
     }
+  } catch (error) {
+    console.error('Error accepting terms:', error)
+  } finally {
+    acceptingTermsLoading.value = false
   }
-};
+}
+
+function goBack() {
+  router.go(-1)
+}
 </script>
 
 <style scoped>
@@ -209,6 +251,34 @@ li:before {
 
 .btn-secondary:active {
   transform: translateY(0);
+}
+
+.btn-primary {
+  padding: 12px 30px;
+  background-color: #00d4ff;
+  color: #0f3460;
+  border: 2px solid #00d4ff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #00a8cc;
+  border-color: #00a8cc;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 212, 255, 0.4);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 @media (max-width: 768px) {

@@ -256,7 +256,8 @@ class User < ApplicationRecord
   end
 
   def validate_terms?
-    # Validate terms for new users or users who haven't accepted yet
-    new_record? || !terms_accepted?
+    # Validate terms only for local (non-OAuth) users
+    # OAuth users accept terms after login via web interface
+    !oauth_user? && (new_record? || !terms_accepted)
   end
 end

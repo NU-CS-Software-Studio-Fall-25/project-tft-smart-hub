@@ -99,21 +99,15 @@ module Api
         end
 
         # Create or find user from Google OAuth
+        is_new_user = User.find_by(provider: "google", uid: payload["sub"]).nil?
         user = User.from_google_oauth(payload)
 
-        # Handle terms acceptance for new users or users who haven't accepted yet
-        if terms_accepted && !user.terms_accepted?
-          user.update!(
-            terms_accepted: true,
-            terms_accepted_at: Time.current
-          )
-        elsif !terms_accepted && !user.terms_accepted?
-          # User hasn't accepted terms, return error
-          return render json: { errors: [ "You must accept the Community Guidelines and Terms of Service" ], requires_terms: true, user_id: user.id }, status: :unprocessable_entity
-        end
-
+        # Let user proceed even if terms not accepted yet
+        # They will accept terms through the GuidelinesPage
         if user.persisted?
-          render json: auth_payload(user)
+          payload_data = auth_payload(user)
+          payload_data[:is_new_user] = is_new_user  # Flag to indicate first-time OAuth user
+          render json: payload_data
         else
           render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
         end

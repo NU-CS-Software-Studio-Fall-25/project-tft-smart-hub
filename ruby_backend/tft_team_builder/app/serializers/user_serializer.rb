@@ -15,6 +15,7 @@ class UserSerializer
       bio: user.bio,
       location: user.location,
       avatarUrl: user.avatar_url,
+      termsAccepted: user.terms_accepted,
       createdAt: user.created_at,
       updatedAt: user.updated_at
     }
