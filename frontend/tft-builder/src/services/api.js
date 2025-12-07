@@ -107,7 +107,7 @@ export async function fetchCurrentUser() {
 
 export async function acceptTermsRequest() {
   const { data } = await http.post('/auth/accept_terms')
-  return data
+  return data.user
 }
 
 export async function updateProfileRequest(updates) {

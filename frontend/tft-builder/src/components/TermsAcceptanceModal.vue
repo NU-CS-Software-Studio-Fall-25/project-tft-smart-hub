@@ -126,7 +126,9 @@ const handleAccept = async () => {
   error.value = null
 
   try {
-    await acceptTermsRequest()
+    const updatedUser = await acceptTermsRequest()
+    // Update the store with the new user data that has termsAccepted: true
+    authStore.setSession(authStore.token, updatedUser)
     closeModal()
     // Modal has been accepted, user can continue
   } catch (err) {

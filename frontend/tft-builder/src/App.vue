@@ -32,7 +32,7 @@ onMounted(() => {
 
 // Watch for user changes and check if terms need to be accepted
 watch(() => authStore.user, (newUser) => {
-  if (newUser && !newUser.terms_accepted && router.currentRoute.value.name !== 'guidelines') {
+  if (newUser && !newUser.termsAccepted && router.currentRoute.value.name !== 'guidelines') {
     // Show terms modal if user hasn't accepted terms
     termsModal.value?.openModal()
   }

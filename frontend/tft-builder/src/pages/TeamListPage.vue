@@ -464,27 +464,39 @@ const toggleLike = async (team) => {
     return
   }
 
+  // Store original state for rollback
+  const originalLiked = team.isLiked
+  const originalCount = team.likesCount
+  
   try {
-    if (team.isLiked) {
+    // Optimistic update
+    team.isLiked = !team.isLiked
+    team.likesCount = team.isLiked ? (originalCount || 0) + 1 : Math.max(0, (originalCount || 0) - 1)
+
+    if (originalLiked) {
       const result = await unlikeTeam(team.id)
+      // Verify and sync with server response
       team.isLiked = result.liked
       team.likesCount = result.likesCount
     } else {
       const result = await likeTeam(team.id)
+      // Verify and sync with server response
       team.isLiked = result.liked
       team.likesCount = result.likesCount
     }
   } catch (error) {
     console.error('[TeamListPage] Failed to toggle like:', error)
     
-    // Handle 422 error (already liked)
+    // Rollback on error
+    team.isLiked = originalLiked
+    team.likesCount = originalCount
+    
+    // Handle 422 error (already liked/unliked)
     if (error.response?.status === 422) {
-      // If we get 422, it means the like already exists
-      // Update the UI to reflect the actual state
-      team.isLiked = true
-      // Optionally reload the team to get the correct count
+      // If we get 422, reload team to get the correct state
       try {
         const updatedTeam = await fetchTeamComp(team.id)
+        team.isLiked = updatedTeam.isLiked
         team.likesCount = updatedTeam.likesCount
       } catch (e) {
         console.error('[TeamListPage] Failed to reload team:', e)
@@ -502,27 +514,39 @@ const toggleFavorite = async (team) => {
     return
   }
 
+  // Store original state for rollback
+  const originalFavorited = team.isFavorited
+  const originalCount = team.favoritesCount
+
   try {
-    if (team.isFavorited) {
+    // Optimistic update
+    team.isFavorited = !team.isFavorited
+    team.favoritesCount = team.isFavorited ? (originalCount || 0) + 1 : Math.max(0, (originalCount || 0) - 1)
+
+    if (originalFavorited) {
       const result = await unfavoriteTeam(team.id)
+      // Verify and sync with server response
       team.isFavorited = result.favorited
       team.favoritesCount = result.favoritesCount
     } else {
       const result = await favoriteTeam(team.id)
+      // Verify and sync with server response
       team.isFavorited = result.favorited
       team.favoritesCount = result.favoritesCount
     }
   } catch (error) {
     console.error('[TeamListPage] Failed to toggle favorite:', error)
     
+    // Rollback on error
+    team.isFavorited = originalFavorited
+    team.favoritesCount = originalCount
+
     // Handle 422 error (already favorited)
     if (error.response?.status === 422) {
-      // If we get 422, it means the favorite already exists
-      // Update the UI to reflect the actual state
-      team.isFavorited = true
-      // Optionally reload the team to get the correct count
+      // If we get 422, reload team to get the correct state
       try {
         const updatedTeam = await fetchTeamComp(team.id)
+        team.isFavorited = updatedTeam.isFavorited
         team.favoritesCount = updatedTeam.favoritesCount
       } catch (e) {
         console.error('[TeamListPage] Failed to reload team:', e)
