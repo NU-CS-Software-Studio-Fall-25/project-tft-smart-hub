@@ -5,7 +5,8 @@
 ---
 Milestone4:
 1. RSpec Test: [View Test Summary](./docs/RSpec_TST_SUMMARY.md)
-2. RDoc documentation: [View RDoc Doc](./ruby_backend/tft_team_builder/doc/_index.html)
+2. RDoc documentation: [View API Docs](./ruby_backend/tft_team_builder/doc/index.html)
+3. Documentation Guide: [Setup & Usage](./DOCS_COMPLETED.md)
 
 Useful Scripts:
 Run all RSpec tests: `./run-rspec.sh`  
