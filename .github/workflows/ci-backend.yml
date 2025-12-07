@@ -1,0 +1,131 @@
+name: CI - Backend Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'ruby_backend/**'
+      - '.github/workflows/ci-backend.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'ruby_backend/**'
+
+jobs:
+  rspec:
+    name: RSpec Tests
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: tft_team_builder_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3.4'
+          bundler-cache: true
+          working-directory: ruby_backend/tft_team_builder
+
+      - name: Setup Database
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: tft_team_builder_test
+          POSTGRES_HOST: localhost
+          DATABASE_URL: postgres://test_user:test_password@localhost/tft_team_builder_test
+        working-directory: ruby_backend/tft_team_builder
+        run: |
+          bundle exec rails db:create
+          bundle exec rails db:migrate
+
+      - name: Run RSpec Tests
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: tft_team_builder_test
+          POSTGRES_HOST: localhost
+          DATABASE_URL: postgres://test_user:test_password@localhost/tft_team_builder_test
+          PG_USERNAME: test_user
+          PG_PASSWORD: test_password
+        working-directory: ruby_backend/tft_team_builder
+        run: |
+          bundle exec rspec --format progress --format RspecJunitFormatter --out rspec.xml
+
+      - name: Upload RSpec Results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: rspec-results
+          path: ruby_backend/tft_team_builder/rspec.xml
+
+      - name: Publish Test Results
+        if: always()
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          files: ruby_backend/tft_team_builder/rspec.xml
+          check_name: RSpec Test Results
+
+  rubocop:
+    name: RuboCop Linting
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3.4'
+          bundler-cache: true
+          working-directory: ruby_backend/tft_team_builder
+
+      - name: Run RuboCop
+        working-directory: ruby_backend/tft_team_builder
+        run: bundle exec rubocop --format json --out rubocop-results.json || true
+
+      - name: Upload RuboCop Results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: rubocop-results
+          path: ruby_backend/tft_team_builder/rubocop-results.json
+
+  brakeman:
+    name: Security Scan (Brakeman)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3.4'
+          bundler-cache: true
+          working-directory: ruby_backend/tft_team_builder
+
+      - name: Run Brakeman Security Scan
+        working-directory: ruby_backend/tft_team_builder
+        run: bundle exec brakeman --format json --output brakeman-results.json || true
+
+      - name: Upload Brakeman Results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: brakeman-results
+          path: ruby_backend/tft_team_builder/brakeman-results.json
