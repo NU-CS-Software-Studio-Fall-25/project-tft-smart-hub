@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tft-team-lab-v2'; // Increment version for updates
+const CACHE_NAME = 'tft-team-lab-v3'; // Increment version for updates
 const urlsToCache = [
   '/',
   '/index.html',
@@ -52,8 +52,8 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Network first strategy for HTML files and API calls
-  if (request.headers.get('accept')?.includes('text/html') || url.pathname.includes('/api/')) {
+  // Network first strategy for HTML files
+  if (request.headers.get('accept')?.includes('text/html')) {
     event.respondWith(
       fetch(request)
         .then((response) => {
@@ -68,6 +68,10 @@ self.addEventListener('fetch', (event) => {
         })
         .catch(() => caches.match(request))
     );
+  } else if (url.pathname.includes('/api/')) {
+    // API calls: Network Only (do not cache)
+    // This ensures we always get fresh data for likes/favorites
+    event.respondWith(fetch(request));
   } else {
     // Cache first strategy for assets (CSS, JS, images)
     event.respondWith(
