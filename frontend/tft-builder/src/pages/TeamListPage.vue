@@ -586,15 +586,11 @@ onMounted(async () => {
 // 当页面重新激活时（从创建页面返回）刷新数据
 onActivated(async () => {
   console.log('[TeamListPage] Component activated (returned from another page)')
-  // 检查是否有refresh参数，如果有且与上次不同，则刷新
-  const refreshToken = route.query.refresh
-  if (refreshToken && refreshToken !== lastRefreshToken.value) {
-    console.log('[TeamListPage] Refresh token detected:', refreshToken, '(was:', lastRefreshToken.value, ')')
-    lastRefreshToken.value = refreshToken
-    await loadInitial()
-  } else {
-    console.log('[TeamListPage] No refresh needed, token unchanged')
-  }
+  // Always refresh data when returning to the list to ensure like/favorite status is up to date
+  // This is necessary because other pages (like TeamDetail) might have updated the state
+  // and we want to ensure we're showing the latest data from the server.
+  // Since we disabled caching for API requests, this will fetch fresh data.
+  await loadInitial()
 })
 
 // 监听路由查询参数变化，自动切换团队类型
