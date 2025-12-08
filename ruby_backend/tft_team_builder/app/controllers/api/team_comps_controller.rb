@@ -53,6 +53,9 @@ module Api
 
       # Preload all champions for this set to avoid N+1 queries
       preload_champions_for_set(comps) if include_cards?
+      
+      # Preload user likes and favorites to avoid N+1 queries
+      preload_user_interactions(comps) if current_user
 
       payload = comps.map { |comp| serialize(comp, include_cards: include_cards?) }
 
@@ -244,6 +247,28 @@ module Api
         comp.instance_variable_set(:@champion_records_cache,
           comp.champion_names.map { |name| champions_hash[name] }.compact
         )
+      end
+    end
+    
+    def preload_user_interactions(comps)
+      return if comps.empty? || !current_user
+      
+      team_comp_ids = comps.map(&:id)
+      
+      # Fetch all likes for current user in a single query
+      liked_team_ids = Like.where(user_id: current_user.id, team_comp_id: team_comp_ids)
+                           .pluck(:team_comp_id)
+                           .to_set
+      
+      # Fetch all favorites for current user in a single query
+      favorited_team_ids = Favorite.where(user_id: current_user.id, team_comp_id: team_comp_ids)
+                                   .pluck(:team_comp_id)
+                                   .to_set
+      
+      # Cache the results in each team_comp instance
+      comps.each do |comp|
+        comp.instance_variable_set(:@is_liked_by_current_user, liked_team_ids.include?(comp.id))
+        comp.instance_variable_set(:@is_favorited_by_current_user, favorited_team_ids.include?(comp.id))
       end
     end
   end

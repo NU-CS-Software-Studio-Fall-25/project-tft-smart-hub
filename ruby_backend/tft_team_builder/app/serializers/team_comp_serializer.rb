@@ -34,8 +34,18 @@ class TeamCompSerializer
 
     # Add user interaction status if current_user is provided
     if current_user
-      payload[:isLiked] = team_comp.likes.exists?(user_id: current_user.id)
-      payload[:isFavorited] = team_comp.favorites.exists?(user_id: current_user.id)
+      # Use cached values if available (from controller preload), otherwise query
+      if team_comp.instance_variable_defined?(:@is_liked_by_current_user)
+        payload[:isLiked] = team_comp.instance_variable_get(:@is_liked_by_current_user)
+      else
+        payload[:isLiked] = team_comp.likes.exists?(user_id: current_user.id)
+      end
+      
+      if team_comp.instance_variable_defined?(:@is_favorited_by_current_user)
+        payload[:isFavorited] = team_comp.instance_variable_get(:@is_favorited_by_current_user)
+      else
+        payload[:isFavorited] = team_comp.favorites.exists?(user_id: current_user.id)
+      end
     end
 
     payload[:cards] = serialized_cards if include_cards
