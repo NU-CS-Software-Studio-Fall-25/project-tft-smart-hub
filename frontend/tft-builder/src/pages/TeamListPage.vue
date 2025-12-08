@@ -391,6 +391,10 @@ const formatDate = (dateString) => {
 }
 
 const loadInitial = async () => {
+  // Clear the store to force UI refresh and show loading state
+  // This ensures the user sees that data is being reloaded and no stale data is shown
+  teamStore.setTeams([], {})
+  
   loading.value = true
   console.log('[TeamListPage] Loading teams, type:', teamType.value)
   try {
