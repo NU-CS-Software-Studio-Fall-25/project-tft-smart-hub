@@ -34,12 +34,22 @@ http.interceptors.request.use((config) => {
   if (authToken) {
     config.headers = config.headers || {}
     config.headers.Authorization = `Bearer ${authToken}`
+    
+    // For authenticated users, always prevent caching on GET requests
+    // This ensures that like/favorite status is always up to date when navigating back
+    if (config.method === 'get' || config.method === 'GET') {
+      config.params = config.params || {}
+      config.params._t = Date.now()
+      config.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+      config.headers['Pragma'] = 'no-cache'
+      config.headers['Expires'] = '0'
+    }
   } else if (config.headers?.Authorization) {
     delete config.headers.Authorization
   }
   
   // Force cache busting in development
-  if (import.meta.env.DEV) {
+  if (import.meta.env.DEV && (!config.params || !config.params._t)) {
     config.params = config.params || {}
     config.params._t = Date.now()
     config.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
